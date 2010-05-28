@@ -1,6 +1,5 @@
 #!/usr/bin/python
 
-# openresource.py
 import roslib; roslib.load_manifest('pddl_planner_viewer')
 import rospy
 import pddl_msgs
