@@ -1,18 +1,16 @@
 ;; utility library for eus to use pddl-planner
 
 ;; automatically load roseus and ros message packages
-(pushnew (format nil "~A/euslisp/"
-                 (read-line (piped-fork "rospack find roseus")))
-         *load-path* :test #'equal)
-(load "roseus.l")
-;; we alse need to load actionlib.l
-(load "actionlib.l")
+(ros::roseus-add-msgs "roslib")
+(ros::roseus-add-msgs "roseus")
+(ros::roseus-add-msgs "std_msgs")
+(ros::roseus-add-msgs "pddl_msgs")
 
-(roseus-add-msgs "roslib")
-(roseus-add-msgs "roseus")
-(roseus-add-msgs "std_msgs")
-(roseus-add-msgs "pddl_msgs")
-(roseus-add-actionlibs "pddl_msgs")
+;; from jsk.l
+(defmacro push-back (el lst)
+  `(if (null ,lst)
+       (setf ,lst (list ,el))
+     (nconc ,lst (list ,el))))
 
 ;; class
 (defclass pddl-module

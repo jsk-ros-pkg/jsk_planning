@@ -1,6 +1,5 @@
 ;; mostly same to demo-eus.l in pddl package under jsk subversion trunk
-(load (format nil "~A/src/eus-pddl.l"
-              (read-line (piped-fork "rospack find pddl_planner"))))
+(load "package://pddl_planner/src/eus-pddl.l")
 
 ;;hanoi tower
 (setq *problem* (instance pddl-problem :init :name 'hanoi :domain 'manip))
@@ -61,7 +60,7 @@
 ;;add action to domain
 (send *domain* :add :action *move*)
 
-(roseus "pddl_client")
+(ros::roseus "pddl_client")
 
 (let ((client (instance ros::simple-action-client :init
                         "pddl_planner" pddl_msgs::PDDLPlannerAction)))
