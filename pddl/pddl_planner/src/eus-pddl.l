@@ -210,11 +210,11 @@
     self)
   (:action-sexp ()
     `(:action ,name
-       :parameters ,@(mapcar #'(lambda (x)
-                                (if (= (length x) 1)
-                                    (list (car x))
-                                  (append (butlast x) '(-) (last x))))
-                             parameters)
+       :parameters ,(flatten (mapcar #'(lambda (x)
+                                         (if (= (length x) 1)
+                                             (list (car x))
+                                           (append (butlast x) '(-) (last x))))
+                                     parameters))
        :precondition (and ,@precondition)
        :effect (and ,@effect)))
   (:ros-message ()
@@ -222,11 +222,11 @@
               :name (string name)
               :parameters
               (list->simple-string
-               (mapcar #'(lambda (x)
-                           (if (= (length x) 1)
-                               (list (car x))
-                             (append (butlast x) '(-) (last x))))
-                       parameters))
+               (list (flatten (mapcar #'(lambda (x)
+                                          (if (= (length x) 1)
+                                              (list (car x))
+                                            (append (butlast x) '(-) (last x))))
+                                      parameters))))
               :precondition
               (format nil "~A" `(and ,@precondition))
               :effect
