@@ -41,7 +41,7 @@ class PDDLPlannerActionServer(object):
         # dirty implementation
         step_before_after = output.split("step")
         if len(step_before_after) == 2:
-            results = [re.sub("\s*$", "", re.sub(r'^\s*\d:\s*', "" , x))
+            results = [re.sub("\s*$", "", re.sub(r'^\s*\d+:\s*', "" , x))
                        for x in step_before_after[1].split("time spent")[0].split("\n")]
             rospy.loginfo("result => %s" % results)
             return filter(lambda x: x != "", results)
