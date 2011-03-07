@@ -1,7 +1,6 @@
 ;; utility library for eus to use pddl-planner
 
 ;; automatically load roseus and ros message packages
-(ros::roseus-add-msgs "roslib")
 (ros::roseus-add-msgs "roseus")
 (ros::roseus-add-msgs "std_msgs")
 (ros::roseus-add-msgs "pddl_msgs")

@@ -47,15 +47,32 @@ class PDDLPlannerActionServer(object):
             return filter(lambda x: x != "", results)
         else:
             return False
+    def parse_pddl_result_ffha(self, output):
+        rospy.loginfo(output)
+        # dirty implementation
+        step_before_after = output.split("step")
+        if len(step_before_after) == 2:
+            results = [re.sub("\s*$", "", re.sub(r'^\s*\d+:\s*', "" , x))
+                       for x in step_before_after[1].split("Total cost")[0].split("\n")[1:]]
+            rospy.loginfo("result => %s" % results)
+            return filter(lambda x: x != "", results)
+        else:
+            return False
          
     def call_pddl_planner(self, problem, domain):
         """currently only supports ff"""
         # -f problem -o domain
         output = commands.getoutput("%s -f %s -o %s" % (self._planner_path,
-                                                       problem,
-                                                       domain))
+                                                        problem,
+                                                        domain))
+        print self._planner_path
+        # ffha
+        if re.search("/ffha", self._planner_path):
+            print 'use ffhaaaaaaaaaaaaaaaaaaa'
+            return self.parse_pddl_result_ffha(output)
+        # ff
         return self.parse_pddl_result(output)
-        
+
     def gen_tmp_pddl_file(self, problem, domain):
         problem_file = self.gen_tmp_problem_pddl_file(problem)
         domain_file = self.gen_tmp_domain_pddl_file(domain)
@@ -79,20 +96,19 @@ class PDDLPlannerActionServer(object):
                 for t in grouped_objects.keys()]
     
     def gen_tmp_problem_pddl_file(self, problem):
-        (fd, path_name) = tempfile.mkstemp(text=True)
+        (fd, path_name) = tempfile.mkstemp(text=True, prefix='problem_')
         path = os.fdopen(fd, 'w')
-        path.write("""
-        (define (problem %s)
-           (:domain %s)
-           (:objects %s)
-           (:init %s)
-           (:goal %s))
-           """ % (problem.name, problem.domain,
-                  "\n".join(self.gen_problem_objects_strings(problem.objects)),
-                  ' '.join(problem.initial), problem.goal))
+        path.write("""(define (problem %s)
+(:domain %s)
+(:objects %s)
+(:init %s)
+(:goal %s))
+""" % (problem.name, problem.domain,
+       "\n".join(self.gen_problem_objects_strings(problem.objects)),
+       ' '.join(problem.initial), problem.goal))
         return path_name
     def gen_tmp_domain_pddl_file(self, domain):
-        (fd, path_name) = tempfile.mkstemp(text=True)
+        (fd, path_name) = tempfile.mkstemp(text=True, prefix='domain_')
         path = os.fdopen(fd, 'w')
         path.write("(define (domain %s)\n" % domain.name)
         path.write("(:requirements %s)\n" % domain.requirements)
