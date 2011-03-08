@@ -6,6 +6,7 @@
   <license>Apache License 2.0</license>
   <depend package="pddl_msgs" />
   <depend package="ff" />
+  <depend package="ffha" />
   <depend package="rospy" />
   <depend package="actionlib" />
 </package>
