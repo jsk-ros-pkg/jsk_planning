@@ -220,12 +220,14 @@
     (instance pddl_msgs::PDDLAction :init
               :name (string name)
               :parameters
-              (list->simple-string
-               (list (flatten (mapcar #'(lambda (x)
-                                          (if (= (length x) 1)
-                                              (list (car x))
-                                            (append (butlast x) '(-) (last x))))
-                                      parameters))))
+              (if parameters
+                  (list->simple-string
+                   (list (flatten (mapcar #'(lambda (x)
+                                              (if (= (length x) 1)
+                                                  (list (car x))
+                                                (append (butlast x) '(-) (last x))))
+                                          parameters))))
+                "()")
               :precondition
               (format nil "~A" `(and ,@precondition))
               :effect
