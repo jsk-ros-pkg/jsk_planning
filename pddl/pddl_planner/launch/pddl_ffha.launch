@@ -3,11 +3,12 @@
         type="pddl.py"
         name="pddl_planner"
         output="screen">
+    <!--
     <param name="pddl_planner_path"
            value="$(find ffha)/bin/ffha " />
-<!-- for printing debug message
-    <param name="pddl_planner_path"
-           value="$(find ffha)/bin/ffha -i 120 " />
     -->
+    <!--for printing debug message-->
+    <param name="pddl_planner_path"
+           value="$(find ffha)/bin/ffha -g 6 -h 2 -H -E -i 120 " />
   </node>
 </launch>

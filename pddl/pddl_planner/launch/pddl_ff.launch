@@ -1,7 +1,8 @@
 <launch>
   <node pkg="pddl_planner"
         type="pddl.py"
-        name="pddl_planner">
+        name="pddl_planner"
+        output="screen">
     <param name="pddl_planner_path"
            value="$(find ff)/bin/ff" />
   </node>
