@@ -65,10 +65,13 @@ class PDDLPlannerActionServer(object):
         output = commands.getoutput("%s -f %s -o %s" % (self._planner_path,
                                                         problem,
                                                         domain))
-        print self._planner_path
         # ffha
         if re.search("/ffha", self._planner_path):
-            print 'use ffhaaaaaaaaaaaaaaaaaaa'
+            if re.search("-i 120", self._planner_path):
+                tmp = output.split("metric:")
+                if len(tmp) > 1:
+                    output = tmp[1];
+                self._result.data = tmp;
             return self.parse_pddl_result_ffha(output)
         # ff
         return self.parse_pddl_result(output)
