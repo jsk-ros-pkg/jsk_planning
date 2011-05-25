@@ -1,4 +1,5 @@
 (defun parse-ff-result-file (fname)
+  ;;(setq ret (parse-ff-result-file "result.txt"))
   (let ((lst (with-open-file
               (f fname)
               (parse-ff-result f))))
@@ -118,15 +119,62 @@
               ))
           cond-now))))
 
-(defun apply-plan (initial plan action-list)
-  (let ((cond-now initial))
-    (pprint cond-now)
-    (dolist (p plan)
+(defun apply-plan (initial plan action-list &key (debug))
+  (let (cond-lst (cond-now initial) p)
+    (setq p (pop plan))
+    (if debug
+        (push (cons p cond-now) cond-lst)
+      (push cond-now cond-lst))
+    (while p
       (setq cond-now (apply-act p cond-now action-list))
-      (pprint cond-now))
-    cond-now))
+      (setq p (pop plan))
+      (if debug
+          (push (cons (if p p :goal) cond-now) cond-lst)
+        (push cond-now cond-lst)))
+    (nreverse cond-lst)))
 
-;;(setq ret (parse-ff-result-file "result.txt"))
 ;;(setq initial (cdr (assoc :initial ret)))
 ;;(setq goal (cdr (assoc :goal ret)))
+;;(setq plan (cdr (assoc :plan ret)))
 ;;(setq action-list (cdr (assoc :action-list ret)))
+;;(apply-plan (cdr (assoc :initial *result*)) (cdr (assoc :plan *result*)) (cdr (assoc :action-list *result*)) :debug t)
+(defun sort-condition (lst)
+  (sort lst #'(lambda (x y) (string<= (format nil "~A" x) (format nil "~A" y)))))
+
+(defun result-condition->problem-condition (rcond)
+  (let (ret)
+    (setq ret (mapcar #'(lambda (x) (if (substringp "not-" (string (car x)))
+                                        (let ((str (subseq (string (car x)) 4))
+                                              ret)
+                                          (list 'not (cons (intern (string-upcase str)) (cdr x))))
+                                      x)) rcond))
+    ;; bad knowhow ;; ffha should end segmentation fault if last of initial condition is (not (....))
+    (setq ret (sort-condition ret))
+    (if (equal (caar (last ret)) 'not)
+        (if (equal (caar ret) 'not)
+            (warn ";; all conditions are negative !!!")
+          (setq ret (nreverse ret))))
+    ret))
+
+(defun make-failed-condition (result act &key (act-fail (intern (string-upcase (format nil "~A_f" (string act))))))
+  (let ((plan
+         (apply-plan (cdr (assoc :initial result))
+                     (cdr (assoc :plan result))
+                     (cdr (assoc :action-list result)) :debug t))
+        pcond ret)
+    (while plan
+      (setq pcond (find-if #'(lambda (x) (unless (atom (car x)) (equal (caar x) act))) plan))
+      (setq plan (cdr (member pcond plan :test #'equal)))
+      (when pcond
+        (let* ((swap-act (cons act-fail (cdar pcond)))
+               (icond (apply-act swap-act (cdr pcond) (cdr (assoc :action-list result)))))
+          (if icond
+              (push
+               (list
+                (cons :initial-condition (result-condition->problem-condition icond))
+                (cons :act (car pcond))
+                (cons :act-fail swap-act)
+                (cons :src-condition (sort-condition (cdr pcond)))
+                (cons :dst-condition (sort-condition icond)))
+               ret)))))
+    (nreverse ret)))
