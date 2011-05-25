@@ -119,6 +119,11 @@ class PDDLPlannerActionServer(object):
         for i in domain.types:
             path.write(i + " ")
         path.write(")\n")
+        if len(domain.constants) > 0:
+            path.write("(:constants \n")
+            for i in domain.constants:
+                path.write(i + " ")
+            path.write(")\n")
         path.write("(:predicates\n")
         for i in domain.predicates:
             path.write(i + " ")

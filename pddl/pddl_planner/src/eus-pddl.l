@@ -123,7 +123,7 @@
     (if con (setq constants con))
     constants)
   (:predicates (&optional pre) ;;;(at-robby ?r - room) -> (at-robby (?r room))
-                               ;;;(at ?b - ball ?r - room) -> (at (?b ball) (?r room))
+                               ;;;(at ?b - ball ?r - room) -> (at (?b ball) (?r room)) ;; this is not implemented
     (if pre (setq predicates pre))
     predicates)
   (:action (&optional ac)
@@ -160,11 +160,15 @@
               :name (string domain-name)
               :requirements (list->simple-string requirements)
               :types (mapcar #'string types)
-              ;;:constants (list->simple-string constants) ; not supported
+              :constants (mapcar #'string constants)
               :predicates
               (mapcar
                #'(lambda (x) (format nil "~A" x))
                predicates)
+#|
+(append (list (car predicates))
+        (mapcar #'(lambda (x) (if (= (length x) 1) (list (car x)) (append (butlast x) '(-) (last x)))) (cdr predicates)))
+|#
               :actions (send-all action :ros-message)))
   )
 
