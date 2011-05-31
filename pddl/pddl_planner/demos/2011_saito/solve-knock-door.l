@@ -24,8 +24,8 @@
       '((NOT (OPEN DOOR))
 	(AT STARTSPOT)
 	(REACHABLE DOOR DOORFRONT)
-	(SEPALATE DOOR STARTSPOT ROOMCENTER)
-	(SEPALATE DOOR DOORFRONT ROOMCENTER)
+	(SEPARATE DOOR STARTSPOT ROOMCENTER)
+	(SEPARATE DOOR DOORFRONT ROOMCENTER)
 	))
 
 ;; we want to enter a room
@@ -42,7 +42,7 @@
 (send *domain* :predicates '((AT ?SPOT - spot)
 			     (REACHABLE ?OBJ - object ?SPOT - spot) ;; not used
 			     (OPEN ?OBJ - object)
-			     (SEPALATE ?OBJ - object ?FROM ?TO - spot)
+			     (SEPARATE ?OBJ - object ?FROM ?TO - spot)
 			     ))
 ;;making action
 (setq *actlist*
@@ -53,7 +53,7 @@
                  :precondition '((AT ?FROM)
                                  (NOT (= ?FROM ?TO))
 				 (NOT (exists (?obs - object)
-					     (SEPALATE ?obs ?FROM ?TO))))
+					     (SEPARATE ?obs ?FROM ?TO))))
                  :effect '((AT ?TO)
                            (NOT (AT ?FROM))))
 
@@ -70,7 +70,7 @@
 		 :precondition '((REACHABLE ?OBJ ?SPOT)
 				 (OPEN ?OBJ))
 		 :effect '((forall (?S1 ?S2 - spot)
-				   (NOT (SEPALATE ?OBJ ?S1 ?S2)))
+				   (NOT (SEPARATE ?OBJ ?S1 ?S2)))
 			   ))
        (instance pddl-action :init
 		 :name "check_open_f"
