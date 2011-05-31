@@ -40,8 +40,8 @@
       (setq ret (append ret (list (cons :plan plan)))))
     ret))
 
-(defun solve-pddl-planning (domain problem &optional (client *action-client*))
-  (let ((result (pddl-planning domain problem client))
+(defun solve-pddl-planning (domain problem &key (client *action-client*) (debug))
+  (let ((result (pddl-planning domain problem :client client :debug debug))
         cond-list)
     (setq cond-list (apply-plan (cdr (assoc :initial result))
                                 (cdr (assoc :plan result))

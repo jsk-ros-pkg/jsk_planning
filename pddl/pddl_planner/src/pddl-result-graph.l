@@ -97,12 +97,14 @@
           )))
     gr))
 
-(defun append-failed-result (result act &key ((:graph gr)) (node-name))
+(defun append-failed-result (result act &key (additional-conditions) ((:graph gr)) (node-name))
   (let ((ret (make-failed-condition result act))
-        res lst)
+        res lst
+        (problem (copy-object *problem*)))
     (dolist (r ret)
-      (send *problem* :initial-condition (cdr (assoc :initial-condition r)))
-      (setq res (solve-pddl-planning *domain* *problem*))
+      (send problem :initial-condition
+            (append additional-conditions (cdr (assoc :initial-condition r))))
+      (setq res (solve-pddl-planning *domain* problem))
       (push res lst)
       (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name))
       (send gr :add-arc-from-to
@@ -112,18 +114,27 @@
     lst))
 
 (defun add-failed-nodes (result failed-action-list)
-  (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint)) ;; original plan
-        (results (list result)))
-    (dolist (failed-action failed-action-list)
-      (let ((count 0))
-        (while (/= count (length (send graph :nodes)))
-          (let (lst)
-            (setq count (length (send graph :nodes)))
-            (dolist (r results)
-              (let ((ret (append-failed-result r failed-action :graph graph :node-name :pprint)))
-                (if ret (setq lst (append lst ret)))))
-            (setq results (append lst results))))))
-    ;; results
-    graph))
+  ;; for constant conditions
+  (let ((def-init (send *problem* :initial-condition))
+        (sol-init (result-condition->problem-condition (cdr (assoc :initial result))))
+        additional-conditions)
+    (setq additional-conditions (set-difference def-init sol-init :test #'equal))
+    (when additional-conditions
+      (warn ";; additonal conditions found ~A~%" additional-conditions))
+
+    (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint)) ;; original plan
+          (results (list result)))
+      (dolist (failed-action failed-action-list)
+        (let ((count 0))
+          (while (/= count (length (send graph :nodes)))
+            (let (lst)
+              (setq count (length (send graph :nodes)))
+              (dolist (r results)
+                (let ((ret (append-failed-result r failed-action :graph graph :node-name :pprint
+                                                 :additional-conditions additional-conditions)))
+                  (if ret (setq lst (append lst ret)))))
+              (setq results (append lst results))))))
+      ;; results
+      graph)))
 ;;(setq *graph* (add-failed-nodes *result* (list 'checkclear 'confirm)))
 ;;(send *graph* :write-to-pdf "pddl.pdf")
