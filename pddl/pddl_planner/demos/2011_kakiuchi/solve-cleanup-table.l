@@ -164,7 +164,7 @@
 ;;
 ;; solve planning
 ;;
-(pprint (setq *result* (solve-pddl-planning *domain* *problem*)))
+(pprint (setq *result* (solve-pddl-planning *domain* *problem* :debug nil)))
 
 (setq gr (make-graph-from-pddl-results (list *result*) :node-name :pprint))
 
