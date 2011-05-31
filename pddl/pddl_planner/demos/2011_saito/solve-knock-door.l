@@ -23,7 +23,7 @@
 (send *problem* :initial-condition
       '((NOT (OPEN DOOR))
 	(AT STARTSPOT)
-	(REACHABLE DOOR DOORFRONT)
+	;(REACHABLE DOOR DOORFRONT)
 	(SEPARATE DOOR STARTSPOT ROOMCENTER)
 	(SEPARATE DOOR DOORFRONT ROOMCENTER)
 	))
@@ -40,7 +40,7 @@
 (send *domain* :requirements '(:typing))
 (send *domain* :types '(object spot))
 (send *domain* :predicates '((AT ?SPOT - spot)
-			     (REACHABLE ?OBJ - object ?SPOT - spot) ;; not used
+			     ;(REACHABLE ?OBJ - object ?SPOT - spot) ;; not used
 			     (OPEN ?OBJ - object)
 			     (SEPARATE ?OBJ - object ?FROM ?TO - spot)
 			     ))
@@ -61,13 +61,15 @@
 		 :name "open_action"
 		 :parameters '((?OBJ object) (?SPOT spot))
 		 :precondition '((AT ?SPOT)
-				 (REACHABLE ?OBJ ?SPOT))
+		                 (NOT (OPEN ?OBJ))
+				 ;(REACHABLE ?OBJ ?SPOT)
+                                 )
 		 :effect '((OPEN ?OBJ)))
 
        (instance pddl-action :init
 		 :name "check_open"
 		 :parameters '((?OBJ object) (?SPOT spot))
-		 :precondition '((REACHABLE ?OBJ ?SPOT)
+		 :precondition '(;(REACHABLE ?OBJ ?SPOT)
 				 (OPEN ?OBJ))
 		 :effect '((forall (?S1 ?S2 - spot)
 				   (NOT (SEPARATE ?OBJ ?S1 ?S2)))
@@ -75,7 +77,7 @@
        (instance pddl-action :init
 		 :name "check_open_f"
 		 :parameters '((?OBJ object) (?SPOT spot))
-		 :precondition '((REACHABLE ?OBJ ?SPOT)
+		 :precondition '(;(REACHABLE ?OBJ ?SPOT)
 				 (OPEN ?OBJ))
 		 :effect '((NOT (OPEN ?OBJ))))
 
@@ -102,7 +104,3 @@
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
   (ros::exit))
-
-
-
-
