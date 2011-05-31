@@ -14,7 +14,7 @@
       (instance ros::simple-action-client :init
                 "pddl_planner" pddl_msgs::PDDLPlannerAction))
 
-(defun pddl-planning (domain problem &optional (client *action-client*))
+(defun pddl-planning (domain problem &key (client *action-client*) (debug))
   (let (plan ret)
     (warning-message 1 "waiting pddl_planner~%")
     (send client :wait-for-server)
@@ -34,7 +34,8 @@
                                    (mapcar #'(lambda (y) (read-from-string (remove #\) y)))
                                            (send x :args))))
                          (send (send client :get-result) :sequence)))
-
+      (when debug
+        (pprint (car (send (send client :get-result) :data))))
       (setq ret (parse-ff-result-string (car (send (send client :get-result) :data))))
       (setq ret (append ret (list (cons :plan plan)))))
     ret))

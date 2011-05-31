@@ -91,7 +91,8 @@
               (setq tmp nil))
              (t (push e tmp))))
           (if tmp (setq dels (nreverse tmp)))
-          (push (list conds adds dels) parsed-eff)))
+          (if (or conds adds dels)
+            (push (list conds adds dels) parsed-eff))))
       (list (cdr act) pre (nreverse parsed-eff)))))
 
 ;; plan
