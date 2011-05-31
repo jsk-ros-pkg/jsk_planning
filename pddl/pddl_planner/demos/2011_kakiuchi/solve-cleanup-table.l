@@ -168,8 +168,13 @@
 
 (setq gr (make-graph-from-pddl-results (list *result*) :node-name :pprint))
 
-;;(setq *graph* (add-failed-nodes *result* (list 'checkclear 'confirm)))
-;;(send *graph* :write-to-pdf "pddl.pdf")
+(setq *graph* (add-failed-nodes *result* (list 'checkclear 'confirm)))
+;; swap nodes ( confirm <-> confirm_f and checkclear <-> checkclear_f ) for making task flow
+
+(send *graph* :write-to-pdf "kakiuchi_robomec.pdf")
+
+(when (ros::get-param "~display_graph")
+  (piped-fork "gnome-open kakiuchi_robomec.pdf"))
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
   (ros::exit))
