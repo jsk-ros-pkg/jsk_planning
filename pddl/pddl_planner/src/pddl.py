@@ -128,6 +128,11 @@ class PDDLPlannerActionServer(object):
         for i in domain.predicates:
             path.write(i + " ")
         path.write(")\n")
+        if domain.functions:
+            path.write("(:functions\n")
+            for i in domain.functions:
+                path.write(i + " ")
+            path.write(")\n")
         for action in domain.actions:
             path.write("(:action %s\n" % action.name)
             path.write(":parameters %s\n" % action.parameters)
