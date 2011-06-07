@@ -99,8 +99,28 @@
 
 (send *graph* :write-to-pdf "knock_demo.pdf")
 
-(when (ros::get-param "~display_graph")
-  (piped-fork "gnome-open knock_demo.pdf"))
+;(when (ros::get-param "~display_graph")
+;  (piped-fork "gnome-open knock_demo.pdf"))
+
+;; action definition
+(defun move (from to) (print ";; move action") t)
+(defun open_action (obj spot) (print ";; open action") t)
+(defun check_open (obj spot) (print ";; check if open") (< 0.8 (rand))) ;; 20% success
+
+;; convert to smach
+(load "package://roseus_smach/src/state-machine-ros.l")
+(load "convert-smach.l")
+(setq sm (convert-smach *graph*) mydata nil) ;; global data is not used
+(setq insp (instance state-machine-inspector :init sm))
+(unix:sleep 1) ;; for connection
+(send sm :reset-state) ;; ?
+(send insp :publish-structure)
+(send insp :publish-status mydata)
+(while (not (send sm :goal-reached))
+  (unix:sleep 1)
+  (send insp :publish-status mydata)
+  ;; you can execute state-machine step by step
+  (send sm :execute mydata :step -1))
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
   (ros::exit))
