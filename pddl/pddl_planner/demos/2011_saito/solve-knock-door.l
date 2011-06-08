@@ -103,9 +103,13 @@
 ;  (piped-fork "gnome-open knock_demo.pdf"))
 
 ;; action definition
-(defun move (from to) (print ";; move action") t)
-(defun open_action (obj spot) (print ";; open action") t)
-(defun check_open (obj spot) (print ";; check if open") (< 0.8 (rand))) ;; 20% success
+(defun move (from to)
+  (format t ";; move action [~a ~a]~%" from to) t)
+(defun open_action (obj spot)
+  (format t ";; open action [~a ~a]~%" obj spot) t)
+(defun check_open (obj spot)
+  (format t ";; check if open [~a ~a]~%" obj spot)
+  (< 0.8 (rand))) ;; 20% success
 
 ;; convert to smach
 (load "package://roseus_smach/src/state-machine-ros.l")

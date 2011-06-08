@@ -8,7 +8,8 @@
 ;; return value
 
 (defun rmnl (str) ;; remove new line
-  (map string #'(lambda(c)(if (= c #\\) #\_ c)) str))
+;  (map string #'(lambda(c)(if (= c #\\) #\_ c)) str))
+  str)
 
 (defun convert-smach (gr)
   (let ((sm (instance state-machine :init)) act name sym)
