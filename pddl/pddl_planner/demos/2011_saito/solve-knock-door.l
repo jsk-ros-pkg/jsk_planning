@@ -100,7 +100,8 @@
 
 (setq gr (make-graph-from-pddl-results (list *result1* *result2*) :node-name :pprint))
 
-(setq *graph* (add-failed-nodes *result* (list 'check_open)))
+(setq *graph* (add-failed-nodes *result1* (list 'check_open) :graph gr))
+
 ;; swap nodes ( check_open <-> check_open_f ) for making task flow
 
 (send *graph* :write-to-pdf "knock_demo.pdf")

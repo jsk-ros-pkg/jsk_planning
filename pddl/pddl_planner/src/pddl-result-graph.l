@@ -113,7 +113,7 @@
             (format nil "~A" (cdr (assoc :act-fail r)))))
     lst))
 
-(defun add-failed-nodes (result failed-action-list)
+(defun add-failed-nodes (result failed-action-list &key ((:graph gr) (instance pddl-graph :init)))
   ;; for constant conditions
   (let ((def-init (send *problem* :initial-condition))
         (sol-init (result-condition->problem-condition (cdr (assoc :initial result))))
@@ -122,7 +122,7 @@
     (when additional-conditions
       (warn ";; additonal conditions found ~A~%" additional-conditions))
 
-    (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint)) ;; original plan
+    (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint :graph gr)) ;; original plan
           (results (list result)))
       (dolist (failed-action failed-action-list)
         (let ((count 0))
