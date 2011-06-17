@@ -15,6 +15,7 @@
       '((DOOR . object)
         (DOORFRONT . spot)
         (ROOMCENTER . spot)
+	(TRASHBOXFRONT . spot)
         (STARTSPOT . spot))
       )
 
@@ -26,12 +27,8 @@
 	(REACHABLE DOOR DOORFRONT)
 	(SEPARATE DOOR STARTSPOT ROOMCENTER)
 	(SEPARATE DOOR DOORFRONT ROOMCENTER)
+	(SEPARATE DOOR TRASHBOXFRONT ROOMCENTER)
 	))
-
-;; we want to enter a room
-(send *problem* :goal-condition
-      '((AT ROOMCENTER)
-      ))
 
 ;;
 ;; domain
@@ -90,9 +87,18 @@
 ;;
 ;; solve planning
 ;;
-(pprint (setq *result* (solve-pddl-planning *domain* *problem* :debug nil)))
 
-(setq gr (make-graph-from-pddl-results (list *result*) :node-name :pprint))
+;; we want to enter a room
+(send *problem* :goal-condition
+      '((AT ROOMCENTER)))
+(pprint (setq *result1* (solve-pddl-planning *domain* *problem* :debug nil)))
+
+;; we want to go to in front of a trash box
+(send *problem* :goal-condition
+      '((AT TRASHBOXFRONT)))
+(pprint (setq *result2* (solve-pddl-planning *domain* *problem* :debug nil)))
+
+(setq gr (make-graph-from-pddl-results (list *result1* *result2*) :node-name :pprint))
 
 (setq *graph* (add-failed-nodes *result* (list 'check_open)))
 ;; swap nodes ( check_open <-> check_open_f ) for making task flow
