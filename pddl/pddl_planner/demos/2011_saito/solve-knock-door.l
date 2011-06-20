@@ -8,7 +8,7 @@
 ;;
 ;; mikita knock
 (setq *problem*
-      (instance pddl-problem :init :name 'mikita-knock :domain 'mikita-1week))
+      (instance pddl-problem :init :name 'mikita-knock :domain 'pr2_action))
 
 ;; one object and three spots
 (send *problem* :objects
@@ -33,7 +33,7 @@
 ;;
 ;; domain
 ;;
-(setq *domain* (instance pddl-domain :init :name 'mikita-1week))
+(setq *domain* (instance pddl-domain :init :name 'pr2_action))
 (send *domain* :requirements '(:typing))
 (send *domain* :types '(object spot))
 (send *domain* :predicates '((AT ?SPOT - spot)
@@ -98,40 +98,38 @@
       '((AT TRASHBOXFRONT)))
 (pprint (setq *result2* (solve-pddl-planning *domain* *problem* :debug nil)))
 
-(setq gr (make-graph-from-pddl-results (list *result1* *result2*) :node-name :pprint))
-
-(setq *graph* (add-failed-nodes *result1* (list 'check_open) :graph gr))
-
+;; make graph from PDDL answer
+(setq *graph* (make-graph-from-pddl-results (list *result1* *result2*) :node-name :pprint))
 ;; swap nodes ( check_open <-> check_open_f ) for making task flow
+(setq *graph* (add-failed-nodes *result1* (list 'check_open) :graph *graph*))
+
+(send *graph* :name (send *domain* :name))
 
 (send *graph* :write-to-pdf "knock_demo.pdf")
-
 ;(when (ros::get-param "~display_graph")
 ;  (piped-fork "gnome-open knock_demo.pdf"))
 
 ;; action definition
-(defun move (from to)
+;; domain -> package
+;; this file is created by (output-domain-template "pr2_action.l" *domain*)
+(let ((ns (string-upcase (send *domain* :name))))
+  (when (and ns (not (find-package ns)))
+      (make-package ns)))
+(defun PR2_ACTION::move (from to)
   (format t ";; move action [~a ~a]~%" from to) t)
-(defun open_action (obj spot)
+(defun PR2_ACTION::open_action (obj spot)
   (format t ";; open action [~a ~a]~%" obj spot) t)
-(defun check_open (obj spot)
+(defun PR2_ACTION::check_open (obj spot)
   (format t ";; check if open [~a ~a]~%" obj spot)
   (< 0.8 (rand))) ;; 20% success
 
 ;; convert to smach
 (load "package://roseus_smach/src/state-machine-ros.l")
+(load "package://roseus_smach/src/state-machine-utils.l")
 (load "convert-smach.l")
-(setq sm (convert-smach *graph*) mydata nil) ;; global data is not used
-(setq insp (instance state-machine-inspector :init sm))
-(unix:sleep 1) ;; for connection
-(send sm :reset-state) ;; ?
-(send insp :publish-structure)
-(send insp :publish-status mydata)
-(while (not (send sm :goal-reached))
-  (unix:sleep 1)
-  (send insp :publish-status mydata)
-  ;; you can execute state-machine step by step
-  (send sm :execute mydata :step -1))
+
+;; global data is not used (nil)
+(exec-smach-with-spin (convert-smach *graph*) nil :hz 1.0)
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
   (ros::exit))
