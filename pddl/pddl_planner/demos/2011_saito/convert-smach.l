@@ -19,8 +19,7 @@
       (setq act (send n :neighbor-action-alist)
 	    name (rmnl (send n :name)))
       (cond ((null act) ;; no more action
-	     (push name goals)
-	     (send sm :goal-state goals))
+	     (push name goals))
 	    (t ;; last arc is correct action
 	     (setq sym (read-from-string (caar (last act))))
 	     (when (find-package (string-upcase ns))
@@ -30,6 +29,7 @@
 		   `(lambda-closure nil 0 0 (x) (apply ',(car sym) ',(cdr sym))))
 	     (send sm :add-node (instance state :init name sym)))
 	    ))
+    (send sm :goal-state goals)
     ;; add arcs
     (dolist (n (send gr :nodes))
       (setq act (send n :neighbor-action-alist)
