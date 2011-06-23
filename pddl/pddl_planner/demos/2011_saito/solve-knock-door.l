@@ -9,14 +9,18 @@
 (setq *domain* (instance pddl-domain :init :name 'pr2_action))
 (send *domain* :requirements '(:typing))
 (send *domain* :types '(object spot))
-(send *domain* :predicates '((AT ?SPOT - spot)
-							 (REACHABLE ?OBJ - object ?SPOT - spot) ;; not used
-							 (OPEN ?OBJ - object)
-							 (CLEAN ?OBJ - object)
-							 (SEPARATE ?OBJ - object ?FROM ?TO - spot)
-							 (ON ?OBJ ?BASE - object)
-							 (GRASP ?OBJ - object)
-							 ))
+(send *domain* :predicates
+	  '(
+		(AT ?SPOT - spot) ;; the spot which robot is in
+		(ENABLE ?OBJ - object) ;; the object is enable (door -> close)
+		(CLEAN ?OBJ - object)
+		(GRASP ?OBJ - object)
+		(ON ?OBJ ?BASE - object) ;; the current position of OBJ
+		(STRAGE ?OBJ ?BASE - object) ;; proper position of OBJ
+		(REACHABLE ?OBJ - object ?SPOT - spot)
+		(SALE-AT ?OBJ - object ?SPOT - spot)
+		(SEPARATE ?OBJ - object ?FROM ?TO - spot)
+		))
 ;;making action
 (setq *actlist*
       (list
@@ -56,9 +60,9 @@
 
 	   (instance pddl-action :init
 		 :name "buy"
-		 :parameters '((?OBJ object) (?SPOT spot))
+		 :parameters '((?OBJ object))
 		 :precondition '((exists (?spot - spot)
-								 (AND (REACHABLE ?OBJ ?spot)
+								 (AND (SALE-AT ?OBJ ?spot)
 									  (AT ?spot))))
 		 :effect '((GRASP ?OBJ)))
 
@@ -80,8 +84,8 @@
 		 :precondition '((exists (?spt - spot)
 								 (AND (REACHABLE ?OBJ ?spt)
 									  (AT ?spt)))
-		                 (NOT (OPEN ?OBJ)))
-		 :effect '((OPEN ?OBJ)))
+		                 (ENABLE ?OBJ))
+		 :effect '((NOT (ENABLE ?OBJ))))
 
        (instance pddl-action :init
 		 :name "check_open"
@@ -89,7 +93,7 @@
 		 :precondition '((exists (?spot - spot)
 								 (AND (REACHABLE ?OBJ ?spot)
 									  (AT ?spot)))
-						 (OPEN ?OBJ))
+						 (NOT (ENABLE ?OBJ)))
 		 :effect '((forall (?S1 ?S2 - spot)
 						   (NOT (SEPARATE ?OBJ ?S1 ?S2)))
 				   ))
@@ -99,8 +103,8 @@
 		 :precondition '((exists (?spot - spot)
 								 (AND (REACHABLE ?OBJ ?spot)
 									  (AT ?spot)))
-						 (OPEN ?OBJ))
-		 :effect '((NOT (OPEN ?OBJ))))
+						 (NOT (ENABLE ?OBJ)))
+		 :effect '((ENABLE ?OBJ)))
        ))
 
 ;;add action to domain
@@ -130,17 +134,18 @@
       )
 
 ;; initial condition
-;; door sepalates {START,DOORFRONT} and ROOM
 (send *problem* :initial-condition
-      '(;(NOT (OPEN RM73B2-DOOR))
-		;(NOT (CLEAN RM73B2-TABLE))
+      '(;; from sensor-data or heuristics
 		(AT RM73A3-CENTER)
+		(ENABLE RM73B2-DOOR)
+		;; generate from knowledge-base/manip-planner
 		(ON PLASTIC-BOTTLE RM73B2-TABLE)
 		(REACHABLE RM73B2-DOOR RM73B2-DOORFRONT)
 		(REACHABLE RM73B2-TABLE RM73B2-TABLEFRONT)
 		(REACHABLE TRASHBOX TRASHBOXFRONT)
 		(REACHABLE SAITO-TABLE RM73A3-CENTER)
-		(REACHABLE SANDWITCH SHOPFRONT)
+		(SALE-AT SANDWITCH SHOPFRONT)
+		;; generate fron jsk_map
 		(SEPARATE RM73B2-DOOR RM73A3-CENTER RM73B2-TABLEFRONT)
 		(SEPARATE RM73B2-DOOR RM73B2-DOORFRONT RM73B2-TABLEFRONT)
 		(SEPARATE RM73B2-DOOR TRASHBOXFRONT RM73B2-TABLEFRONT)
@@ -202,8 +207,8 @@
   (format t ";; picking [~a]      ~%" obj) t)
 (defun PR2_ACTION::put (obj base)
   (format t ";; put [~a -> ~a]    ~%" obj base) t)
-(defun PR2_ACTION::put (obj spot)
-  (format t ";; buy [~a at ~a]    ~%" obj spot) t)
+(defun PR2_ACTION::buy (obj)
+  (format t ";; buy [~a at ~a]    ~%" obj) t)
 
 ;; convert to smach
 (load "package://roseus_smach/src/state-machine-ros.l")
