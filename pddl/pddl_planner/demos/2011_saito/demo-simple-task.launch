@@ -1,0 +1,8 @@
+<launch>
+  <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
+  <node pkg="smach_viewer" name="smach_viewer" type="smach_viewer.py"/>
+  <node pkg="pddl_planner" name="demo_knock_door"
+        type="solve-simple-task.l" output="screen">
+    <param name="display_graph" value="true" />
+  </node>
+</launch>
