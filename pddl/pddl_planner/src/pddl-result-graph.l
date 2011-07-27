@@ -101,12 +101,20 @@
   (let ((ret (make-failed-condition result act))
         res lst
         (problem (copy-object *problem*)))
+
+    ;;(pprint (list 'fail ret))
+
     (dolist (r ret)
       (send problem :initial-condition
             (append additional-conditions (cdr (assoc :initial-condition r))))
-      (setq res (solve-pddl-planning *domain* problem))
+      (setq res (solve-pddl-planning *domain* problem :optimize-state nil))
+
+      ;;(pprint (list 'result res))
+
       (push res lst)
+
       (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name))
+
       (send gr :add-arc-from-to
             (send gr :search-node-from-pddl-state (cdr (assoc :src-condition r)))
             (send gr :search-node-from-pddl-state (cadr (assoc :step-state res)))

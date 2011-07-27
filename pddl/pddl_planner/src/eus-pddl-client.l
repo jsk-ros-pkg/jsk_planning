@@ -40,9 +40,19 @@
       (setq ret (append ret (list (cons :plan plan)))))
     ret))
 
-(defun solve-pddl-planning (domain problem &key (client *action-client*) (debug))
+(defun solve-pddl-planning (domain problem &key (client *action-client*) (debug)
+                                   (optimize-state nil))
   (let ((result (pddl-planning domain problem :client client :debug debug))
         cond-list)
+
+    (unless optimize-state
+      (let ((def-init (send problem :initial-condition))
+            (sol-init (result-condition->problem-condition (cdr (assoc :initial result))))
+            adds)
+        (setq adds (set-difference def-init sol-init :test #'equal))
+        (setq adds (problem-condition->result-condition adds))
+        (setq result (add-conditions-to-result result adds))))
+
     (setq cond-list (apply-plan (cdr (assoc :initial result))
                                 (cdr (assoc :plan result))
                                 (cdr (assoc :action-list result))))

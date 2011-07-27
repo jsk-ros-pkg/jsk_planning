@@ -156,6 +156,35 @@
             (warn ";; all conditions are negative !!!")
           (setq ret (nreverse ret))))
     ret))
+(defun problem-condition->result-condition (pcond)
+  (let (ret)
+    (setq ret (mapcar #'(lambda (x)
+                          (if (eq (car x) 'not)
+                              (let ((e (cadr x)))
+                                (cons (read-from-string (format nil "not-~A" (car e))) (cdr e)))
+                            x)) pcond))
+    ret))
+
+(defmacro add-conditions-to (elem additional-condition)
+  `(sort-condition (remove-duplicates (append ,elem ,additional-condition) :test #'equal)))
+
+(defun add-conditions-to-result (result additional-condition)
+  (let ((stp (cdr (assoc :step-state result)))
+        (ini (cdr (assoc :initial result)))
+        ret)
+    (if stp (setq result (delete (assoc :step-state result) result)))
+    (setq result (delete (assoc :initial result) result))
+
+    (setq ini (add-conditions-to ini additional-condition))
+    (when stp
+      (dolist (s stp)
+        (push (add-conditions-to s additional-condition) ret))
+      (setq ret (nreverse ret)))
+
+    (setq result (append (list (cons :initial ini)) result))
+    (when stp
+      (push (cons :step-state ret) result))
+    result))
 
 (defun make-failed-condition (result act &key (act-fail (intern (string-upcase (format nil "~A_f" (string act))))))
   (let ((plan
