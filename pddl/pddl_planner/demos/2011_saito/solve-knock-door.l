@@ -213,7 +213,7 @@
 ;; convert to smach
 (load "package://roseus_smach/src/state-machine-ros.l")
 (load "package://roseus_smach/src/state-machine-utils.l")
-(load "convert-smach.l")
+(load "package://roseus_smach/src/pddl2smach.l")
 
 ;; global data is not used (nil)
 (exec-smach-with-spin (convert-smach *graph*) nil :hz 1.0)

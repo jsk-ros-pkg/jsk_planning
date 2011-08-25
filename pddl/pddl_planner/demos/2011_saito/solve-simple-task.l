@@ -10,73 +10,72 @@
 (send *domain* :requirements '(:typing))
 (send *domain* :types '(object spot))
 (send *domain* :predicates
-	  '(
-		(AT ?SPOT - spot) ;; the spot which robot is in
-		(OPEN ?OBJ - object) ;; the object is enable (door -> close)
-		(CLEAN ?OBJ - object)
-		(REACHABLE ?OBJ - object ?SPOT - spot)
-		(SEPARATE ?OBJ - object ?FROM ?TO - spot)
-		))
+      '(
+        (AT ?SPOT - spot) ;; the spot which robot is in
+        (OPEN ?OBJ - object) ;; the object is enable (door -> close)
+        (CLEAN ?OBJ - object)
+        (REACHABLE ?OBJ - object ?SPOT - spot)
+        (SEPARATE ?OBJ - object ?FROM ?TO - spot)
+        ))
 ;;making action
 (setq *actlist*
       (list
        (instance pddl-action :init
-         :name "move"
-		 :parameters '((?FROM ?TO spot))
-		 :precondition '((AT ?FROM)
-						 (NOT (= ?FROM ?TO))
-						 (forall (?obs - object)
-								 (NOT (OR (SEPARATE ?obs ?FROM ?TO)
-										  (SEPARATE ?obs ?TO ?FROM)))))
-		 :effect '((AT ?TO)
-				   (NOT (AT ?FROM))))
+                 :name "move"
+                 :parameters '((?FROM ?TO spot))
+                 :precondition '((AT ?FROM)
+                                 (NOT (= ?FROM ?TO))
+                                 (forall (?obs - object)
+                                         (NOT (OR (SEPARATE ?obs ?FROM ?TO)
+                                                  (SEPARATE ?obs ?TO ?FROM)))))
+                 :effect '((AT ?TO)
+                           (NOT (AT ?FROM))))
        (instance pddl-action :init
-         :name "move_f"
-		 :parameters '((?FROM ?TO spot))
-		 :precondition '((AT ?FROM)
-						 (NOT (= ?FROM ?TO))
-						 (forall (?obs - object)
-								 (NOT (OR (SEPARATE ?obs ?FROM ?TO)
-										  (SEPARATE ?obs ?TO ?FROM)))))
-		 :effect '((AT ?FROM)))
+                 :name "move_f"
+                 :parameters '((?FROM ?TO spot))
+                 :precondition '((AT ?FROM)
+                                 (NOT (= ?FROM ?TO))
+                                 (forall (?obs - object)
+                                         (NOT (OR (SEPARATE ?obs ?FROM ?TO)
+                                                  (SEPARATE ?obs ?TO ?FROM)))))
+                 :effect '((AT ?FROM)))
 
        (instance pddl-action :init
-		 :name "knock"
-		 :parameters '((?OBJ object))
-		 :precondition '((exists (?spot - spot)
-								 (AND (REACHABLE ?OBJ ?spot)
-									  (AT ?spot)))
-						 (NOT (OPEN ?OBJ)))
-		 :effect '((OPEN ?OBJ)
-				   (forall (?S1 ?S2 - spot)
-						   (NOT (SEPARATE ?OBJ ?S1 ?S2)))
-				   ))
+                 :name "knock"
+                 :parameters '((?OBJ object))
+                 :precondition '((exists (?spot - spot)
+                                         (AND (REACHABLE ?OBJ ?spot)
+                                              (AT ?spot)))
+                                 (NOT (OPEN ?OBJ)))
+                 :effect '((OPEN ?OBJ)
+                           (forall (?S1 ?S2 - spot)
+                                   (NOT (SEPARATE ?OBJ ?S1 ?S2)))
+                           ))
        (instance pddl-action :init
-		 :name "knock_f"
-		 :parameters '((?OBJ object))
-		 :precondition '((exists (?spot - spot)
-								 (AND (REACHABLE ?OBJ ?spot)
-									  (AT ?spot)))
-						 (NOT (OPEN ?OBJ)))
-		 :effect '((NOT (OPEN ?OBJ))))
+                 :name "knock_f"
+                 :parameters '((?OBJ object))
+                 :precondition '((exists (?spot - spot)
+                                         (AND (REACHABLE ?OBJ ?spot)
+                                              (AT ?spot)))
+                                 (NOT (OPEN ?OBJ)))
+                 :effect '((NOT (OPEN ?OBJ))))
 
        (instance pddl-action :init
-		 :name "wipe"
-		 :parameters '((?OBJ object))
-		 :precondition '((exists (?spot - spot)
-								 (AND (REACHABLE ?OBJ ?spot)
-									  (AT ?spot)))
-						 (NOT (CLEAN ?OBJ)))
-		 :effect '((CLEAN ?OBJ)))
+                 :name "wipe"
+                 :parameters '((?OBJ object))
+                 :precondition '((exists (?spot - spot)
+                                         (AND (REACHABLE ?OBJ ?spot)
+                                              (AT ?spot)))
+                                 (NOT (CLEAN ?OBJ)))
+                 :effect '((CLEAN ?OBJ)))
        (instance pddl-action :init
-		 :name "wipe_f"
-		 :parameters '((?OBJ object))
-		 :precondition '((exists (?spot - spot)
-								 (AND (REACHABLE ?OBJ ?spot)
-									  (AT ?spot)))
-						 (NOT (CLEAN ?OBJ)))
-		 :effect '((NOT (CLEAN ?OBJ))))
-
+                 :name "wipe_f"
+                 :parameters '((?OBJ object))
+                 :precondition '((exists (?spot - spot)
+                                         (AND (REACHABLE ?OBJ ?spot)
+                                              (AT ?spot)))
+                                 (NOT (CLEAN ?OBJ)))
+                 :effect '((NOT (CLEAN ?OBJ))))
        ))
 
 ;;add action to domain
@@ -93,23 +92,23 @@
 ;; one object and three spots
 (send *problem* :objects
       '((DOOR . object)
-		(DESK . object)
-		(START-SPOT . spot)
-		(ROOM-FRONT . spot)
+        (DESK . object)
+        (START-SPOT . spot)
+        (ROOM-FRONT . spot)
         (ROOM-INSIDE . spot))
       )
 
 ;; initial condition
 (send *problem* :initial-condition
       '(;; from sensor-data or heuristics
-		(AT ROOM-FRONT)
-		;; generate from knowledge-base/manip-planner
-		(REACHABLE DOOR ROOM-FRONT)
-		(REACHABLE DESK ROOM-INSIDE)
-		;; generate fron jsk_map
-		(SEPARATE DOOR ROOM-INSIDE START-SPOT)
-		(SEPARATE DOOR ROOM-INSIDE ROOM-FRONT)
-		))
+        (AT ROOM-FRONT)
+        ;; generate from knowledge-base/manip-planner
+        (REACHABLE DOOR ROOM-FRONT)
+        (REACHABLE DESK ROOM-INSIDE)
+        ;; generate fron jsk_map
+        (SEPARATE DOOR ROOM-INSIDE START-SPOT)
+        (SEPARATE DOOR ROOM-INSIDE ROOM-FRONT)
+        ))
 
 ;;
 ;; solve planning
@@ -152,7 +151,7 @@
 ;; convert to smach
 (load "package://roseus_smach/src/state-machine-ros.l")
 (load "package://roseus_smach/src/state-machine-utils.l")
-(load "convert-smach.l")
+(load "package://roseus_smach/src/pddl2smach.l")
 
 ;; global data is not used (nil)
 (exec-smach-with-spin (convert-smach *graph*) nil :hz 1.0)
