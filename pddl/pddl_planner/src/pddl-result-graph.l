@@ -24,7 +24,7 @@
                               (format str "(")
                               (format str "~A\\n" (car pddl-state))
                               (dolist (e (butlast (cdr pddl-state)))
-                                (format str " ~A\\n" e))
+                                (format str "~A\\n" e))
                               (format str "~A)" (car (last pddl-state)))
                               (get-output-stream-string str)))
                            (t (string-upcase (format nil "~A" pddl-state)))))))
@@ -144,5 +144,28 @@
               (setq results (append lst results))))))
       ;; results
       graph)))
+
+;; remove static condition from graph
+(defun make-readable-graph (gr)
+  (let ((grs (copy-object gr)) size sexps dups)
+    (setq size (length (send grs :nodes)))
+    (setq sexps (mapcan
+                 #'(lambda(x)(remove '|n| (read-from-string x)))
+                 (send-all (send grs :nodes) :name)))
+    (while sexps
+      (when (= size (count (car sexps) sexps :test #'equal))
+        (push (car sexps) dups))
+      (setq sexps (remove (car sexps) sexps :test #'equal)))
+    (dolist (node (send grs :nodes))
+      (let ((str (make-string-output-stream 128)) tmp)
+        (setq tmp (remove '|n| (read-from-string (send node :name))))
+        (dolist (s dups) (setq tmp (remove s tmp :test #'equal)))
+        (format str "~A" (car tmp))
+        (dolist (l (cdr tmp)) (format str "\\n~A" l))
+        (send node :name (get-output-stream-string str))))
+    grs
+    ))
+
+
 ;;(setq *graph* (add-failed-nodes *result* (list 'checkclear 'confirm)))
 ;;(send *graph* :write-to-pdf "pddl.pdf")
