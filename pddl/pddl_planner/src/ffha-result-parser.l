@@ -139,8 +139,17 @@
 ;;(setq plan (cdr (assoc :plan ret)))
 ;;(setq action-list (cdr (assoc :action-list ret)))
 ;;(apply-plan (cdr (assoc :initial *result*)) (cdr (assoc :plan *result*)) (cdr (assoc :action-list *result*)) :debug t)
-(defun sort-condition (lst)
-  (sort lst #'(lambda (x y) (string<= (format nil "~A" x) (format nil "~A" y)))))
+(defun sort-condition (lst &key (ignore-not t))
+  (sort lst #'string<
+	(if ignore-not
+	    #'(lambda(x)
+		(let ((y (format nil "~A" x)))
+		  (cond ((and (listp x) (eq 'not (car x))) ;;(not (hoge))
+			 (format nil "~A" (cadr x)))
+			((string= "not-" (subseq y 1 5)) ;; (not-hoge)
+			 (format nil "(~A" (subseq y 5)))
+			(t y))))
+	  #'(lambda(x)(format nil "~A" x)))))
 
 (defun result-condition->problem-condition (rcond)
   (let (ret)
