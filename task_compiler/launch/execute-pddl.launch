@@ -1,0 +1,11 @@
+<launch>
+  <arg name="action" />
+  <arg name="description" />
+  <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
+  <node pkg="smach_viewer" name="smach_viewer" type="smach_viewer.py"/>
+  <node pkg="task_compiler" name="tc_core" type="execute-pddl-core.l"
+	args='"(run-pddl :action \"$(arg action)\" :description \"$(arg description)\")"'
+	cwd="node" output="screen">
+    <param name="display_graph" value="true" />
+  </node>
+</launch>

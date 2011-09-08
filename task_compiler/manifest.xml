@@ -1,0 +1,18 @@
+<package>
+  <description brief="task_compiler">
+
+     task_compiler
+
+     Compiler that translate task description in PDDL (Planning Domain Description Language) to SMACH (state machine based execution and coordination system) description.
+
+  </description>
+  <author>Manabu Saito</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/task_compiler</url>
+  <depend package="pddl_planner"/>
+  <depend package="roseus_smach"/>
+
+</package>
+
+

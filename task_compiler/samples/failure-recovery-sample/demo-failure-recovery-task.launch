@@ -1,0 +1,10 @@
+<launch>
+  <arg name="level" default="0"/>
+  <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
+  <node pkg="smach_viewer" name="smach_viewer" type="smach_viewer.py"/>
+  <node pkg="task_compiler" name="task_main"
+        type="solve-failure-recovery-task.l"
+	args='"(demo :level $(arg level))"' output="screen">
+    <param name="display_graph" value="true" />
+  </node>
+</launch>
