@@ -132,9 +132,9 @@
 
     (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint :graph gr)) ;; original plan
           (results (list result)))
-      (dolist (failed-action failed-action-list)
-        (let ((count 0))
-          (while (/= count (length (send graph :nodes)))
+      (let ((count 0))
+	(while (/= count (length (send graph :nodes)))
+	  (dolist (failed-action failed-action-list)
             (let (lst)
               (setq count (length (send graph :nodes)))
               (dolist (r results)
