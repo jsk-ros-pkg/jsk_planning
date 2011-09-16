@@ -1,4 +1,5 @@
 <launch>
-  <arg name="level" value="2"/>
-  <include file="$(find task_compiler)/samples/failure-recovery-sample/demo-failure-recovery-task.launch"/>
+  <include file="$(find task_compiler)/samples/failure-recovery-sample/demo-failure-recovery-task.launch" >
+    <arg name="level" value="2"/>
+  </include>
 </launch>
