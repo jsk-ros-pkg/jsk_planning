@@ -9,12 +9,12 @@
 ;; action definition
 (defun PR2_ACTION::pick (obj)
   (let ((val (random 2)))
-    (format t ";; move action [~a] -> ~a~%"
+    (format t ";; pick action [~a] -> ~a~%"
 	    obj (if (= 0 val) "fail" "success"))
     (if (= 0 val) nil t)))
 
 (defun PR2_ACTION::put (obj base)
   (let ((val (random 2)))
-    (format t ";; knock action [~a ~a] -> ~a~%"
+    (format t ";; put action [~a ~a] -> ~a~%"
 	    obj base (if (= 0 val) "fail" "success"))
     (if (= 0 val) nil t))))
