@@ -13,12 +13,14 @@
 (defun run-pddl (&key action description)
   (let (result graph act-names)
     ;; load action-functions, *domain*, *problem*
+    (ros::ros-info "load action file [~a]" action)
     (load action)
+    (ros::ros-info "load domain and problem file [~a]" description)
     (load description)
 
     ;; solve the pddl problem
     (setq result (solve-pddl-planning *domain* *problem* :debug nil))
-    (pprint result)
+    ;; (pprint result)
 
     ;; make graph from PDDL answer
     (setq graph (make-graph-from-pddl-results (list result) :node-name :pprint))
@@ -32,14 +34,18 @@
 	       (if (find (concatenate string s "_F") act-names :test #'string=)
 		   (list (intern s))))
 	   act-names))
-    (setq graph (add-failed-nodes result act-names :graph graph))
+    (when act-names
+      (setq graph (add-failed-nodes result act-names :graph graph)))
 
     (send graph :name (send *domain* :name))
     (setq graph (make-readable-graph graph))
 
+    (send graph :write-to-pdf "action_graph.pdf")
+    (unix::system "mv action_graph.pdf /tmp/")
+    (ros::ros-info "output result to /tmp/action_graph.pdf")
+
     (when (ros::get-param "~display_graph")
-      (send graph :write-to-pdf "action_graph.pdf")
-      (piped-fork "gnome-open action_graph.pdf"))
+      (piped-fork "gnome-open /tmp/action_graph.pdf"))
 
     ;; global data is not used (nil)
     (exec-smach-with-spin (convert-smach graph) nil :hz 1.0)
@@ -47,3 +53,4 @@
     (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
       (ros::exit))
     ))
+
