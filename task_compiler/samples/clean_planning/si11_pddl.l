@@ -15,7 +15,9 @@
         (SPOT-ON ?OBJ - object ?SPOT - spot)
         (CLEAN ?OBJ - base)
         (REACHABLE ?OBJ - base ?SPOT - spot)
+	(REACHABLE-SS ?SPOT1 - spot ?SPOT2 - spot)
 	(ARM-GRASP ?OBJ - object ?ARM - arm)
+	(TYPICALLY-AT ?OBJ - object ?SPOT - spot)
         ))
 ;;
 ;;action
@@ -32,6 +34,26 @@
 			   (forall (?FROM - spot)
 				   (when (NOT (= ?TO ?FROM))
 					 (NOT (AT ?FROM))))))
+       (instance pddl-action :init
+                 :name "move-chair"
+                 :parameters '((?OBJ object) (?TOON spot))
+                 :precondition '((exists (?FROM - spot)
+					 (exists (?FROMON - spot)
+						 (AND (SPOT-ON ?OBJ ?FROMON)
+						      (REACHABLE-SS ?FROMON ?FROM)
+						      (AT ?FROM))))
+				 (TYPICALLY-AT ?OBJ ?TOON))
+		 :effect '((SPOT-ON ?OBJ ?TOON)
+			   (forall (?SPOT - spot)
+				   (when (NOT (= ?TOON ?SPOT))
+				     (NOT (SPOT-ON ?OBJ ?SPOT))))
+			   (forall (?SPOT - spot)
+				   (when (AT ?SPOT)
+				     (REACHABLE-SS ?TOON ?SPOT)))
+			   (forall (?SPOT - spot)
+				   (when (NOT (AT ?SPOT))
+				     (NOT (REACHABLE-SS ?TOON ?SPOT)))))
+		 )
        (instance pddl-action :init
                  :name "pick"
                  :parameters '((?OBJ object) (?ARM arm))
@@ -90,14 +112,16 @@
       '((KITCHEN-SINK . base)
 	(TRASHBOX . base)
 	(TABLE . base)
-        (CUP . object)
+        (SUSHI-CUP2 . object)
 	(EMPTY-BOX . object)
 	(BOTTLE . object)
-	(CHAIR . object)
+	(CHAIR1 . object)
 	(START-SPOT . spot)
         (TABLE-FRONT . spot)
         (TRASHBOX-FRONT . spot)
-        (KITCHEN-INSIDE . spot)
+        (SINK-FRONT . spot)
+        (CHAIR-BACK . spot)
+        (TMP-CHAIR-SPOT . spot)
 	(L-ARM . arm)
 	(R-ARM . arm))
       )
@@ -107,13 +131,17 @@
       '(;; from sensor-data or heuristics
         (AT START-SPOT)
 	;;
-	(ON CUP TABLE)
+	(ON SUSHI-CUP2 TABLE)
 	(ON EMPTY-BOX TABLE)
 	(ON BOTTLE TABLE)
+	(SPOT-ON CHAIR1 TABLE-FRONT)
         ;; generate from knowledge-base/manip-planner
         (REACHABLE TABLE TABLE-FRONT)
         (REACHABLE TRASHBOX TRASHBOX-FRONT)
-        (REACHABLE KITCHEN-SINK KITCHEN-INSIDE)
+        (REACHABLE KITCHEN-SINK SINK-FRONT)
+	(REACHABLE-SS TABLE-FRONT CHAIR-BACK)
+	(TYPICALLY-AT CHAIR1 TABLE-FRONT)
+	(TYPICALLY-AT CHAIR1 TMP-CHAIR-SPOT)
         ))
 
 ;;
@@ -123,9 +151,10 @@
 ;; we want to enter a room
 (send *problem* :goal-condition
       '((CLEAN TABLE)
-	(ON CUP KITCHEN-SINK)
+	(ON SUSHI-CUP2 KITCHEN-SINK)
 	(ON EMPTY-BOX TRASHBOX)
 	(ON BOTTLE TRASHBOX)
+	(SPOT-ON CHAIR1 TABLE-FRONT)
 	))
 
 (defun debug-planning-result ()
