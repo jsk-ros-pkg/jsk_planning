@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find task_compiler)/launch/execute-pddl.launch">
+    <arg name="action" value="$(find task_compiler)/samples/clean_planning/pr2_action.l"/>
+    <arg name="description" value="$(find task_compiler)/samples/clean_planning/si11_pddl.l"/>
+  </include>
+</launch>
