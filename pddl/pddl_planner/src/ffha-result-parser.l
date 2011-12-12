@@ -115,7 +115,7 @@
                         (= (length (intersection conditions cond-now :test #'equal))
                            (length conditions)))
                 ;;(pprint (list 'e ef))
-                (setq cond-now (append cond-now adds))
+                (setq cond-now (union cond-now adds :test #'equal))
                 (setq cond-now (set-difference cond-now dels :test #'equal)))
               ))
           cond-now))))
