@@ -140,7 +140,7 @@
 ;;(setq action-list (cdr (assoc :action-list ret)))
 ;;(apply-plan (cdr (assoc :initial *result*)) (cdr (assoc :plan *result*)) (cdr (assoc :action-list *result*)) :debug t)
 (defun sort-condition (lst &key (ignore-not t))
-  (sort lst #'string<
+  (sort lst #'string<=
 	(if ignore-not
 	    #'(lambda(x)
 		(let ((y (format nil "~A" x)))
