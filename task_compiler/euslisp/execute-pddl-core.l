@@ -47,8 +47,12 @@
     (when (ros::get-param "~display_graph")
       (piped-fork "gnome-open /tmp/action_graph.pdf"))
 
-    ;; global data is not used (nil)
-    (exec-smach-with-spin (convert-smach graph) nil :hz 1.0)
+    (setq *sm* (convert-smach graph))
+    (dump-loadable-structure "/tmp/action_state_machine.l" *sm*)
+    (ros::ros-info "output state-machine *sm* to /tmp/action_state_machine.l"))
+
+     ;; global data is not used (nil)
+    (exec-smach-with-spin *sm* nil :hz 1.0)
 
     (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
       (ros::exit))
