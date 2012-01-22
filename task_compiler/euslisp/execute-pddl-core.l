@@ -56,5 +56,5 @@
 
     (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
       (ros::exit))
-    ))
+    )
 
