@@ -11,7 +11,7 @@
    (setq cntr 0)
    (send-super :init))
   (:search-node-from-pddl-state (state)
-   (find-if #'(lambda (x) (equal state (get x :pddl-state))) nodes))
+   (find-if-not #'(lambda (x) (set-exclusive-or state (get x :pddl-state) :test #'equal)) nodes))
   (:add-pddl-state-node
    (pddl-state &key (node-name))
    (let ((nd (send self :search-node-from-pddl-state pddl-state)))
@@ -108,18 +108,18 @@
     (dolist (r ret)
       (send problem :initial-condition
             (append additional-conditions (cdr (assoc :initial-condition r))))
+
       (setq res (solve-pddl-planning *domain* problem :optimize-state nil))
 
-      ;;(pprint (list 'result res))
-
-      (push res lst)
-
-      (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name))
+      ;; do not add the condition already exists
+      (when (not (send gr :search-node-from-pddl-state (cadr (assoc :step-state res))))
+	(push res lst)
+	(setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name)))
 
       (send gr :add-arc-from-to
-            (send gr :search-node-from-pddl-state (cdr (assoc :src-condition r)))
-            (send gr :search-node-from-pddl-state (cadr (assoc :step-state res)))
-            (format nil "~A" (cdr (assoc :act-fail r)))))
+	    (send gr :search-node-from-pddl-state (cdr (assoc :src-condition r)))
+	    (send gr :search-node-from-pddl-state (cadr (assoc :step-state res)))
+	    (format nil "~A" (cdr (assoc :act-fail r)))))
     lst))
 
 (defun add-failed-nodes (result failed-action-list &key ((:graph gr) (instance pddl-graph :init)))
