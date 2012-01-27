@@ -133,16 +133,19 @@
 
     (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint :graph gr)) ;; original plan
           (results (list result)))
-      (let ((count 0))
-	(while (/= count (length (send graph :nodes)))
-	  (dolist (failed-action failed-action-list)
-            (let (lst)
-              (setq count (length (send graph :nodes)))
+      (let ((count 0) (count2 -1))
+      	(while (/= count count2)
+	  (let (lst)
+	    (dolist (failed-action failed-action-list)
               (dolist (r results)
                 (let ((ret (append-failed-result r failed-action :graph graph :node-name :pprint
                                                  :additional-conditions additional-conditions)))
-                  (if ret (setq lst (append lst ret)))))
-              (setq results (append lst results))))))
+                  (if ret (setq lst (append lst ret))))))
+	    ;;(setq results (append lst results)) ;; ??
+	    (setq results lst))
+	  (setq count2 count
+		count (apply #'+ (mapcar #'(lambda(x)(length (send x :arc-list))) (send graph :nodes))))
+	  ))
       ;; results
       graph)))
 
