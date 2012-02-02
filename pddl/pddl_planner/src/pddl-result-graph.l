@@ -1,6 +1,3 @@
-;; require jskeus
-;;#-:jsk (jsk)
-(load "package://euslib/irteus_proposals/irtgraph.l")
 
 (defclass pddl-graph
   :super graph
