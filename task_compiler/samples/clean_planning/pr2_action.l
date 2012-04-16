@@ -11,6 +11,7 @@
     (room73b2)
     (setq *ri* (instance pr2-interface :init)))
   (send *ri* :objects (send *room73b2* :objects))
+  (send *ri* :viewer :look-all)
   (print "start")
   (dotimes (i 5000)
     (x::window-main-one)
