@@ -1,0 +1,15 @@
+<launch>
+  <include file="$(find task_compiler)/launch/execute-pddl.launch">
+    <arg name="action" value="$(find task_compiler)/samples/clean_planning/romeo_action.l"/>
+    <arg name="description" value="$(find task_compiler)/samples/clean_planning/si11_pddl.l"/>
+  </include>
+
+  <sphinxdoc><![CDATA[
+
+This is an example for romeo.
+
+roslaunch task_compiler room_clean_planning_romeo.launch
+
+
+  ]]></sphinxdoc>
+</launch>
