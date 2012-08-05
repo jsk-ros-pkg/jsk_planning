@@ -72,7 +72,7 @@
 ;;
 ;; solve planning
 ;;
-(solve-pddl-planning *domain* *problem*)
+(setq *result* (solve-pddl-planning *domain* *problem*))
 (pprint (cdr (assoc :plan *result*)))
-(pprint *cond-list*)
+(print *result*)
 (ros::exit)
