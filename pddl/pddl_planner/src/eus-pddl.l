@@ -5,12 +5,6 @@
 (ros::roseus-add-msgs "std_msgs")
 (ros::roseus-add-msgs "pddl_msgs")
 
-;; from jsk.l
-(defmacro push-back (el lst)
-  `(if (null ,lst)
-       (setf ,lst (list ,el))
-     (nconc ,lst (list ,el))))
-
 ;; class
 (defclass pddl-module
   :super propertied-object
@@ -135,11 +129,11 @@
          ((:constants con) nil)
          ((:predicates pre) nil)
          ((:action ac) nil))
-    (if req (push-back req requirements))
-    (if typ (push-back typ types))
-    (if con (push-back con constants))
-    (if pre (push-back pre predicates))
-    (if ac  (push-back ac action))
+    (if req (setq requirements (append requirements (list req))))
+    (if typ (setq types        (append types        (list typ))))
+    (if con (setq constants    (append constants    (list con))))
+    (if pre (setq predicates   (append predicates   (list pre))))
+    (if ac  (setq action       (append action       (list ac))))
     self)
   (:domain-sexp ()
     `(define (domain ,domain-name)
@@ -207,9 +201,9 @@
               ((:parameters par) nil)
               ((:precondition pre) nil)
               )
-    (if ef (push-back ef effect))
-    (if par (push-back par parameters))
-    (if pre (push-back par precondition))
+    (if ef  (setq effert       (append effect       (list ef))))
+    (if par (setq parameters   (append parameters   (list par))))
+    (if pre (setq precondition (append precondition (list par))))
     self)
   (:action-sexp ()
     `(:action ,name
