@@ -36,7 +36,8 @@
                          (send (send client :get-result) :sequence)))
       (when debug
         (pprint (car (send (send client :get-result) :data))))
-      (setq ret (parse-ff-result-string (car (send (send client :get-result) :data))))
+      (when (send (send client :get-result) :data)
+        (setq ret (parse-ff-result-string (car (send (send client :get-result) :data)))))
       (setq ret (append ret (list (cons :plan plan)))))
     ret))
 
