@@ -1,4 +1,5 @@
 #!/usr/bin/env roseus
+;; need to roslaunch pddl_planner pddl_ffha.launch
 ;; mostly same to demo-eus.l in pddl package under jsk subversion trunk
 (load "package://pddl_planner/src/eus-pddl-client.l")
 
@@ -73,6 +74,7 @@
 ;; solve planning
 ;;
 (setq *result* (solve-pddl-planning *domain* *problem*))
+(format t "plan = ")
 (pprint (cdr (assoc :plan *result*)))
-(print *result*)
+(format t "result = ~A " *result*)
 (ros::exit)
