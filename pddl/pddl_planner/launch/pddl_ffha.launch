@@ -7,7 +7,7 @@
     <param name="pddl_planner_path"
            value="$(find ffha)/bin/ffha " />
     -->
-    <!--for printing debug message-->
+    <!--for printing debug message : default value is -g 1 -h 5, change these value if ffha does not returns -->
     <param name="pddl_planner_path"
            value="$(find ffha)/bin/ffha -g 6 -h 2 -H -E -i 120 " />
   </node>
