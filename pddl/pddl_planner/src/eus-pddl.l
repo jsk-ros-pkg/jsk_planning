@@ -18,13 +18,15 @@
           initial-condition
           goal-condition
           domain-name
+          metric
           obj                           ;((name . type) (name . type) ...)
           ))
 
 (defmethod pddl-problem
-  (:init (&key (name nil) (domain nil) ((:objects o) nil))
+  (:init (&key (name nil) (domain nil) ((:metric m) nil) ((:objects o) nil))
     (setq problem-name name)
     (setq domain-name domain)
+    (setq metric m)
     (setq obj o)
     self)
   ;; accessors
@@ -34,6 +36,9 @@
   (:domain (&optional name)
     (if name (setq domain-name name))
     domain-name)
+  (:metric (&optional m)
+    (if m (setq metric m))
+    metric)
   (:objects (&optional o)
     (if o (setq obj o))
     obj)
@@ -60,7 +65,9 @@
                           (list '- _type)))
                      types)))
        (:init ,initial-condition)
-       (:goal (and ,@goal-condition))))
+       (:goal (and ,@goal-condition))
+       ,(if metric `(:metric ,@metric))
+       ))
   (:write-to-file (file)
     (let ((sexp (send self :problem-sexp)))
       (with-open-file (f file :direction :output)
@@ -69,13 +76,16 @@
     (pprint (send self :problem-sexp)))
   (:add (&key ((:initial-condition init) nil)
               ((:goal-condition goal) nil)
+              ((:metric m) nil)
               ((:objects o) nil))
     (if init (push init initial-condition))
     (if goal (push goal goal-condition))
+    (if m (push m metric))
     (if o (push o obj))
     self)
   (:ros-message ()
-    (instance pddl_msgs::PDDLProblem :init
+    (let ((msg
+           (instance pddl_msgs::PDDLProblem :init
               :name (string problem-name)
               :domain (string domain-name)
               :objects (mapcar #'(lambda (x)
@@ -87,7 +97,10 @@
               ;;we need to avoid `init' slot because of roseus naming rule
               :initial (mapcar #'(lambda (i) (format nil "~A" i))
                                initial-condition)
-              :goal (format nil "~A" `(and ,@goal-condition))))
+              :goal (format nil "~A" `(and ,@goal-condition))
+              )))
+      (if metric (send msg :metric (list->simple-string metric)))
+      msg))
   )
 
 (defclass pddl-domain
@@ -97,6 +110,7 @@
           types
           constants
           predicates
+          functions
           action)
   )
 (defmethod pddl-domain
@@ -120,6 +134,9 @@
                                ;;;(at ?b - ball ?r - room) -> (at (?b ball) (?r room)) ;; this is not implemented
     (if pre (setq predicates pre))
     predicates)
+  (:functions (&optional fnc)
+    (if fnc (setq functions fnc))
+    functions)
   (:action (&optional ac)
     (if ac (setq action ac))
     action)
@@ -128,11 +145,13 @@
          ((:types typ) nil)
          ((:constants con) nil)
          ((:predicates pre) nil)
+         ((:functions fnc) nil)
          ((:action ac) nil))
     (if req (setq requirements (append requirements (list req))))
     (if typ (setq types        (append types        (list typ))))
     (if con (setq constants    (append constants    (list con))))
     (if pre (setq predicates   (append predicates   (list pre))))
+    (if fnc (setq functions    (append functions    (list fnc))))
     (if ac  (setq action       (append action       (list ac))))
     self)
   (:domain-sexp ()
@@ -140,8 +159,8 @@
        (:requirements ,@requirements)
        (:types ,@types)
        (:constants ,@constants)
-       (:predicates
-         ,@predicates)
+       (:predicates ,@predicates)
+       (:functions ,@functions)
        ,@(send-all action :action-sexp)
        ))
   (:print ()
@@ -159,6 +178,10 @@
               (mapcar
                #'(lambda (x) (format nil "~A" x))
                predicates)
+              :functions
+              (mapcar
+               #'(lambda (x) (format nil "~A" x))
+               functions)
 #|
 (append (list (car predicates))
         (mapcar #'(lambda (x) (if (= (length x) 1) (list (car x)) (append (butlast x) '(-) (last x)))) (cdr predicates)))

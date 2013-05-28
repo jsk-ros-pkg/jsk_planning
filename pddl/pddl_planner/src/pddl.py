@@ -105,10 +105,13 @@ class PDDLPlannerActionServer(object):
 (:domain %s)
 (:objects %s)
 (:init %s)
-(:goal %s))
+(:goal %s)
 """ % (problem.name, problem.domain,
        "\n".join(self.gen_problem_objects_strings(problem.objects)),
        ' '.join(problem.initial), problem.goal))
+        if problem.metric:
+            path.write("""(:metric %s)""" % problem.metric)
+        path.write(""")""")
         return path_name
     def gen_tmp_domain_pddl_file(self, domain):
         (fd, path_name) = tempfile.mkstemp(text=True, prefix='domain_')
