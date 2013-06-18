@@ -67,7 +67,7 @@ class PDDLPlannerActionServer(object):
                                                         domain))
         # ffha
         if re.search("/ffha", self._planner_path):
-            if re.search("-i 120", self._planner_path):
+            if re.search("final domain representation is:", output):
                 tmp = output.split("metric:")
                 if len(tmp) > 1:
                     output = tmp[1];
