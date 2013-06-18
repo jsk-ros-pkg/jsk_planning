@@ -74,14 +74,15 @@
 ;;
 ;; solve planning
 ;;
-(pprint (setq *result* (solve-pddl-planning *domain* *problem*)))
+(setq *result* (solve-pddl-planning *domain* *problem*))
 
 (setq gr (make-graph-from-pddl-results (list *result*) :node-name :pprint))
 
 (send gr :write-to-pdf "hanoi.pdf")
 
-(when (ros::get-param "~display_graph")
+(when (ros::get-param "~display_graph" "true")
   (piped-fork "gnome-open hanoi.pdf"))
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
   (ros::exit))
+(exit)
