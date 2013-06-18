@@ -1,0 +1,6 @@
+# very simple pddl exmaple
+
+roscd pddl_planner/demos/sample-pddl/
+rosrun ff ff -f ./sample-problem.pddl -o sample-domain.pddl
+
+
