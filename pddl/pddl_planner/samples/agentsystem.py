@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+
+## this is the ros-client version of sample hanoi example of pddl_planner package
+## demos/sample-pddl/sample-domain.pddl, demos/sample-pddl/sample-problem.pddl
+
 import roslib; roslib.load_manifest('pddl_planner')
 import rospy
 import os
