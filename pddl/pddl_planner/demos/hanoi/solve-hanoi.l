@@ -74,7 +74,7 @@
 ;;
 ;; solve planning
 ;;
-(setq *result* (solve-pddl-planning *domain* *problem*))
+(pprint (setq *result* (solve-pddl-planning *domain* *problem*)))
 
 (setq gr (make-graph-from-pddl-results (list *result*) :node-name :pprint))
 
@@ -85,4 +85,3 @@
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
   (ros::exit))
-(exit)
