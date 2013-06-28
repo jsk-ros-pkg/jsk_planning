@@ -66,6 +66,7 @@
       ;; parse goal
       (when (substringp "final goal" str)
         (while (and (setq str (read-line strm nil nil))
+					(not (substringp "ff:" str))
                     (not (substringp "metric:" str)))
           (let ((exp (read-from-string str nil nil)))
             (if exp (push exp goal-conds))))
