@@ -158,7 +158,7 @@
            (ros::get-param "~display_graph"))
   (piped-fork "gnome-open kakiuchi_robomec.pdf")
   (load "package://roseus_smach/src/pddl2smach.l")
-  (setq sm (convert-smach *graph*))
+  (setq sm (convert-smach *graph* :return-success :success :return-fail :fail))
 
   (load "package://roseus_smach/src/state-machine-ros.l")
   (setq sm-inspect (instance state-machine-inspector :init sm))
