@@ -1,0 +1,9 @@
+<launch>
+  <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
+  <node pkg="pddl_planner" name="demo_bring_can"
+        type="solve-bring-can.l" >
+    <param name="display_graph" value="true" />
+  </node>
+  <node pkg="smach_viewer" name="smach_viewer"
+        type="smach_viewer.py" />
+</launch>
