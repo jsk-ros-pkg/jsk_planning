@@ -224,7 +224,7 @@
               ((:parameters par) nil)
               ((:precondition pre) nil)
               )
-    (if ef  (setq effert       (append effect       (list ef))))
+    (if ef  (setq effect       (append effect       (list ef))))
     (if par (setq parameters   (append parameters   (list par))))
     (if pre (setq precondition (append precondition (list par))))
     self)
