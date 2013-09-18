@@ -147,7 +147,7 @@
       graph)))
 
 ;; remove static condition from graph
-(defun make-readable-graph (gr)
+(defun make-readable-graph (gr &key (remove-not t))
   (let ((grs (copy-object gr)) size sexps dups)
     (setq size (length (send grs :nodes)))
     (setq sexps (mapcan
@@ -158,15 +158,23 @@
         (push (car sexps) dups))
       (setq sexps (remove (car sexps) sexps :test #'equal)))
     (dolist (node (send grs :nodes))
-      (let ((str (make-string-output-stream 128)) tmp)
+      (let (tmp)
         (setq tmp (remove '|n| (read-from-string (send node :name))))
         (dolist (s dups) (setq tmp (remove s tmp :test #'equal)))
-        (format str "~A" (car tmp))
-        (dolist (l (cdr tmp)) (format str "\\n~A" l))
-        (send node :name (get-output-stream-string str))))
+        (when remove-not
+          (setq tmp (remove-if
+                     #'(lambda (stat) (substringp "NOT-" (symbol-string (car stat))))
+                     tmp)))
+        (let ((str (make-string-output-stream 128)))
+          (format str "(")
+          (format str "~A\\n" (car tmp))
+          (dolist (e (butlast (cdr tmp)))
+            (format str "~A\\n" e))
+          (format str "~A)" (car (last tmp)))
+          (send node :name (get-output-stream-string str)))
+        ))
     grs
     ))
-
 
 ;;(setq *graph* (add-failed-nodes *result* (list 'checkclear 'confirm)))
 ;;(send *graph* :write-to-pdf "pddl.pdf")
