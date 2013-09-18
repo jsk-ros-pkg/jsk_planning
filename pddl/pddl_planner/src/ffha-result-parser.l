@@ -53,7 +53,7 @@
              (t (push exp tmp)))
             )
           (if tmp (push (nreverse tmp) effects))
-          (push (list act-lst preconds effects) ret))
+          (push (list act-lst preconds (nreverse effects)) ret))
         ) ;; /when action parse
       ;; parse initial
       (when (substringp "final initial state" str)
