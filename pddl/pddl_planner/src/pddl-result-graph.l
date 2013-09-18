@@ -147,8 +147,9 @@
       graph)))
 
 ;; remove static condition from graph
-(defun make-readable-graph (gr &key (remove-not t))
-  (let ((grs (copy-object gr)) size sexps dups)
+(defun make-readable-graph (gr &key (copy t) (remove-not t))
+  (let ((grs (if copy (copy-object gr) gr))
+        size sexps dups)
     (setq size (length (send grs :nodes)))
     (setq sexps (mapcan
                  #'(lambda(x)(remove '|n| (read-from-string x)))
