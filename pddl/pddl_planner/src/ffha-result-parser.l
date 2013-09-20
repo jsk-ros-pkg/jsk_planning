@@ -164,7 +164,7 @@
     (setq ret (sort-condition ret))
     (if (equal (caar (last ret)) 'not)
         (if (equal (caar ret) 'not)
-            (warn ";; all conditions are negative !!!")
+            (warn ";; all conditions are negative !!!~%")
           (setq ret (nreverse ret))))
     ret))
 (defun problem-condition->result-condition (pcond)
