@@ -95,12 +95,12 @@
           )))
     gr))
 
-(defun append-failed-result (result act &key (additional-conditions) ((:graph gr)) (node-name))
-  (let ((ret (make-failed-condition result act))
+(defun append-failed-result (result act &key (act-fail) (additional-conditions) ((:graph gr)) (node-name))
+  (let ((ret (if act-fail
+                 (make-failed-condition result act :act-fail act-fail)
+               (make-failed-condition result act)))
         res lst
         (problem (copy-object *problem*)))
-
-    ;;(pprint (list 'fail ret))
 
     (dolist (r ret)
       (send problem :initial-condition
@@ -109,14 +109,17 @@
       (setq res (solve-pddl-planning *domain* problem :optimize-state nil))
 
       ;; do not add the condition already exists
-      (when (not (send gr :search-node-from-pddl-state (cadr (assoc :step-state res))))
-	(push res lst)
-	(setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name)))
-
+      #|(when (not (send gr :search-node-from-pddl-state (cadr (assoc :step-state res))))
+        (push res lst)
+        (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name)))|#
+      (when res
+        (push res lst)
+        (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name)))
       (send gr :add-arc-from-to
-	    (send gr :search-node-from-pddl-state (cdr (assoc :src-condition r)))
-	    (send gr :search-node-from-pddl-state (cadr (assoc :step-state res)))
-	    (format nil "~A" (cdr (assoc :act-fail r)))))
+            (send gr :search-node-from-pddl-state (cdr (assoc :src-condition r)))
+            (send gr :search-node-from-pddl-state (cadr (assoc :step-state res)))
+            (format nil "~A" (cdr (assoc :act-fail r))))
+      )
     lst))
 
 (defun add-failed-nodes (result failed-action-list &key ((:graph gr) (instance pddl-graph :init)))
@@ -131,18 +134,23 @@
     (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint :graph gr)) ;; original plan
           (results (list result)))
       (let ((count 0) (count2 -1))
-      	(while (/= count count2)
-	  (let (lst)
-	    (dolist (failed-action failed-action-list)
+        (while (/= count count2)
+          (let (lst)
+            (dolist (failed-action failed-action-list)
               (dolist (r results)
-                (let ((ret (append-failed-result r failed-action :graph graph :node-name :pprint
-                                                 :additional-conditions additional-conditions)))
+                (let ((ret (if (atom failed-action)
+                               (append-failed-result r failed-action :graph graph :node-name :pprint
+                                                     :additional-conditions additional-conditions)
+                             (append-failed-result r (car failed-action) :act-fail (cdr failed-action)
+                                                   :graph graph :node-name :pprint
+                                                   :additional-conditions additional-conditions)
+                             )))
                   (if ret (setq lst (append lst ret))))))
-	    ;;(setq results (append lst results)) ;; ??
-	    (setq results lst))
-	  (setq count2 count
-		count (apply #'+ (mapcar #'(lambda(x)(length (send x :arc-list))) (send graph :nodes))))
-	  ))
+            ;;(setq results (append lst results)) ;; ??
+            (setq results lst))
+          (setq count2 count
+                count (apply #'+ (mapcar #'(lambda(x)(length (send x :arc-list))) (send graph :nodes))))
+          ))
       ;; results
       graph)))
 
