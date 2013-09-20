@@ -56,11 +56,11 @@
     (when (ros::get-param "~display_graph")
       (piped-fork "gnome-open /tmp/action_graph.pdf"))
 
-    (setq *sm* (convert-smach
+    (setq *sm* (convert-smach graph
                 :return-success return-success :return-fail return-fail
                 :add-self-return-failure-path add-self-return-failure-path
                 ;; :use-userdata t
-                graph))
+                ))
     (dump-loadable-structure "/tmp/action_state_machine.l" *sm*)
     (ros::ros-info "output state-machine *sm* to /tmp/action_state_machine.l"))
 
