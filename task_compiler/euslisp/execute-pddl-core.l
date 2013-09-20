@@ -1,5 +1,6 @@
 #!/usr/bin/env roseus
 
+(load "package://pddl_planner/src/eus-pddl-client.l")
 (load "package://pddl_planner/src/pddl-result-graph.l")
 
 ;; convert to smach
@@ -10,21 +11,29 @@
 ;;
 ;; solve planning
 ;;
-(defun run-pddl (&key action description)
-  (let (result graph act-names)
+(defun run-pddl (&key action description goal-condition
+                      (return-success :success) (return-fail :fail)
+                      (add-self-return-failure-path t))
+  (let (result problem graph act-names)
     ;; load action-functions, *domain*, *problem*
     (ros::ros-info "load action file [~a]" action)
     (load action)
     (ros::ros-info "load domain and problem file [~a]" description)
     (load description)
 
+    (setq problem *problem*)
+    (when goal-condition
+      (setq problem (copy-object *problem*))
+      (send problem :goal-condition goal-condition)
+      )
     ;; solve the pddl problem
-    (setq result (solve-pddl-planning *domain* *problem* :debug nil))
+    (setq result (solve-pddl-planning *domain* problem :debug nil))
     ;; (pprint result)
 
     ;; make graph from PDDL answer
     (setq graph (make-graph-from-pddl-results (list result) :node-name :pprint))
 
+#|
     ;; swap nodes ( check_open <-> check_open_f ) for making task flow
     (setq act-names (mapcar #'string-upcase
 			    (send-all (send *domain* :action) :name)))
@@ -36,7 +45,7 @@
 	   act-names))
     (when act-names
       (setq graph (add-failed-nodes result act-names :graph graph)))
-
+|#
     (send graph :name (send *domain* :name))
     (setq graph (make-readable-graph graph))
 
@@ -47,7 +56,11 @@
     (when (ros::get-param "~display_graph")
       (piped-fork "gnome-open /tmp/action_graph.pdf"))
 
-    (setq *sm* (convert-smach graph))
+    (setq *sm* (convert-smach
+                :return-success return-success :return-fail return-fail
+                :add-self-return-failure-path add-self-return-failure-path
+                ;; :use-userdata t
+                graph))
     (dump-loadable-structure "/tmp/action_state_machine.l" *sm*)
     (ros::ros-info "output state-machine *sm* to /tmp/action_state_machine.l"))
 
