@@ -1,10 +1,15 @@
 <launch>
   <arg name="action" />
   <arg name="description" />
+  <arg name="debug" default="false" />
+  <arg if="$(arg debug)"
+       name="DEBUG_FLAG" value="(setq *pddl-debug* t)" />
+  <arg unless="$(arg debug)"
+       name="DEBUG_FLAG" value="" />
   <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
   <node pkg="smach_viewer" name="smach_viewer" type="smach_viewer.py"/>
   <node pkg="task_compiler" name="tc_core" type="execute-pddl-core.l"
-	args='"(run-pddl :action \"$(arg action)\" :description \"$(arg description)\")"'
+	args='"(progn $(arg DEBUG_FLAG) (run-pddl :action \"$(arg action)\" :description \"$(arg description)\"))"'
 	cwd="node" output="screen">
     <param name="display_graph" value="true" />
   </node>
