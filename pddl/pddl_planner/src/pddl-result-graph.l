@@ -186,7 +186,22 @@
     grs
     ))
 
-;;(setq *graph* (add-failed-nodes *result* (list 'checkclear 'confirm)))
-;;(send *graph* :write-to-pdf "pddl.pdf")
+(defun pddl-plan-to-graph (goal-condition
+                           &key (domain *domain*) (problem *problem*)
+                           (faild-nodes) (readable t) (debug))
+  (let ((now-problem (copy-object problem))
+        result ret)
+    (send now-problem :goal-condition goal-condition)
+
+    (setq result (solve-pddl-planning domain now-problem))
+    (setq ret (make-graph-from-pddl-results (list result) :node-name :pprint))
+    (if faild-nodes
+        (setq ret (add-failed-nodes result faild-nodes)))
+    (if readable (make-readable-graph ret :copy nil))
+    (when debug
+      (setq *result* result)
+      (setq *graph* ret)
+      (send ret :write-to-pdf "debug.pdf"))
+    ret))
 
 (provide :pddl-result-graph)
