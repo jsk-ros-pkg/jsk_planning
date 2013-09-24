@@ -219,3 +219,5 @@
                 (cons :dst-condition (sort-condition icond)))
                ret)))))
     (nreverse ret)))
+
+(provide :ffha-result-parser)

@@ -1,3 +1,4 @@
+(require :eus-pddl-client "package://pddl_planner/src/eus-pddl-client.l")
 
 (defclass pddl-graph
   :super graph
@@ -187,3 +188,5 @@
 
 ;;(setq *graph* (add-failed-nodes *result* (list 'checkclear 'confirm)))
 ;;(send *graph* :write-to-pdf "pddl.pdf")
+
+(provide :pddl-result-graph)

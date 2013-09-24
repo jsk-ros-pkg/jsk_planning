@@ -303,3 +303,5 @@
   "this function is not cool...."
   (let ((str (format nil "~A" x)))
     (subseq str 1 (1- (length str))))) ; remove ( and )
+
+(provide :eus-pddl)

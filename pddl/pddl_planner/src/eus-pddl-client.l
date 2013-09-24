@@ -1,5 +1,5 @@
-(load "package://pddl_planner/src/eus-pddl.l")
-(load "package://pddl_planner/src/ffha-result-parser.l")
+(require :eus-pddl "package://pddl_planner/src/eus-pddl.l")
+(require :ffha-result-parser "package://pddl_planner/src/ffha-result-parser.l")
 
 ;;
 ;; PDDL domain and problem should be define before using this program.
@@ -59,3 +59,5 @@
                                 (cdr (assoc :action-list result))))
     (push (cons :step-state cond-list) result)
     result))
+
+(provide :eus-pddl-client)
