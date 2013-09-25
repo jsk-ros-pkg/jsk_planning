@@ -188,15 +188,15 @@
 
 (defun pddl-plan-to-graph (goal-condition
                            &key (domain *domain*) (problem *problem*)
-                           (faild-nodes) (readable t) (debug))
+                           (failed-nodes) (readable t) (debug))
   (let ((now-problem (copy-object problem))
         result ret)
-    (send now-problem :goal-condition goal-condition)
+    (if goal-condition (send now-problem :goal-condition goal-condition))
 
     (setq result (solve-pddl-planning domain now-problem))
     (setq ret (make-graph-from-pddl-results (list result) :node-name :pprint))
-    (if faild-nodes
-        (setq ret (add-failed-nodes result faild-nodes)))
+    (if failed-nodes
+        (setq ret (add-failed-nodes result failed-nodes)))
     (if readable (make-readable-graph ret :copy nil))
     (when debug
       (setq *result* result)
