@@ -154,10 +154,10 @@
   (load "package://roseus_smach/src/pddl2smach.l")
   (load "package://roseus_smach/src/state-machine-ros.l")
 
-  (setq sm-inspect (pddl-graph-to-smach *graph*))
+  (setq *sm-inspect* (pddl-graph-to-smach *graph*))
 
   (unix::sleep 1)
-  (send sm-inspect :reset-state)
+  (send *sm-inspect* :reset-state)
   )
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
