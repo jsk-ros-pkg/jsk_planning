@@ -1,7 +1,6 @@
 #!/usr/bin/env roseus
-
-(load "package://pddl_planner/src/pddl-result-graph.l")
-(load "package://pddl_planner/src/eus-pddl-client.l")
+(require :eus-pddl-client  "package://pddl_planner/src/eus-pddl-client.l")
+(require :pddl-result-graph "package://pddl_planner/src/pddl-result-graph.l")
 
 ;;
 ;; problem
@@ -124,33 +123,31 @@
 ;;
 ;; solve planning
 ;;
+
+;; normal plan
 (pprint (setq *result* (solve-pddl-planning *domain* *problem* :debug nil)))
+;; there is no target object in environment
 (pprint (setq *result-fail-end* (solve-pddl-planning *domain* *problem-fail-end* :debug nil)))
 
+;; at first, make graph from failed plan (because failed plan does not contain success detection)
 (setq *graph* (make-graph-from-pddl-results (list *result-fail-end*) :node-name :pprint))
+;; merge 2 results and adding failure
 (setq *graph* (add-failed-nodes *result* (list 'detect) :graph *graph*))
-#| original
-(pprint (setq *result* (solve-pddl-planning *domain* *problem* :debug nil)))
-(setq *graph* (add-failed-nodes *result* (list 'detect)))
-|#
+
 (make-readable-graph *graph* :copy nil)
 
-(send *graph* :write-to-pdf "debug.pdf")
+;;(send *graph* :write-to-pdf "debug.pdf")
 
 (when (and (ros::has-param "~display_graph")
            (ros::get-param "~display_graph"))
-  (piped-fork "gnome-open debug.pdf")
+  ;;(piped-fork "gnome-open debug.pdf")
   (load "package://roseus_smach/src/pddl2smach.l")
-  (setq sm (convert-smach *graph* :return-success :success :return-fail :fail
-                          :add-self-return-failure-path nil))
-
   (load "package://roseus_smach/src/state-machine-ros.l")
-  (setq sm-inspect (instance state-machine-inspector :init sm))
+
+  (setq sm-inspect (pddl-graph-to-smach *graph*))
+
   (unix::sleep 1)
-  (send sm :reset-state)
-  (progn
-    (send sm-inspect :publish-structure)
-    (send sm-inspect :publish-status nil))
+  (send sm-inspect :reset-state)
   )
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
