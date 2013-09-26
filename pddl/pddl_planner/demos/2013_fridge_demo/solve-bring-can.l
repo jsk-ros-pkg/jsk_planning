@@ -1,7 +1,7 @@
 #!/usr/bin/env roseus
 
-(load "package://pddl_planner/src/pddl-result-graph.l")
-(load "package://pddl_planner/src/eus-pddl-client.l")
+(require :eus-pddl-client "package://pddl_planner/src/eus-pddl-client.l")
+(require :pddl-result-graph "package://pddl_planner/src/pddl-result-graph.l")
 
 ;;
 ;; problem
@@ -46,7 +46,7 @@
 (setq *action-list*
       (list
        (instance pddl-action :init
-                 :name "grasp"
+                 :name "grasp-can"
                  :parameters '((?OBJ object))
                  :precondition '((NOT (ONHAND ?OBJ))
                                  (NOT (CLOSED))
@@ -62,7 +62,7 @@
                  :effect '())
 |#
        (instance pddl-action :init
-                 :name "move"
+                 :name "move-to"
                  :parameters '((?FROM ?TO spot))
                  :precondition '((AT ?FROM)
                                  (NOT (= ?FROM SOMEWHERE))
@@ -70,7 +70,7 @@
                  :effect '((AT ?TO)
                            (NOT (AT ?FROM))))
        (instance pddl-action :init
-                 :name "move_f"
+                 :name "move-to_f"
                  :parameters '((?FROM ?TO spot))
                  :precondition '((AT ?FROM)
                                  (NOT (= ?TO SOMEWHERE))
@@ -78,7 +78,7 @@
                  :effect '((AT SOMEWHERE)
                            (NOT (AT ?FROM))))
        (instance pddl-action :init
-                 :name "move_rec"
+                 :name "move-recoverly"
                  :parameters '()
                  :precondition '((AT SOMEWHERE)
                                  (CLOSED))
@@ -93,7 +93,7 @@
                  :effect '())
 |#
        (instance pddl-action :init
-                 :name "open"
+                 :name "open-door"
                  :parameters '()
                  :precondition '((AT FRONTFRIDGE)
                                  (NOT (ONHAND CAN))
@@ -109,7 +109,7 @@
                  :effect '())
 |#
        (instance pddl-action :init
-                 :name "close"
+                 :name "close-door"
                  :parameters '()
                  :precondition '((NOT (CLOSED))
                                  (AT PRECLOSE))
@@ -123,7 +123,7 @@
                  :effect '())
 |#
        (instance pddl-action :init
-                 :name "close_try"
+                 :name "try-close"
                  :parameters '()
                  :precondition '((NOT (CLOSED))
                                  (AT SOMEWHERE))
@@ -141,32 +141,23 @@
 (dolist (act *action-list*)
   (send *domain* :add :action act))
 
-
 ;;
 ;; solve planning
 ;;
-(pprint (setq *result* (solve-pddl-planning *domain* *problem* :debug nil)))
-
-(setq gr (make-graph-from-pddl-results (list *result*) :node-name :pprint))
-
-(setq *graph* (add-failed-nodes *result* (list 'move 'close 'open 'grasp)))
-;; swap nodes ( confirm <-> confirm_f and checkclear <-> checkclear_f ) for making task flow
-
-(send *graph* :write-to-pdf "kakiuchi_robomec.pdf")
+(setq *graph*
+      (pddl-plan-to-graph nil :domain *domain* :problem *problem* :failed-nodes (list 'move-to) :debug t))
+(pprint *result*)
 
 (when (and (ros::has-param "~display_graph")
            (ros::get-param "~display_graph"))
-  (piped-fork "gnome-open kakiuchi_robomec.pdf")
+  ;;(piped-fork "gnome-open debug.pdf")
   (load "package://roseus_smach/src/pddl2smach.l")
-  (setq sm (convert-smach *graph* :return-success :success :return-fail :fail))
-
   (load "package://roseus_smach/src/state-machine-ros.l")
-  (setq sm-inspect (instance state-machine-inspector :init sm))
+
+  (setq sm-inspect (pddl-graph-to-smach *graph*))
+
   (unix::sleep 1)
-  (send sm :reset-state)
-  (progn
-    (send sm-inspect :publish-structure)
-    (send sm-inspect :publish-status nil))
+  (send sm-inspect :reset-state)
   )
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
