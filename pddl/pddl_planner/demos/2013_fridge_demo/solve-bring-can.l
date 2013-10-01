@@ -46,7 +46,7 @@
 (setq *action-list*
       (list
        (instance pddl-action :init
-                 :name "grasp-can"
+                 :name "grasp-object"
                  :parameters '((?OBJ object))
                  :precondition '((NOT (ONHAND ?OBJ))
                                  (NOT (CLOSED))
