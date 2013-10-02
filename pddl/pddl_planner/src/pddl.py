@@ -52,10 +52,12 @@ class PDDLPlannerActionServer(object):
         # dirty implementation
         step_before_after = output.split("step")
         if len(step_before_after) == 2:
-            results = [re.sub("\s*$", "", re.sub(r'^\s*\d+:\s*', "" , x))
-                       for x in step_before_after[1].split("Total cost")[0].split("\n")[1:]]
+            results = [y.group(0)
+                       for y in [re.search("\([^\)]+\)", x)
+                                 for x in step_before_after[1].split("Total cost")[0].split("\n")[1:]]
+                       if y != None]
             rospy.loginfo("result => %s" % results)
-            return filter(lambda x: x != "", results)
+            return results
         else:
             return False
          
