@@ -304,4 +304,210 @@
   (let ((str (format nil "~A" x)))
     (subseq str 1 (1- (length str))))) ; remove ( and )
 
+(defclass pddl-state
+  :super pddl-module
+  :slots (name
+          domain
+          states
+          actions
+          objects)
+  )
+
+(defmethod pddl-state
+  (:init (&key ((:name n) nil)
+               ((:domain dm) nil)
+               ((:initial-state st) nil)
+               ((:actions ac) nil)
+               ((:objects obj) nil)
+               )
+    (if n (setq name n))
+    (send self :domain dm)
+    (send self :initial-state st)
+    (if ac (setq actions ac))
+    (send self :objects obj)
+    self)
+  (:name (&optional n)
+    (if n (setq name n))
+    name)
+  (:domain (&optional dm)
+    (when dm
+      (setq domain dm)
+      (send self :add-constants))
+    domain)
+  (:initial-state (&optional st)
+    (when st
+      (let (tmp-st)
+        (dolist (i st)
+          (unless (equal (car i) '=)
+            (push i tmp-st)))
+        (setq states (list tmp-st))))
+    states)
+  (:actions (&optional ac)
+    (when ac
+      (setq actions ac)
+      (send self :generate-states))
+    actions)
+  (:objects (&optional obj)
+    (when obj
+      (setq objects obj)
+      (if domain
+          (send self :add-constants)))
+    objects)
+  (:states (&rest args)
+    (forward-message-to states args))
+  (:add-constants ()
+    (let (obj (cnst (send domain :constants)) sym)
+      (when cnst
+        (let ((count 0) (max-count (length cnst)))
+          (while (< count max-count)
+            (let ((elem (elt cnst count)))
+              (if (equal elem '-)
+                  (progn
+                    (incf count)
+                    (let ((type (elt cnst count)))
+                      (setq obj (append obj (mapcar #'(lambda(x) (cons x type)) sym))))
+                    (setq sym nil))
+                (push elem sym))
+              (incf count)))
+          (setq objects (union obj objects :test #'equal))))))
+  (:add-action (ac)
+    (when ac
+      (setq actions (append actions (list ac)))
+      (setq states (append states (list (send self :apply-action (car (last states)) ac)))))
+    actions)
+  (:generate-states ()
+    (when (and states actions)
+      (setq states (list (car states)))
+      (let ((tmp-st (car states)))
+        (dolist (act actions)
+          (setq tmp-st (send self :apply-action tmp-st act))
+          (push tmp-st states))
+        (setq states (nreverse states))))
+    )
+  (:check-type ()
+    ;;TODO
+    )
+  (:check-condition (st act)
+    (let ((action (find-if #'(lambda (x) (equal (car act) (intern (string-upcase (send x :name))))) (send *domain* :action)))
+          param pcond)
+      (unless action
+        (return-from :check-condition nil))
+      (setq param (list (mapcar #'car (send action :parameters)) (cdr act))
+            pcond (send action :precondition))
+      (null (some #'null
+                  (mapcar #'(lambda (p)
+                              (send self :check-state st p param))
+                          pcond)))
+      ))
+  (:check-state (st s param)
+    (let ((ss (mapcar #'(lambda(x)
+                          (let ((pos (position x (car param))))
+                            (if pos
+                                (elt (cadr param) pos)
+                              x)))
+                      s)))
+      (case (car ss)
+        ('not
+         (if (send self :check-state st (cadr ss) param)
+             nil
+           t))
+        ('and
+         (let ((ret (mapcar #'(lambda(x)
+                                (send self :check-state st x param))
+                            (cdr ss))))
+           (null (some #'null ret))))
+        ('exists
+         (let* ((v (cadr ss))
+                (ret (mapcar #'(lambda(obj)
+                                 (if (equal (caddr v) (cdr obj))
+                                     (multiple-value-bind (va ar) param
+                                       (send self :check-state st (caddr ss) (list (append va (list (car v))) (append ar (list (car obj))))))
+                                   nil)
+                                 )
+                             objects)))
+           (null (every #'null ret))))
+        ('forall
+         (let* ((v (cadr ss))
+                (ret (mapcar #'(lambda(obj)
+                                 (if (equal (caddr v) (cdr obj))
+                                     (multiple-value-bind (va ar) param
+                                       (send self :check-state st (caddr ss) (list (append va (list (car v))) (append ar (list (car obj))))))
+                                   t)
+                                 )
+                             objects)))
+           (null (some #'null ret))))
+        ('when
+         (if (send self :check-state st (cadr ss) param)
+             (send self :check-state st (caddr ss) param)
+           t))
+        ('=
+         (equal (cadr ss) (caddr ss)))
+        (t
+         (if (member ss st :test #'equal)
+             t
+           nil))
+        )
+      ))
+  (:apply-action (st act)
+    (if (send self :check-condition st act)
+        (let ((action (find-if #'(lambda (x) (equal (car act) (intern (string-upcase (send x :name))))) (send *domain* :action)))
+              param effect (tmp-st st))
+          (unless action
+            (return-from :apply-action nil))
+          (setq param (list (mapcar #'car (send action :parameters)) (cdr act))
+                effect (send action :effect))
+          (dolist (e effect)
+            (setq tmp-st (send self :change-state tmp-st e param)))
+          tmp-st)
+      nil)
+    )
+  (:change-state (st e param)
+    (let ((ee (mapcar #'(lambda(x)
+                          (let ((pos (position x (car param))))
+                            (if pos
+                                (elt (cadr param) pos)
+                              x)))
+                      e))
+          (tmp-st st))
+      (case (car ee)
+        ('not
+         (let ((dif (mapcar #'(lambda(x)
+                                (let ((pos (position x (car param))))
+                                  (if pos
+                                      (elt (cadr param) pos)
+                                    x)))
+                            (cadr ee))))
+           (set-difference st (list dif) :test #'equal)))
+        ('and
+         (dolist (eff (cdr ee))
+           (setq tmp-st (send self :change-state tmp-st eff param)))
+         tmp-st)
+        ('forall
+         (let ((v (cadr ee)))
+           (dolist (obj objects)
+             (when (equal (caddr v) (cdr obj))
+               (multiple-value-bind (va ar) param
+                 (setq tmp-st (send self :change-state tmp-st (caddr ee) (list (append va (list (car v))) (append ar (list (car obj)))))))))
+           tmp-st))
+        ('when
+         (case (caadr ee)
+           ('=
+            (if (send self :check-state st (cadr ee) param)
+                (send self :change-state st (caddr ee) param)
+              st))
+           ('not
+            (if (null (send self :check-state st (car (cdadr ee)) param))
+                (send self :change-state st (caddr ee) param)
+              st))
+           (t
+            (if (send self :check-state st (cadr ee) param)
+                (send self :change-state st (caddr ee) param)
+              st))))
+        (t
+         (union st (list ee) :test #'equal)
+         )
+        )
+      ))
+  )
+
 (provide :eus-pddl)
