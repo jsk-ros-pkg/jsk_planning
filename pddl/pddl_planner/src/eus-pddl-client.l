@@ -1,5 +1,4 @@
 (require :eus-pddl "package://pddl_planner/src/eus-pddl.l")
-(require :ffha-result-parser "package://pddl_planner/src/ffha-result-parser.l")
 
 ;;
 ;; PDDL domain and problem should be define before using this program.
@@ -36,28 +35,21 @@
                          (send (send client :get-result) :sequence)))
       (when debug
         (pprint (car (send (send client :get-result) :data))))
-      (when (send (send client :get-result) :data)
-        (setq ret (parse-ff-result-string (car (send (send client :get-result) :data)))))
       (setq ret (append ret (list (cons :plan plan)))))
     ret))
 
 (defun solve-pddl-planning (domain problem &key (client *action-client*) (debug)
                                    (optimize-state nil))
-  (let ((result (pddl-planning domain problem :client client :debug debug))
-        cond-list)
+  (let* ((result (pddl-planning domain problem :client client :debug debug))
+         (state (instance pddl-state :init :domain domain :initial-state (send problem :initial-condition) :actions (cdr (assoc :plan result)) :objects (send problem :objects)))
+         (step-state (send state :generate-states)))
 
-    (unless optimize-state
-      (let ((def-init (send problem :initial-condition))
-            (sol-init (result-condition->problem-condition (cdr (assoc :initial result))))
-            adds)
-        (setq adds (set-difference def-init sol-init :test #'equal))
-        (setq adds (problem-condition->result-condition adds))
-        (setq result (add-conditions-to-result result adds))))
+    (when optimize-state
+      (let ((intersect-condition (reduce #'(lambda(x y) (intersection x y :test #'equal)) step-state)))
+        (setq step-state (mapcar #'(lambda(x) (set-differece x intersect-condition)) step-state))))
 
-    (setq cond-list (apply-plan (cdr (assoc :initial result))
-                                (cdr (assoc :plan result))
-                                (cdr (assoc :action-list result))))
-    (push (cons :step-state cond-list) result)
+    (push (cons :step-state step-state) result)
+    (push (cons :state state) result)
     result))
 
 (provide :eus-pddl-client)

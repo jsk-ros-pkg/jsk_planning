@@ -109,18 +109,17 @@
         (problem (copy-object *problem*)))
 
     (dolist (r ret)
-      (send problem :initial-condition
-            (append additional-conditions (cdr (assoc :initial-condition r))))
+      (send problem :initial-condition (cdr (assoc :initial-condition r)))
 
       (setq res (solve-pddl-planning *domain* problem :optimize-state nil))
 
       ;; do not add the condition already exists
-      #|(when (not (send gr :search-node-from-pddl-state (cadr (assoc :step-state res))))
-        (push res lst)
-        (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name)))|#
-      (when res
+      (when (not (send gr :search-node-from-pddl-state (cadr (assoc :step-state res))))
         (push res lst)
         (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name)))
+      #|(when res
+        (push res lst)
+        (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name)))|#
       (send gr :add-arc-from-to
             (send gr :search-node-from-pddl-state (cdr (assoc :src-condition r)))
             (send gr :search-node-from-pddl-state (cadr (assoc :step-state res)))
@@ -129,36 +128,26 @@
     lst))
 
 (defun add-failed-nodes (result failed-action-list &key ((:graph gr) (instance pddl-graph :init)))
-  ;; for constant conditions
-  (let ((def-init (send *problem* :initial-condition))
-        (sol-init (result-condition->problem-condition (cdr (assoc :initial result))))
-        additional-conditions)
-    (setq additional-conditions (set-difference def-init sol-init :test #'equal))
-    (when additional-conditions
-      (warn ";; additonal conditions found ~A~%" additional-conditions))
-
-    (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint :graph gr)) ;; original plan
-          (results (list result)))
-      (let ((count 0) (count2 -1))
-        (while (/= count count2)
-          (let (lst)
-            (dolist (failed-action failed-action-list)
-              (dolist (r results)
-                (let ((ret (if (atom failed-action)
-                               (append-failed-result r failed-action :graph graph :node-name :pprint
-                                                     :additional-conditions additional-conditions)
-                             (append-failed-result r (car failed-action) :act-fail (cdr failed-action)
-                                                   :graph graph :node-name :pprint
-                                                   :additional-conditions additional-conditions)
-                             )))
-                  (if ret (setq lst (append lst ret))))))
-            ;;(setq results (append lst results)) ;; ??
-            (setq results lst))
-          (setq count2 count
-                count (apply #'+ (mapcar #'(lambda(x)(length (send x :arc-list))) (send graph :nodes))))
-          ))
-      ;; results
-      graph)))
+  (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint :graph gr)) ;; original plan
+        (results (list result)))
+    (let ((count 0) (count2 -1))
+      (while (/= count count2)
+        (let (lst)
+          (dolist (failed-action failed-action-list)
+            (dolist (r results)
+              (let ((ret (if (atom failed-action)
+                             (append-failed-result r failed-action :graph graph :node-name :pprint)
+                           (append-failed-result r (car failed-action) :act-fail (cdr failed-action)
+                                                 :graph graph :node-name :pprint)
+                           )))
+                (if ret (setq lst (append lst ret))))))
+          ;;(setq results (append lst results)) ;; ??
+          (setq results lst))
+        (setq count2 count
+              count (apply #'+ (mapcar #'(lambda(x)(length (send x :arc-list))) (send graph :nodes))))
+        ))
+    ;; results
+    graph))
 
 ;; remove static condition from graph
 (defun make-readable-graph (gr &key (copy t) (remove-not t))
@@ -213,5 +202,46 @@
       (setq *graph* ret)
       (send ret :write-to-pdf "debug.pdf"))
     ret))
+
+(defun sort-condition (lst &key (ignore-not t))
+  (sys::gc) ;; it's darty hack. we should rewrite in eus/c/sequence.c or not use key
+  (sort lst #'string<=
+        (if ignore-not
+            #'(lambda(x)
+                (let ((y (format nil "~A" x)))
+                  (cond ((and (listp x) (eq 'not (car x))) ;;(not (hoge))
+                         (format nil "~A" (cadr x)))
+                        ((string= "not-" (subseq y 1 5)) ;; (not-hoge)
+                         (format nil "(~A" (subseq y 5)))
+                        (t y))))
+          #'(lambda(x)(format nil "~A" x)))))
+
+(defun make-failed-condition (result act &key (act-fail (intern (string-upcase (format nil "~A_f" (string act))))))
+  (let ((plan (cdr (assoc :plan result)))
+        (step-state (cdr (assoc :step-state result)))
+        (state (cdr (assoc :state result)))
+        pcond ret)
+    (while plan
+      (let ((act-pos (position-if #'(lambda (x) (equal (car x) act)) plan)))
+        (if act-pos
+            (setq pcond (cons (elt plan act-pos) (elt step-state act-pos)))
+          (setq pcond nil))
+        (setq plan (cdr (member (car pcond) plan :test #'equal)))
+        (when pcond
+          (let ((swap-act (cons act-fail (cdar pcond)))
+                icond)
+            (send state :initial-state (cdr pcond))
+            (send state :actions (list swap-act))
+            (setq icond (cadr (send state :generate-states)))
+            (if icond
+                (push
+                 (list
+                  (cons :initial-condition icond)
+                  (cons :act (car pcond))
+                  (cons :act-fail swap-act)
+                  (cons :src-condition (sort-condition (cdr pcond)))
+                  (cons :dst-condition (sort-condition icond)))
+                 ret))))))
+    (nreverse ret)))
 
 (provide :pddl-result-graph)

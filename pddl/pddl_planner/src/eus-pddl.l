@@ -338,7 +338,7 @@
     (when st
       (let (tmp-st)
         (dolist (i st)
-          (unless (equal (car i) '=)
+          (unless (equal (car i) 'not)
             (push i tmp-st)))
         (setq states (list tmp-st))))
     states)
@@ -388,11 +388,11 @@
     ;;TODO
     )
   (:check-condition (st act)
-    (let ((action (find-if #'(lambda (x) (equal (car act) (intern (string-upcase (send x :name))))) (send *domain* :action)))
+    (let ((action (find-if #'(lambda (x) (equal (car act) (intern (string-upcase (send x :name))))) (send domain :action)))
           param pcond)
       (unless action
         (return-from :check-condition nil))
-      (setq param (list (mapcar #'car (send action :parameters)) (cdr act))
+      (setq param (list (flatten (mapcar #'(lambda(x) (butlast x 1)) (send action :parameters))) (cdr act))
             pcond (send action :precondition))
       (null (some #'null
                   (mapcar #'(lambda (p)
@@ -416,6 +416,11 @@
                                 (send self :check-state st x param))
                             (cdr ss))))
            (null (some #'null ret))))
+        ('or
+         (let ((ret (mapcar #'(lambda(x)
+                                (send self :check-state st x param))
+                            (cdr ss))))
+           (null (every #'null ret))))
         ('exists
          (let* ((v (cadr ss))
                 (ret (mapcar #'(lambda(obj)
@@ -450,11 +455,11 @@
       ))
   (:apply-action (st act)
     (if (send self :check-condition st act)
-        (let ((action (find-if #'(lambda (x) (equal (car act) (intern (string-upcase (send x :name))))) (send *domain* :action)))
+        (let ((action (find-if #'(lambda (x) (equal (car act) (intern (string-upcase (send x :name))))) (send domain :action)))
               param effect (tmp-st st))
           (unless action
             (return-from :apply-action nil))
-          (setq param (list (mapcar #'car (send action :parameters)) (cdr act))
+          (setq param (list (flatten (mapcar #'(lambda(x) (butlast x 1)) (send action :parameters))) (cdr act))
                 effect (send action :effect))
           (dolist (e effect)
             (setq tmp-st (send self :change-state tmp-st e param)))
@@ -470,6 +475,10 @@
                       e))
           (tmp-st st))
       (case (car ee)
+        ('increase
+         st)
+        ('decrease
+         st)
         ('not
          (let ((dif (mapcar #'(lambda(x)
                                 (let ((pos (position x (car param))))
