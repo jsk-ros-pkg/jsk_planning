@@ -227,6 +227,7 @@
             (setq pcond (cons (elt plan act-pos) (elt step-state act-pos)))
           (setq pcond nil))
         (setq plan (cdr (member (car pcond) plan :test #'equal)))
+        (setq step-state (cdr (member (cdr pcond) step-state :test #'equal)))
         (when pcond
           (let ((swap-act (cons act-fail (cdar pcond)))
                 icond)
