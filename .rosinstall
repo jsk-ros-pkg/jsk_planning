@@ -1,0 +1,3 @@
+- git:
+    uri: https://github.com/jsk-ros-pkg/jsk_roseus.git
+    local-name: jsk-ros-pkg/jsk_roseus
