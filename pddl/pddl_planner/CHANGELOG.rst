@@ -2,6 +2,9 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.1.1 (2014-05-05)
 ------------------
 * pddl_planner: add samples

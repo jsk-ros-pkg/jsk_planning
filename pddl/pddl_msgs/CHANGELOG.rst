@@ -2,6 +2,9 @@
 Changelog for package pddl_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.1.1 (2014-05-05)
 ------------------
 * catkinize jsk_planning
