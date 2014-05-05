@@ -2,8 +2,8 @@
 Changelog for package pddl_planner_viewer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.1 (2014-05-05)
+------------------
 * catkinize jsk_planning
 * start pddl_planner_viewer first
 * move 3rdparty/pddl to jsk-ros-pkg/pddl, because pddl stack except ff is developed by R.Ueda and JSK, now 3rdparty

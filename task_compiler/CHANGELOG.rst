@@ -2,8 +2,8 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.1 (2014-05-05)
+------------------
 * catkinize jsk_planning
 * add argument for debug
 * fix minor bug
