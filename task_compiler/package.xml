@@ -1,0 +1,33 @@
+<package>
+  <name>task_compiler</name>
+  <version>0.1.2</version>
+  <description>task_compiler
+
+     Compiler that translate task description in PDDL (Planning Domain Description Language) to SMACH (state machine based execution and coordination system) description.</description>
+
+  <maintainer email="ueda@jsk.t.u-tokyo.ac.jp">Ryohei Ueda</maintainer>
+  <maintainer email="youhei@jsk.t.u-tokyo.ac.jp">Yohei Kakiuchi</maintainer>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website">http://ros.org/wiki/task_compiler</url>
+
+  <author>Manabu Saito</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>pddl_planner</build_depend>
+  <build_depend>roseus_smach</build_depend>
+
+  <run_depend>pddl_planner</run_depend>
+  <run_depend>roseus_smach</run_depend>
+
+  <!-- <test_depend>pddl_planner</test_depend> -->
+  <!-- <test_depend>roseus_smach</test_depend> -->
+
+  <export>
+
+  </export>
+</package>

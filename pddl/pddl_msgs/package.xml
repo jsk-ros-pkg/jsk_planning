@@ -1,0 +1,30 @@
+<package>
+  <name>pddl_msgs</name>
+  <version>0.1.2</version>
+  <description>message for pddl planner</description>
+
+  <maintainer email="ueda@jsk.t.u-tokyo.ac.jp">Ryohei Ueda</maintainer>
+  <maintainer email="youhei@jsk.t.u-tokyo.ac.jp">Yohei Kakiuchi</maintainer>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
+
+  <license>Apache License 2.0</license>
+
+  <url type="website"></url>
+
+  <author>Ryohei Ueda (ueda@jsk.t.u-tokyo.ac.jp)</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>actionlib</build_depend>
+  <build_depend>actionlib_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+
+  <run_depend>actionlib</run_depend>
+  <run_depend>actionlib_msgs</run_depend>
+  <run_depend>message_runtime</run_depend>
+
+  <export>
+    <rosbagmigration rule_file="migration_rules/pddl_msgs.bmr"/>
+  </export>
+</package>

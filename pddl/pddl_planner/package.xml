@@ -1,0 +1,36 @@
+<package>
+  <name>pddl_planner</name>
+  <version>0.1.2</version>
+  <description>pddl planner wrappers</description>
+
+  <maintainer email="ueda@jsk.t.u-tokyo.ac.jp">Ryohei Ueda</maintainer>
+  <maintainer email="youhei@jsk.t.u-tokyo.ac.jp">Yohei Kakiuchi</maintainer>
+  <maintainer email="k-okada@jsk.t.u-tokyo.ac.jp">Kei Okada</maintainer>
+  <maintainer email="furushchev@jsk.imi.i.u-tokyo.ac.jp">Yuki Furuta</maintainer>
+
+  <license>Apache License 2.0</license>
+
+  <url type="website"></url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <author>Ryohei Ueda (ueda@jsk.t.u-tokyo.ac.jp)</author>
+
+  <build_depend>pddl_msgs</build_depend>
+  <build_depend>ff</build_depend>
+  <build_depend>ffha</build_depend>
+  <build_depend>downward</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>actionlib</build_depend>
+
+  <run_depend>pddl_msgs</run_depend>
+  <run_depend>ff</run_depend>
+  <run_depend>ffha</run_depend>
+  <run_depend>downward</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>actionlib</run_depend>
+
+  <export>
+
+  </export>
+</package>

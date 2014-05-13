@@ -48,7 +48,6 @@ install: # Use this to install any prerequisites or dependencies necessary to ru
   - find -L src -name package.xml -exec dirname {} \; | xargs -n 1 -i find {} -name manifest.xml | xargs -n 1 -i mv {} {}.deprecated
   - rosdep install -r -n --from-paths src --ignore-src --rosdistro $ROS_DISTRO -y
   - find -L src -name manifest.xml.deprecated | xargs -n 1 -i dirname {} | xargs -n 1 -i ln -sf `pwd`/{}/manifest.xml.deprecated `pwd`/{}/manifest.xml
-  - if [ $BUILDER = rosbuild ]; then source src/setup.sh; rosdep install -a -y -n -r; fi
   - if [ $ROS_DISTRO = groovy ]; then sudo apt-get install ros-$ROS_DISTRO-common-tutorials ros-$ROS_DISTRO-audio-common ros-$ROS_DISTRO-navigation ros-$ROS_DISTRO-laser-filters ros-$ROS_DISTRO-camera-calibration-parsers ros-$ROS_DISTRO-depth-image-proc ros-$ROS_DISTRO-driver-base ros-$ROS_DISTRO-image-proc ros-$ROS_DISTRO-image-proc ros-$ROS_DISTRO-compressed-image-transport ros-$ROS_DISTRO-pr2-common ros-$ROS_DISTRO-pr2-controllers ros-$ROS_DISTRO-arm-navigation ros-$ROS_DISTRO-pr2-common-actions ros-$ROS_DISTRO-executive-smach-visualization; fi
 before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
   - source /opt/ros/$ROS_DISTRO/setup.bash
@@ -62,6 +61,7 @@ script: # All commands must exit with code 0 on success. Anything else is consid
   - if [ $BUILDER = catkin ]; then catkin_make install; fi
   - if [ $BUILDER = catkin ]; then rm -fr devel src build; source install/setup.bash; else source setup.sh; fi
 after_failure:
+  - find ${HOME}/.ros/rosmake -type f -exec echo "== {} ==" \; -exec cat {} \;
   - if [ -e ./build/Testing/Temporary/LastTest.log ]; then cat ./build/Testing/Temporary/LastTest.log; fi
   - find ${HOME}/.ros/test_results -type f -exec echo "== {} ==" \; -exec cat {} \;
   - for file in ${HOME}/.ros/log/rostest-*; do echo "=== $file ==="; cat $file; done
