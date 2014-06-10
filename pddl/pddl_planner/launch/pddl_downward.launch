@@ -1,4 +1,5 @@
 <launch>
+  <arg name="planner_option" default="ipc seq-sat-lama-2011" />
   <node pkg="pddl_planner"
         type="pddl.py"
         name="pddl_planner"
@@ -6,6 +7,6 @@
     <param name="pddl_planner_path"
            value="$(find downward)/downward/src/plan" />
     <param name="pddl_search_option"
-           value="ipc seq-sat-lama-2011" />
+           value="$(arg planner_option)" />
   </node>
 </launch>
