@@ -3,7 +3,7 @@
         type="pddl.py"
         name="pddl_planner"
         output="screen">
-    <param name="pddl_planner_path"
-           value="$(find ff)/bin/ff" />
+    <param name="pddl_planner"
+           value="ff" />
   </node>
 </launch>

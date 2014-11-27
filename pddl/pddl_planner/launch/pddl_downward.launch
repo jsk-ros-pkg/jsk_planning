@@ -4,8 +4,8 @@
         type="pddl.py"
         name="pddl_planner"
         output="screen">
-    <param name="pddl_planner_path"
-           value="$(find downward)/downward/src/plan" />
+    <param name="pddl_planner"
+           value="downward" />
     <param name="pddl_search_option"
            value="$(arg planner_option)" />
   </node>
