@@ -1,14 +1,18 @@
 #!/usr/bin/env python
-import roslib; roslib.load_manifest('pddl_planner')
+
 import rospy
 import os
 import re
 import commands
 import tempfile
+
+try:
+    from pddl_msgs.msg import *
+except:
+    import roslib; roslib.load_manifest('pddl_planner')
+    from pddl_msgs.msg import *
 import actionlib
 
-import pddl_msgs
-from pddl_msgs.msg import *
 
 class PDDLPlannerActionServer(object):
     _result = PDDLPlannerResult()

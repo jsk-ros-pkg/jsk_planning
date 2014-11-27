@@ -1,9 +1,13 @@
 #!/usr/bin/python
 
-import roslib; roslib.load_manifest('pddl_planner_viewer')
 import rospy
-import pddl_msgs
-from pddl_msgs.msg import *
+
+try:
+    from pddl_msgs.msg import *
+except:
+    import roslib; roslib.load_manifest('pddl_planner_viewer')
+    from pddl_msgs.msg import *
+
 import actionlib
 
 import wx
