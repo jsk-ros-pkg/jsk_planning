@@ -7,9 +7,9 @@ python:
 compiler:
   - gcc
 env:
-  - ROS_DISTRO=groovy ROSWS=rosws BUILDER=rosbuild BUILD_PACKAGES="pddl task_compiler"
+#  - ROS_DISTRO=groovy ROSWS=rosws BUILDER=rosbuild BUILD_PACKAGES="pddl task_compiler"
   - ROS_DISTRO=hydro ROSWS=wstool BUILDER=catkin
-  - ROS_DISTRO=groovy ROSWS=wstool BUILDER=catkin
+#  - ROS_DISTRO=groovy ROSWS=wstool BUILDER=catkin
 notifications:
   email:
     on_success: always
