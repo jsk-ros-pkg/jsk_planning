@@ -1,14 +1,18 @@
 #!/usr/bin/env python
-import roslib; roslib.load_manifest('pddl_planner')
+
 import rospy
 import os
 import re
 import commands
 import tempfile
+
+try:
+    from pddl_msgs.msg import *
+except:
+    import roslib; roslib.load_manifest('pddl_planner')
+    from pddl_msgs.msg import *
 import actionlib
 
-import pddl_msgs
-from pddl_msgs.msg import *
 
 class PDDLPlannerActionServer(object):
     _result = PDDLPlannerResult()
@@ -19,9 +23,8 @@ class PDDLPlannerActionServer(object):
                                                 PDDLPlannerAction,
                                                 self.execute_cb)
         # resolve rosparam
-        self._planner_path = rospy.get_param('~pddl_planner_path')
-        if rospy.has_param('~pddl_search_option'):
-            self._search_option = rospy.get_param('~pddl_search_option')
+        self._planner_name = rospy.get_param('~pddl_planner', 'downward')
+        self._search_option = rospy.get_param('~pddl_search_option', '')
 
     def execute_cb(self, goal):
         problem = goal.problem
@@ -84,35 +87,36 @@ class PDDLPlannerActionServer(object):
 
     def call_pddl_planner(self, problem, domain):
 
-        if re.search("/bin/ff", self._planner_path):
+        if  self._planner_name == "ff":
             # -f problem -o domain
-            output = commands.getoutput("%s -f %s -o %s" % (self._planner_path,
-                                                            problem,
-                                                            domain))
-            # ffha
-            if re.search("/ffha", self._planner_path):
-                if re.search("final domain representation is:", output):
-                    tmp = output.split("metric:")
-                    if len(tmp) > 1:
-                        output = tmp[1];
-                    self._result.data = tmp;
-                return self.parse_pddl_result_ffha(output)
-            # ff
+            output = commands.getoutput("rosrun ff ff -f %s -o %s" % (problem, domain))
             return self.parse_pddl_result(output)
 
-        if re.search("downward", self._planner_path):
+        # ffha
+        elif self._planner_name == "ffha":
+            output = commands.getoutput("rosrun ffha ffha %s -f %s -o %s" % (self._search_option, problem, domain))
+            if re.search("final domain representation is:", output):
+                tmp = output.split("metric:")
+                if len(tmp) > 1:
+                    output = tmp[1];
+                self._result.data = tmp;
+            return self.parse_pddl_result_ffha(output)
+
+        elif self._planner_name == "downward":
             (fd, path_name) = tempfile.mkstemp(text=True, prefix='plan_')
-            (status, output) = commands.getstatusoutput("%s %s %s %s --plan-file %s" % (self._planner_path,
-                                                                                        domain,
-                                                                                        problem,
-                                                                                        self._search_option,
-                                                                                        path_name))
+            (status, output) = commands.getstatusoutput("rosrun downward plan %s %s %s --plan-file %s" % (domain,
+                                                                                                          problem,
+                                                                                                          self._search_option,
+                                                                                                          path_name))
             rospy.loginfo(output)
             if status == 0:
                 self._result.data = output
                 return self.parse_pddl_result_downward(path_name)
             else:
                 return False
+        else:
+            rospy.logfatal("set invalid planner: %s !" % self._planner_name)
+            return
 
     def gen_tmp_pddl_file(self, problem, domain):
         problem_file = self.gen_tmp_problem_pddl_file(problem)
