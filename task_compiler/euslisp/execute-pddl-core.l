@@ -26,12 +26,12 @@
       (setq problem (copy-object *problem*))
       (send problem :goal-condition goal-condition)
       )
-    ;; solve the pddl problem
-    (setq result (solve-pddl-planning *domain* problem :debug nil))
-    ;; (pprint result)
-
-    ;; make graph from PDDL answer
-    (setq graph (make-graph-from-pddl-results (list result) :node-name :pprint))
+    ;; solve the pddl problem and make graph from PDDL answer
+    (if *failed-nodes* (ros::ros-info "found failed-nodes: ~A" *failed-nodes*))
+    (setq graph (pddl-plan-to-graph nil :domain *domain* :problem problem
+                                    :failed-nodes (if *failed-nodes*
+                                                      *failed-nodes* nil)
+                                    :debug nil))
 
 #|
     ;; swap nodes ( check_open <-> check_open_f ) for making task flow
