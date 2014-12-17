@@ -1,6 +1,8 @@
 <launch>
   <arg name="action" />
   <arg name="description" />
+  <arg name="return_success" default=":success" />
+  <arg name="return_fail" default=":fail" />
   <arg name="planner" default="ffha" />
   <arg name="use_planner_option" default="false" />
   <arg name="planner_option" />
@@ -15,8 +17,14 @@
   </include>
   <node pkg="smach_viewer" name="smach_viewer" type="smach_viewer.py"/>
   <node pkg="task_compiler" name="tc_core" type="execute-pddl-core.l"
-	args='"(progn $(arg DEBUG_FLAG) (run-pddl :action \"$(arg action)\" :description \"$(arg description)\"))"'
+	args='"(progn $(arg DEBUG_FLAG) (run-pddl :action \"$(arg action)\" :description \"$(arg description)\" :return-success $(arg return_success) :return-fail $(arg return_fail)))"'
 	cwd="node" output="screen">
     <param name="display_graph" value="true" />
   </node>
 </launch>
+
+
+
+
+
+
