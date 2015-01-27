@@ -1,14 +1,24 @@
-if(NOT USE_ROSBUILD)
-  include(catkin.cmake)
-  return()
-endif()
-cmake_minimum_required(VERSION 2.4.6)
-include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
-rosbuild_find_ros_package(actionlib_msgs)
-include(${actionlib_msgs_PACKAGE_PATH}/cmake/actionbuild.cmake)
-genaction()
-rosbuild_init()
-rosbuild_genmsg()
-include_directories(include)
+cmake_minimum_required(VERSION 2.8.3)
+project(pddl_msgs)
 
+find_package(catkin REQUIRED COMPONENTS actionlib actionlib_msgs message_generation)
 
+add_action_files(
+  DIRECTORY action
+  FILES PDDLPlanner.action
+)
+add_message_files(
+  DIRECTORY msg
+  FILES PDDLAction.msg PDDLDomain.msg PDDLProblem.msg PDDLActionArray.msg PDDLObject.msg PDDLStep.msg
+)
+
+generate_messages(
+  DEPENDENCIES actionlib_msgs
+)
+
+catkin_package(
+    DEPENDS actionlib actionlib_msgs message_runtime
+    CATKIN_DEPENDS # TODO
+    INCLUDE_DIRS # TODO include
+    LIBRARIES # TODO
+)
