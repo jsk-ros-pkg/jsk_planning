@@ -2,8 +2,8 @@
 Changelog for package pddl_planner_viewer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.3 (2015-01-31)
+------------------
 * remove rosbuild stuff, change to pure catkin packages
 * not use roslib in hydro
 * Contributors: Yuki Furuta, Kei Okada

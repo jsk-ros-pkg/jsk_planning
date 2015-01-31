@@ -2,8 +2,8 @@
 Changelog for package pddl_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.3 (2015-01-31)
+------------------
 * remove rosbuild stuff, change to pure catkin packages
 * Contributors: Kei Okada
 
