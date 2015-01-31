@@ -2,6 +2,17 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove rosbuild stuff, change to pure catkin packages
+* remove rosbuild stuff, change to pure catkin packages
+* also removed from build_depend
+* pddl_planner and roseus_smach is not used in cmake
+* add option result success and fail
+* support failure plan
+* add planner option for downward
+* Contributors: Yuki Furuta, Kei Okada
+
 0.1.2 (2014-05-06)
 ------------------
 

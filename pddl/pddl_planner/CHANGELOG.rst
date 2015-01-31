@@ -2,6 +2,14 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* remove rosbuild stuff, change to pure catkin packages
+* use rosrun instead of find_package to search pddl planner
+* not use roslib in hydro
+* add planner option for downward
+* Contributors: Yuki Furuta, Kei Okada
+
 0.1.2 (2014-05-06)
 ------------------
 
