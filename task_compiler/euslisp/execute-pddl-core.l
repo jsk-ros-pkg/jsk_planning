@@ -27,6 +27,7 @@
       (send problem :goal-condition goal-condition)
       )
     ;; solve the pddl problem and make graph from PDDL answer
+    (defvar *failed-nodes*)
     (if *failed-nodes* (ros::ros-info "found failed-nodes: ~A" *failed-nodes*))
     (setq graph (pddl-plan-to-graph nil :domain *domain* :problem problem
                                     :failed-nodes (if *failed-nodes*
