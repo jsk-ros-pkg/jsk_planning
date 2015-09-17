@@ -8,6 +8,9 @@
 (load "package://roseus_smach/src/state-machine-utils.l")
 (load "package://roseus_smach/src/pddl2smach.l")
 
+;; solve the pddl problem and make graph from PDDL answer
+(defvar *failed-nodes*)
+
 ;;
 ;; solve planning
 ;;
@@ -26,7 +29,6 @@
       (setq problem (copy-object *problem*))
       (send problem :goal-condition goal-condition)
       )
-    ;; solve the pddl problem and make graph from PDDL answer
     (if *failed-nodes* (ros::ros-info "found failed-nodes: ~A" *failed-nodes*))
     (setq graph (pddl-plan-to-graph nil :domain *domain* :problem problem
                                     :failed-nodes (if *failed-nodes*
