@@ -11,11 +11,11 @@ notifications:
     on_failure: always
   slack: jsk-robotics:Av7tc8wj3IWkLYvlTzHE7x2g
 env:
-  - ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true
+  - ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true EXTRA_DEB="time"
   # - ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=false
-  - ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=true
+  - ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=true EXTRA_DEB="time"
   # - ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=false
-  - ROS_DISTRO=jade ROSWS=wstool BUILDER=catkin USE_DEB=true
+  - ROS_DISTRO=jade ROSWS=wstool BUILDER=catkin USE_DEB=true EXTRA_DEB="time"
 # matrix:
 #   allow_failures:
 #     - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=false
