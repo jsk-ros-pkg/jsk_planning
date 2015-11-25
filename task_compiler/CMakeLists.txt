@@ -10,6 +10,11 @@ catkin_package(
     LIBRARIES # TODO
 )
 
+if(CATKIN_ENABLE_TESTING)
+  find_package(roslaunch REQUIRED)
+  roslaunch_add_file_check(test/execute-pddl.test.xml)
+endif()
+
 install(DIRECTORY launch euslisp samples
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
         USE_SOURCE_PERMISSIONS)
