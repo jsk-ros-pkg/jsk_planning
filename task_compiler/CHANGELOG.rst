@@ -2,6 +2,15 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* CMakeLists.txt: test execute-pddl-test.xml only for indigo
+* [pckage.xml] add run_depend to the smach_viewer
+* [test/{check-execute-pddl.test, execute-pddl.test.xml}: add test code to check execute-pddl.launch
+* [task_compiler] Define *failed-nodes* on toplevel
+* [task_compiler/euslisp/execute-pddl-core.l] fix undefined variable
+* Contributors: Yuki Furuta, Kei Okada, Ryohei Ueda
+
 0.1.4 (2015-06-11)
 ------------------
 
