@@ -20,7 +20,9 @@
 
   <run_depend>pddl_planner</run_depend>
   <run_depend>roseus_smach</run_depend>
+  <run_depend>smach_viewer</run_depend>
 
+  <test_depend>rostest</test_depend>
   <!-- <test_depend>pddl_planner</test_depend> -->
   <!-- <test_depend>roseus_smach</test_depend> -->
 

@@ -10,6 +10,13 @@ catkin_package(
     LIBRARIES # TODO
 )
 
+if(CATKIN_ENABLE_TESTING)
+  find_package(roslaunch REQUIRED)
+  if($ENV{ROS_DISTRO} STREQUAL "indigo") # smach_viewer only available on indigo (https://github.com/jbohren/executive_smach_visualization-release/issues/1)
+    roslaunch_add_file_check(test/execute-pddl.test.xml)
+  endif()
+endif()
+
 install(DIRECTORY launch euslisp samples
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
         USE_SOURCE_PERMISSIONS)
