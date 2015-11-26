@@ -18,9 +18,11 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>rostest</build_depend>
+  <build_depend>roseus</build_depend>
+  <build_depend>roseus_smach</build_depend>
   <run_depend>pddl_planner</run_depend>
   <run_depend>roseus_smach</run_depend>
-
   <!-- <test_depend>pddl_planner</test_depend> -->
   <!-- <test_depend>roseus_smach</test_depend> -->
 
