@@ -2,8 +2,8 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.5 (2015-11-26)
+------------------
 * CMakeLists.txt: test execute-pddl-test.xml only for indigo
 * [pckage.xml] add run_depend to the smach_viewer
 * [test/{check-execute-pddl.test, execute-pddl.test.xml}: add test code to check execute-pddl.launch
