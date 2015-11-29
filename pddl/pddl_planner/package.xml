@@ -30,6 +30,9 @@
   <run_depend>rospy</run_depend>
   <run_depend>actionlib</run_depend>
 
+  <!-- NOTE: downward depends on time, but on hydro it is not released -->
+  <run_depend>time</run_depend>
+
   <export>
 
   </export>
