@@ -7,6 +7,7 @@
   <arg name="use_planner_option" default="false" />
   <arg name="planner_option" />
   <arg name="debug" default="false" />
+  <arg name="gui" default="true" />
 
   <arg if="$(arg debug)"
        name="DEBUG_FLAG" value="(setq *pddl-debug* t)" />
@@ -15,16 +16,11 @@
   <include file="$(find pddl_planner)/launch/pddl_$(arg planner).launch">
     <arg name="planner_option" value="$(arg planner_option)" if="$(arg use_planner_option)" />
   </include>
-  <node pkg="smach_viewer" name="smach_viewer" type="smach_viewer.py"/>
+  <node pkg="smach_viewer" name="smach_viewer" type="smach_viewer.py"
+        if="$(arg gui)" />
   <node pkg="task_compiler" name="tc_core" type="execute-pddl-core.l"
 	args='"(progn $(arg DEBUG_FLAG) (run-pddl :action \"$(arg action)\" :description \"$(arg description)\" :return-success $(arg return_success) :return-fail $(arg return_fail)))"'
 	cwd="node" output="screen">
-    <param name="display_graph" value="true" />
+    <param name="display_graph" value="$(arg gui)" />
   </node>
 </launch>
-
-
-
-
-
-

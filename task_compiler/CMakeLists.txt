@@ -12,6 +12,8 @@ catkin_package(
 
 if(CATKIN_ENABLE_TESTING)
   find_package(roslaunch REQUIRED)
+  find_package(catkin REQUIRED COMPONENTS rostest)
+  add_rostest(test/test_task_compiler.test)
   if($ENV{ROS_DISTRO} STREQUAL "indigo") # smach_viewer only available on indigo (https://github.com/jbohren/executive_smach_visualization-release/issues/1)
     roslaunch_add_file_check(test/execute-pddl.test.xml)
   endif()
