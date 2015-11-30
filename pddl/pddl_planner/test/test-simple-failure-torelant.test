@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find pddl_planner)/launch/pddl_downward.launch" />
+  <test test-name="test_simple_failure_torelant" pkg="roseus" type="roseus"
+        args="$(find pddl_planner)/test/test-simple-failure-torelant.l" time-limit="1000" />
+</launch>

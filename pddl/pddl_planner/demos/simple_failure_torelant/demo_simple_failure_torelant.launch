@@ -1,0 +1,12 @@
+<launch>
+  <arg name="viewer" default="true" />
+  <include file="$(find pddl_planner)/launch/pddl_downward.launch" />
+  <node name="demo_push_button" pkg="roseus" type="roseus"
+        args="$(find pddl_planner)/demos/simple_failure_torelant/solve-simple-failure-torelant.l"
+        output="screen">
+    <param name="publish_to_smach" value="$(arg viewer)" />
+  </node>
+
+  <node pkg="smach_viewer" name="smach_viewer"
+        type="smach_viewer.py" if="$(arg viewer)" />
+</launch>
