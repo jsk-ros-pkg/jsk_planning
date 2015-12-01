@@ -10,7 +10,7 @@ catkin_package(
     LIBRARIES # TODO
 )
 
-install(DIRECTORY launch demos src samples
+install(DIRECTORY launch demos src samples test
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
         USE_SOURCE_PERMISSIONS)
 
