@@ -1,7 +1,8 @@
 # http://ros.org/doc/groovy/api/catkin/html/user_guide/supposed.html
 cmake_minimum_required(VERSION 2.8.3)
 project(task_compiler)
-find_package(catkin REQUIRED COMPONENTS)
+find_package(catkin REQUIRED COMPONENTS
+  roseus_smach)
 
 catkin_package(
     DEPENDS #
