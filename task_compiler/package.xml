@@ -18,6 +18,8 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>roseus_smach</build_depend>
+
   <run_depend>pddl_planner</run_depend>
   <run_depend>roseus_smach</run_depend>
   <run_depend>smach_viewer</run_depend>
