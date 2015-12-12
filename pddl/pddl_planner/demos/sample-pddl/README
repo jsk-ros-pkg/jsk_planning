@@ -1,5 +1,7 @@
 # very simple pddl exmaple
 
+# bare example
+
 roscd pddl_planner/demos/sample-pddl/
 rosrun ff ff -f ./sample-problem.pddl -o sample-domain.pddl
 
@@ -11,4 +13,20 @@ OR
 
 rosrun downward plan sample-domain.pddl ./sample-problem.pddl
 
+# ros example
+
+roslaunch pddl_planner pddl_ff.launch
+rosrun pddl_planner sample-client.py --text
+
+OR
+
+roslaunch pddl_planner pddl_ffha.launch
+rosrun pddl_planner sample-client.py --text
+
+OR
+
+roslaunch pddl_planner pddl_downward.launch
+rosrun pddl_planner sample-client.py --text
+
+OR
 
