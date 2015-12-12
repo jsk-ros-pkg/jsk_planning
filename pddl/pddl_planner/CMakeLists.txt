@@ -17,4 +17,5 @@ install(DIRECTORY launch demos src samples test
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
   add_rostest(test/test-simple-failure-torelant.test)
+  add_rostest(test/test-sample-pddl.test)
 endif()
