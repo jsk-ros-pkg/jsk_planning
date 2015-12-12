@@ -3,4 +3,12 @@
 roscd pddl_planner/demos/sample-pddl/
 rosrun ff ff -f ./sample-problem.pddl -o sample-domain.pddl
 
+OR
+
+rosrun ffha ffha -f ./sample-problem.pddl -o sample-domain.pddl
+
+OR
+
+rosrun downward plan sample-domain.pddl ./sample-problem.pddl
+
 
