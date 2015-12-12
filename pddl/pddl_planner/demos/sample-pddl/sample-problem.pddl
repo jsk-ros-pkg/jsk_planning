@@ -1,6 +1,6 @@
 (define (problem sample)
     (:domain manip)
-    (:objects a b c - obj)
+    (:objects a b c - object)
     (:init
         (on c a)
         (ontable a)

@@ -1,0 +1,26 @@
+<launch>
+  <!--
+  Test program for pddl_planner/demos/sample-pddl/README
+  -->
+  <test test-name="sample_pddl_ff" pkg="pddl_planner" type="test-sample-pddl.sh"
+        args="rosrun ff ff -f $(find pddl_planner)/demos/sample-pddl/sample-problem.pddl -o $(find pddl_planner)/demos/sample-pddl/sample-domain.pddl" />
+  <test test-name="sample_pddl_ffha" pkg="pddl_planner" type="test-sample-pddl.sh"
+        args="rosrun ffha ffha -f $(find pddl_planner)/demos/sample-pddl/sample-problem.pddl -o $(find pddl_planner)/demos/sample-pddl/sample-domain.pddl" />
+  <test test-name="sample_pddl_downward" pkg="pddl_planner" type="test-sample-pddl.sh"
+        args="rosrun downward plan $(find pddl_planner)/demos/sample-pddl/sample-domain.pddl $(find pddl_planner)/demos/sample-pddl/sample-problem.pddl ipc seq-sat-lama-2011" />
+  <!--
+  Test program using ros action node
+  -->
+  <include file="$(find pddl_planner)/launch/pddl_ff.launch"  ns="ff_planner" />
+  <test test-name="sample_pddl_ff_client" pkg="pddl_planner" type="sample-client.py" >
+    <remap from="pddl_planner" to="ff_planner/pddl_planner" />
+  </test>
+  <include file="$(find pddl_planner)/launch/pddl_ffha.launch"  ns="ffha_planner" />
+  <test test-name="sample_pddl_ffha_client" pkg="pddl_planner" type="sample-client.py" >
+    <remap from="pddl_planner" to="ffha_planner/pddl_planner" />
+  </test>
+  <include file="$(find pddl_planner)/launch/pddl_downward.launch"  ns="downward_planner" />
+  <test test-name="sample_pddl_downward_client" pkg="pddl_planner" type="sample-client.py" >
+    <remap from="pddl_planner" to="downward_planner/pddl_planner" />
+  </test>
+</launch>
