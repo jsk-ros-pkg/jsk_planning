@@ -2,6 +2,12 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [task_compiler/CMakeLists.txt&package.xml] add roseus_smach to build_depend
+* [task_compiler] add task_compiler test for solving plan and manage actions
+* Contributors: Yuki Furuta
+
 0.1.5 (2015-11-26)
 ------------------
 * CMakeLists.txt: test execute-pddl-test.xml only for indigo

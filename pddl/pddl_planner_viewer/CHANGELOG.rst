@@ -2,6 +2,9 @@
 Changelog for package pddl_planner_viewer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.1.5 (2015-11-26)
 ------------------
 

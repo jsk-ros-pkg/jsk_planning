@@ -2,6 +2,17 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* pddl_planner: mv demos/sample-pddl/README README.md
+* pddl_planner/demos/sample-pddl: add sample-client.py and its test to test-sample-pddl.test
+* demos/sample-pddl/{sample-problem.pddl, README}: fix problem.pddl which fails on downward, and added to README
+* add test for demos/sample-pddl directory
+* [pddl_planner/CMakeLists.txt] add test to install
+* [pddl/pddl_planner/package.xml] add time to run_depend for downward on hydro
+* [pddl_planner] add test for pddl_planner
+* Contributors: Yuki Furuta, Kei Okada
+
 0.1.5 (2015-11-26)
 ------------------
 
