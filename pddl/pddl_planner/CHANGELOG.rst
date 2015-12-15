@@ -2,8 +2,8 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.6 (2015-12-15)
+------------------
 * pddl_planner: mv demos/sample-pddl/README README.md
 * pddl_planner/demos/sample-pddl: add sample-client.py and its test to test-sample-pddl.test
 * demos/sample-pddl/{sample-problem.pddl, README}: fix problem.pddl which fails on downward, and added to README

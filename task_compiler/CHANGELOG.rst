@@ -2,8 +2,8 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.6 (2015-12-15)
+------------------
 * [task_compiler/CMakeLists.txt&package.xml] add roseus_smach to build_depend
 * [task_compiler] add task_compiler test for solving plan and manage actions
 * Contributors: Yuki Furuta
