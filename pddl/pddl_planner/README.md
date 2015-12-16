@@ -25,7 +25,7 @@ rosrun ffha ffha -f ./sample-problem.pddl -o sample-domain.pddl
  - downward example
     ```
 roscd pddl_planner/demos/sample-pddl/
-rosrun downward plan sample-domain.pddl ./sample-problem.pddl
+rosrun downward plan sample-domain.pddl ./sample-problem.pddl ipc seq-sat-lama-2011 --plan-file sample.plan
     ```
 
 - ros example
