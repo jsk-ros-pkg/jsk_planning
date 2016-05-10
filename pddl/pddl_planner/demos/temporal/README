@@ -3,7 +3,7 @@
 # it work both on lpg-1.2 or lpg-2.0
 
 ./LPG-1.2-linux/lpg-1.2 -o block-domain.pddl -f block-problem.pddl  -n 1
-./LPG-1.2-linxu/lpg-1.2 -o coe-domain.pddl -f coe-problem.pddl -n 1
+./LPG-1.2-linux/lpg-1.2 -o coe-domain.pddl -f coe-problem.pddl -n 1
 
 
    
