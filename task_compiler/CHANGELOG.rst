@@ -2,8 +2,8 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.7 (2016-05-28)
+------------------
 * [task_compiler/euslisp/execute-pddl-core.l] add hook function call on execution ( `#44 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/44>`_ )
 * Contributors: Yuki Furuta
 

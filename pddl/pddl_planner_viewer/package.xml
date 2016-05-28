@@ -1,6 +1,6 @@
 <package>
   <name>pddl_planner_viewer</name>
-  <version>0.1.6</version>
+  <version>0.1.7</version>
   <description>a viewer of pddl_planner.</description>
 
   <maintainer email="ueda@jsk.t.u-tokyo.ac.jp">Ryohei Ueda</maintainer>
