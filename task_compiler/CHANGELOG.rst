@@ -2,6 +2,11 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [task_compiler/euslisp/execute-pddl-core.l] add hook function call on execution ( `#44 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/44>`_ )
+* Contributors: Yuki Furuta
+
 0.1.6 (2015-12-15)
 ------------------
 * [task_compiler/CMakeLists.txt&package.xml] add roseus_smach to build_depend

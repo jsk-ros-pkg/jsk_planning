@@ -2,6 +2,13 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [pddl_planner/demos/2013_fridge_demo/solve-bring-can.l] comment in recovery motion ( `#43  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/43>`_ )
+* [pddl_planner/README] fix typo  ( `#42  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/42>`_ )
+* [pddl_planner/README] Update README.md, Add search option and plan file path to bare downward example ( `#38  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/38>`_ )
+* Contributors: Grollo, Kamada Hitoshi, Yuki Furuta
+
 0.1.6 (2015-12-15)
 ------------------
 * pddl_planner: mv demos/sample-pddl/README README.md
