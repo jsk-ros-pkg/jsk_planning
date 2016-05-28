@@ -25,6 +25,22 @@
   (warn "~% (length *msg*) is ~A" (length *msg*))
   (assert (eq (length *msg*) 7)))
 
+(defun wait-param (key &optional (timeout 30))
+  (dotimes (i timeout)
+    (when (and (ros::has-param key))
+      (ros::ros-info "found param ~A" key)
+      (return-from wait-param t))
+    (ros::ros-info "waiting param ~A [~A/~A]" key i timeout)
+    (ros::spin-once)
+    (ros::sleep))
+  nil)
+
+(deftest test-task-compiler-hook ()
+  (ros::rate 1)
+  (assert (wait-param "after_init_hook"))
+  (assert (wait-param "before_run_hook"))
+  (assert (wait-param "after_run_hook")))
+
 (ros::roseus "test_task_compiler")
 (run-all-tests)
 (exit)
