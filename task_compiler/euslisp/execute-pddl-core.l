@@ -24,6 +24,9 @@
     (ros::ros-info "load domain and problem file [~a]" description)
     (load description)
 
+    (when (fboundp 'task-compiler/after-init-hook)
+      (task-compiler/after-init-hook))
+
     (setq problem *problem*)
     (when goal-condition
       (setq problem (copy-object *problem*))
@@ -66,8 +69,16 @@
     (dump-loadable-structure "/tmp/action_state_machine.l" *sm*)
     (ros::ros-info "output state-machine *sm* to /tmp/action_state_machine.l"))
 
+    (when (fboundp 'task-compiler/before-run-hook)
+      (ros::ros-info "call before-run hook")
+      (task-compiler/before-run-hook *sm*))
+
      ;; global data is not used (nil)
     (exec-smach-with-spin *sm* nil :hz 1.0)
+
+    (when (fboundp 'task-compiler/after-run-hook)
+      (ros::ros-info "call after-run hook")
+      (task-compiler/after-run-hook *sm*))
 
     (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
       (ros::exit))
