@@ -111,10 +111,11 @@
           constants
           predicates
           functions
-          action)
+          action
+          use-durative-action)
   )
 (defmethod pddl-domain
-  (:init (&key (name nil) ((:requirements req) nil) (file nil))
+  (:init (&key (name nil) ((:requirements req) nil) (file nil) (use-durative-action nil))
     (if name (setq domain-name name))
     (if req (setq requirements req))
     self)
@@ -140,6 +141,8 @@
   (:action (&optional ac)
     (if ac (setq action ac))
     action)
+  (:use-durative-action (&optional use-dur)
+    (if use-dur (setq use-durative-action use-dur)))
   (:add (&key
          ((:requirements req) nil)
          ((:types typ) nil)
@@ -194,17 +197,25 @@
   :slots (name
           parameters
           precondition
-          effect)
+          effect
+          duration
+          use-durative-action
+          )
   )
 (defmethod pddl-action
   (:init (&key ((:name n) nil)
                ((:parameters par) nil)
                ((:precondition pre) nil)
-               ((:effect ef) nil))
+               ((:effect ef) nil)
+               ((:duration dur) nil)
+               ((:use-durative-action use-dur) nil)
+               )
     (if n (setq name n))
     (if pre (setq precondition pre))
     (if par (setq parameters par))
     (if ef (setq effect ef))
+    (if dur (setq duration dur))
+    (if use-dur (setq use-durative-action use-dur))
     self)
   (:name (&optional n)
     (if n (setq name n))
@@ -220,6 +231,11 @@
   (:effect (&optional ef)
     (if ef (setq effect ef))
     effect)
+  (:duration (&optional dur)
+    (if dur (setq duration dur))
+    duration)
+  (:use-durative-action (&optional use-dur)
+    (if use-dur (setq use-durative-action use-dur)))
   (:add (&key ((:effect ef) nil)
               ((:parameters par) nil)
               ((:precondition pre) nil)
@@ -227,6 +243,7 @@
     (if ef  (setq effect       (append effect       (list ef))))
     (if par (setq parameters   (append parameters   (list par))))
     (if pre (setq precondition (append precondition (list par))))
+    (if dur (setq duration     (append duration     (list dur))))
     self)
   (:action-sexp ()
     `(:action ,name
@@ -236,23 +253,33 @@
                                            (append (butlast x) '(-) (last x))))
                                      parameters))
        :precondition (and ,@precondition)
-       :effect (and ,@effect)))
+       :effect (and ,@effect)
+       :duration (,@duration)
+       ))
   (:ros-message ()
     (instance pddl_msgs::PDDLAction :init
               :name (string name)
               :parameters
               (if parameters
-                  (list->simple-string
-                   (list (flatten (mapcar #'(lambda (x)
-                                              (if (= (length x) 1)
-                                                  (list (car x))
-                                                (append (butlast x) '(-) (last x))))
-                                          parameters))))
+                  (cond
+                   (use-durative-action
+                    (format nil "~A" (car `,parameters)))
+                   (t
+                    (list->simple-string
+                     (list (flatten (mapcar #'(lambda (x)
+                                                (if (= (length x) 1)
+                                                    (list (car x))
+                                                  (append (butlast x) '(-) (last x))))
+                                            parameters)))
+                     )))
                 "()")
               :precondition
               (format nil "~A" `(and ,@precondition))
               :effect
-              (format nil "~A" `(and ,@effect))))
+              (format nil "~A" `(and ,@effect))
+              :action_duration
+              (format nil "~A" (car `,duration))
+              ))
   )
 
 ;; macro for define domain and problem

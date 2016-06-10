@@ -4,6 +4,7 @@ pddl_msgs/PDDLProblem problem
 ---
 #result
 string[] data
+bool use_durative_action
 pddl_msgs/PDDLStep[] sequence
 ---
 #feedback

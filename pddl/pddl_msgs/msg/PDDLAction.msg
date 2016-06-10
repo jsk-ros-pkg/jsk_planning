@@ -4,3 +4,5 @@ string parameters
 string precondition
 string effect
 string on_condition
+# we can't use duration name
+string action_duration
