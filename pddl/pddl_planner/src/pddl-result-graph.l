@@ -91,6 +91,12 @@
         (sort-condition l))
 
       (let (nd ns (plan (cdr (assoc :plan res))))
+        (when (assoc :durative res)
+          (let (tmp-plan)
+            (dolist (pp plan)
+              (setq tmp-plan (append tmp-plan (list (format nil "~A" (append (list (read-from-string (format nil "~A-~A" (caaddr pp) (cadr pp)))) (cdaddr pp))))))
+              (setq plan tmp-plan)
+              )))
         (dolist (l (cdr (assoc :step-state res)))
           ;; add node
           (setq nd (send gr :add-pddl-state-node l :node-name node-name))

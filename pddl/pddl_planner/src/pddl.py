@@ -35,9 +35,18 @@ class PDDLPlannerActionServer(object):
         rospy.loginfo("domain_path => %s" % domain_path)
         result = self.call_pddl_planner(problem_path, domain_path)
         if result:
-            self._result.sequence = [PDDLStep(action = x.split(' ')[0],
-                                              args = x.split(' ')[1:])
-                                     for x in result]
+            if self._planner_name == "lpg":
+                self._result.sequence = [PDDLStep(action = x.split(' ')[1].lstrip("\("),
+                                                  args = re.search("\([^\)]+\)", x).group(0).lstrip("\(").rstrip("\)").split(' ')[1:],
+                                                  start_time = re.search("[0-9]+.[0-9]+:" , x).group(0).rstrip(":"),
+                                                  action_duration = re.search("\[D[^\)]+;", x).group(0).lstrip("[D:").rstrip(";")
+                                                  )
+                                         for x in result]
+                self._result.use_durative_action = True
+            else:
+                self._result.sequence = [PDDLStep(action = x.split(' ')[0],
+                                                  args = x.split(' ')[1:])
+                                         for x in result]
             self._as.set_succeeded(self._result)
         else:
             self._as.set_aborted()
@@ -73,7 +82,7 @@ class PDDLPlannerActionServer(object):
         duration_before_after = output.split("action Duration")
         if len(duration_before_after) == 2:
             results = [y.group(0)
-                       for y in [re.search("\([^\)]+\)", x)
+                       for y in [re.search("[0-9][^\]]+\]", x)
                                  for x in duration_before_after[1].split("Solution number")[0].split("\n")[1:]]
                        if y != None]
             rospy.loginfo("result => %s" % results)
