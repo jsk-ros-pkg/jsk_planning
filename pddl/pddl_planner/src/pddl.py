@@ -67,6 +67,20 @@ class PDDLPlannerActionServer(object):
         else:
             return False
 
+    def parse_pddl_result_lpg(self, output):
+        rospy.loginfo(output)
+        #dirty implementation
+        duration_before_after = output.split("action Duration")
+        if len(duration_before_after) == 2:
+            results = [y.group(0)
+                       for y in [re.search("\([^\)]+\)", x)
+                                 for x in duration_before_after[1].split("Solution number")[0].split("\n")[1:]]
+                       if y != None]
+            rospy.loginfo("result => %s" % results)
+            return results
+        else:
+            return False
+
     def parse_pddl_result_downward(self, path_name):
         plan_path = path_name
         i = 1
@@ -114,14 +128,28 @@ class PDDLPlannerActionServer(object):
                 return self.parse_pddl_result_downward(path_name)
             else:
                 return False
+
+        elif self._planner_name == "lpg":
+            # temporary
+            rospy.loginfo ("lpg")
+            output = commands.getoutput("rosrun lpg_planner lpg-1.2 %s -o %s -f %s" % (self._search_option, domain, problem))
+            return self.parse_pddl_result_lpg(output)
+
         else:
             rospy.logfatal("set invalid planner: %s !" % self._planner_name)
             return
 
     def gen_tmp_pddl_file(self, problem, domain):
-        problem_file = self.gen_tmp_problem_pddl_file(problem)
-        domain_file = self.gen_tmp_domain_pddl_file(domain)
-        return (problem_file, domain_file)
+        search_durative = re.search("durative", domain.requirements)
+        rospy.loginfo ("gen_tmp_pddl_file: requirements:%s" % domain.requirements)
+        if search_durative == None:
+            problem_file = self.gen_tmp_problem_pddl_file(problem)
+            domain_file = self.gen_tmp_domain_pddl_file(domain)
+            return (problem_file, domain_file)
+        else:
+            problem_file = self.gen_tmp_problem_pddl_file(problem)
+            domain_file = self.gen_tmp_durative_domain_pddl_file(domain)
+            return (problem_file, domain_file)
     def gen_problem_objects_strings(self, objects):
         # objects = list of PDDLObject
         # PDDLObject has name and type
@@ -155,6 +183,7 @@ class PDDLPlannerActionServer(object):
             path.write("""(:metric %s)""" % problem.metric)
         path.write(""")""")
         return path_name
+
     def gen_tmp_domain_pddl_file(self, domain):
         (fd, path_name) = tempfile.mkstemp(text=True, prefix='domain_')
         path = os.fdopen(fd, 'w')
@@ -182,6 +211,40 @@ class PDDLPlannerActionServer(object):
             path.write("(:action %s\n" % action.name)
             path.write(":parameters %s\n" % action.parameters)
             path.write(":precondition %s\n" % action.precondition)
+            path.write(":effect %s\n" % action.effect)
+            path.write(")\n")               # (:action
+        path.write(")\n")               # (define
+        return path_name
+    
+    def gen_tmp_durative_domain_pddl_file(self, domain):
+        rospy.loginfo("domain.actions:%s" % domain.actions)
+        (fd, path_name) = tempfile.mkstemp(text=True, prefix='domain_')
+        path = os.fdopen(fd, 'w')
+        path.write("(define (domain %s)\n" % domain.name)
+        path.write("(:requirements %s)\n" % domain.requirements)
+        path.write("(:types \n")
+        for i in domain.types:
+            path.write(i + " ")
+        path.write(")\n")
+        if len(domain.constants) > 0:
+            path.write("(:constants \n")
+            for i in domain.constants:
+                path.write(i + " ")
+            path.write(")\n")
+        path.write("(:predicates\n")
+        for i in domain.predicates:
+            path.write(i + " ")
+        path.write(")\n")
+        if domain.functions:
+            path.write("(:functions\n")
+            for i in domain.functions:
+                path.write(i + " ")
+            path.write(")\n")
+        for action in domain.actions:
+            path.write("(:durative-action %s\n" % action.name)
+            path.write(":parameters %s\n" % action.parameters)
+            path.write(":duration %s\n" % action.action_duration)
+            path.write(":condition %s\n" % action.precondition)
             path.write(":effect %s\n" % action.effect)
             path.write(")\n")               # (:action
         path.write(")\n")               # (define
