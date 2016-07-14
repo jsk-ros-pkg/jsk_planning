@@ -28,11 +28,23 @@
     (send client :wait-for-result)
 
     (when (send (send client :get-result) :sequence)
-      (setq plan (mapcar #'(lambda (x)
-                             (cons (read-from-string (remove #\( (send x :action)))
-                                   (mapcar #'(lambda (y) (read-from-string (remove #\) y)))
-                                           (send x :args))))
-                         (send (send client :get-result) :sequence)))
+      (cond
+       ((send (send client :get-result) :use_durative_action) ;; use durative action
+        (setq plan (mapcar #'(lambda (x)
+                               (cons (read-from-string (send x :start_time))
+                                     (cons (read-from-string (send x :action_duration))
+                                           (cons (read-from-string (send x :action))
+                                                 (mapcar #'(lambda (y) (read-from-string y))
+                                                         (send x :args))))))
+                               (send (send client :get-result) :sequence)))
+        )
+       (t ;; normal action
+        (setq plan (mapcar #'(lambda (x)
+                               (cons (read-from-string (remove #\( (send x :action)))
+                                     (mapcar #'(lambda (y) (read-from-string (remove #\) y)))
+                                             (send x :args))))
+                           (send (send client :get-result) :sequence)))
+        ))
       (when debug
         (pprint (car (send (send client :get-result) :data))))
       (setq ret (append ret (list (cons :plan plan)))))
@@ -48,6 +60,11 @@
       (let ((intersect-condition (reduce #'(lambda(x y) (intersection x y :test #'equal)) step-state)))
         (setq step-state (mapcar #'(lambda(x) (set-differece x intersect-condition)) step-state))))
 
+    (when (send domain :use-durative-action)
+      ;; reset plan to the timeline-actions
+      (setq result (list (cons :plan  (send state :timeline-actions))))
+      (push (cons :durative t) result)
+      )
     (push (cons :step-state step-state) result)
     (push (cons :state state) result)
     result))

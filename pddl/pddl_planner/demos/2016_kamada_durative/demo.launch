@@ -6,6 +6,10 @@
     <param name="pddl_planner"
            value="lpg" />
     <param name="pddl_search_option"
-           value="-n 1 -out result -restarts 3 -nobestfirst -search_steps 50 -i_choice 2" />
+           value="-n 2 -out result -restarts 3 -nobestfirst -search_steps 50 -i_choice 2" />
+  </node>
+  <node pkg="roseus" type="roseus" name="durative_demo"
+        args="$(find pddl_planner)/demos/2016_kamada_durative/demo.l" output="screen">
+    <param name="display_graph" value="true" />
   </node>
 </launch>
