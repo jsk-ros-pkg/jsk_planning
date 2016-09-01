@@ -341,6 +341,7 @@
           actions
           objects
           tl-actions
+          relationship-lst
           use-durative-action
           )
   )
@@ -394,6 +395,8 @@
     objects)
   (:states (&rest args)
     (forward-message-to states args))
+  (:relationship ()
+    relationship-lst)
   (:add-constants ()
     (let (obj (cnst (send domain :constants)) sym)
       (when cnst
@@ -451,6 +454,87 @@
   (:check-type ()
     ;;TODO
     )
+
+  (:generate-relationship ()
+    (let ((cnt 0) pcond action param st)
+      (unless (send self :use-durative-action)
+        (return-from :generate-relationship nil))
+      (dolist (ac tl-actions)
+        (when (member 'start ac)
+          (setq action (find-if #'(lambda (x)
+                                    (equal (caaddr ac) (read-from-string (send x :name))))
+                                (send domain :action)))
+          (setq pcond (send action :precondition))
+          (let (tmp-arg (cnt 0))
+            (dolist (para (car (send action :parameters)))
+              (when (eq 0 (mod cnt 3))
+                (setq tmp-arg (append tmp-arg (list para))))
+              (setq cnt (+ cnt 1)))
+            (setq param (list tmp-arg (cdaddr ac))))
+          (let ((ccnt 0) check-lst)
+            (while t
+              (setq st (elt (send self :states) (- cnt ccnt)))
+              (setq check-lst (mapcar #'(lambda (p)
+                                          (let (ret)
+                                            (setq ret
+                                                  (cond
+                                                   ((or (member (cadr ac) p) (member 'over p))
+                                                    (send self :check-state st p param))
+                                                   (t t)))
+                                            (cond
+                                             ((null ret) ;; exists relationship
+                                              p)
+                                             (t nil))))
+                                      pcond))
+              (cond
+               ((equal st (car (send self :states))) ; initial state
+                (return))
+               ((every #'null check-lst)
+                (setq ccnt (+ ccnt 1)))
+               (t
+                (let (tmp-cl)
+                  (dolist (cl check-lst)
+                    (when cl (setq tmp-cl (append tmp-cl (list (caddr cl))))))
+                  (setq check-lst tmp-cl))
+                (let (tmp-cl)
+                  (dolist (cl check-lst)
+                    (setq tmp-cl
+                          (append
+                           tmp-cl
+                           (list
+                            (cond
+                             ((equal (car cl) 'not)
+                              (cons 'not (list
+                                          (mapcar #'(lambda(x)
+                                                      (let ((pos (position x (car param))))
+                                                        (if pos
+                                                            (elt (cadr param) pos)
+                                                          x)))
+                                                  (cadr cl)))))
+                             (t
+                              (mapcar #'(lambda(x)
+                                          (let ((pos (position x (car param))))
+                                            (if pos
+                                                (elt (cadr param) pos)
+                                              x)))
+                                      cl)))))))
+                  (setq check-lst tmp-cl)
+                  )
+                (setq relationship-lst (append relationship-lst (list (list ac (elt (send self :timeline-actions) (- cnt ccnt)) (car check-lst)))))
+                (when (equal ccnt 0)
+                  (ros::ros-warn "LPG plan error!! action(~A)[~A]'s precondition doesn't match state(~A)[~A]. Error state is ~A." cnt ac (- cnt ccnt) (elt (send self :states) (- cnt ccnt)) (car check-lst))
+                  (setq relationship-lst nil)
+                  (return-from :generate-relationship 'error)
+                  )
+                (return)
+                )))))
+        (setq cnt (+ cnt 1))
+        )
+      t
+      ))
+
+
+
   (:check-condition (st act)
     (let ((action (find-if #'(lambda (x)
                                (equal
@@ -501,7 +585,13 @@
                            (if pos
                                (elt (cadr param) pos)
                              x)))
-                     (caddr s))
+
+
+                     (cond
+                      ((or (member 'over s) (member 'start s) (member 'end s))
+                       (caddr s))
+                      (t
+                       s)))
              )
             (t
              (mapcar #'(lambda(x)
@@ -592,8 +682,10 @@
               (setq tmp-st (send self :change-state tmp-st e param))
               )))
           tmp-st)
-      nil)
-    )
+      (progn (ros::ros-error "Condition Error! Return from :apply-action nil")
+             (return-from :apply-action nil)
+             )))
+
   (:change-state (st e param)
     (let ((ee
            (cond
