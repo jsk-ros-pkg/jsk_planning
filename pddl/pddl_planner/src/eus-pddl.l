@@ -342,6 +342,7 @@
           objects
           tl-actions
           relationship-lst
+          all-relationship-lst
           use-durative-action
           )
   )
@@ -397,6 +398,8 @@
     (forward-message-to states args))
   (:relationship ()
     relationship-lst)
+  (:all-relationship ()
+    all-relationship-lst)
   (:add-constants ()
     (let (obj (cnst (send domain :constants)) sym)
       (when cnst
@@ -455,21 +458,21 @@
     ;;TODO
     )
 
-  (:generate-relationship ()
+  (:generate-single-relationship ()
     (let ((cnt 0) pcond action param st)
       (unless (send self :use-durative-action)
-        (return-from :generate-relationship nil))
+        (return-from :generate-single-relationship nil))
       (dolist (ac tl-actions)
         (when (member 'start ac)
           (setq action (find-if #'(lambda (x)
                                     (equal (caaddr ac) (read-from-string (send x :name))))
                                 (send domain :action)))
           (setq pcond (send action :precondition))
-          (let (tmp-arg (cnt 0))
+          (let (tmp-arg (arg-cnt 0))
             (dolist (para (car (send action :parameters)))
-              (when (eq 0 (mod cnt 3))
+              (when (eq 0 (mod arg-cnt 3))
                 (setq tmp-arg (append tmp-arg (list para))))
-              (setq cnt (+ cnt 1)))
+              (setq arg-cnt (+ arg-cnt 1)))
             (setq param (list tmp-arg (cdaddr ac))))
           (let ((ccnt 0) check-lst)
             (while t
@@ -487,7 +490,7 @@
                                              (t nil))))
                                       pcond))
               (cond
-               ((equal st (car (send self :states))) ; initial state
+               ((or (eq cnt 0) (eq cnt ccnt))
                 (return))
                ((every #'null check-lst)
                 (setq ccnt (+ ccnt 1)))
@@ -524,7 +527,7 @@
                 (when (equal ccnt 0)
                   (ros::ros-warn "LPG plan error!! action(~A)[~A]'s precondition doesn't match state(~A)[~A]. Error state is ~A." cnt ac (- cnt ccnt) (elt (send self :states) (- cnt ccnt)) (car check-lst))
                   (setq relationship-lst nil)
-                  (return-from :generate-relationship 'error)
+                  (return-from :generate-single-relationship 'error)
                   )
                 (return)
                 )))))
@@ -533,7 +536,62 @@
       t
       ))
 
-
+  (:generate-all-relationship ()
+    (let ((cnt 0) pcond action param st)
+      (unless (send self :use-durative-action)
+        (return-from :generate-all-relationship nil))
+      (dolist (ac tl-actions)
+        (when (member 'start ac)
+          (setq action (find-if #'(lambda (x)
+                                    (equal (caaddr ac) (read-from-string (send x :name))))
+                                (send domain :action)))
+          (setq pcond (send action :precondition))
+          (let (tmp-arg (arg-cnt 0))
+            (dolist (para (car (send action :parameters)))
+              (when (eq 0 (mod arg-cnt 3))
+                (setq tmp-arg (append tmp-arg (list para))))
+              (setq arg-cnt (+ arg-cnt 1)))
+            (setq param (list tmp-arg (cdaddr ac))))
+          (dolist (pcon pcond)
+            (let ((ccnt 0) detailed-condition)
+              (while t
+                (setq st (elt (send self :states) (- cnt ccnt)))
+                (when (or (eq cnt 0) (eq cnt ccnt))
+                  (return))
+                (setq ret
+                      (cond
+                       ((or (member (cadr ac) pcon) (member 'over pcon))
+                        (send self :check-state st pcon param))
+                       (t t)))
+                (cond
+                 (ret ;; no relationship
+                  (setq ccnt (+ ccnt 1)))
+                 (t ;; exists relationship
+                  (setq detailed-condition (caddr pcon)) ;; remove (over all), (at start), (at end)
+                  (setq detailed-condition
+                        (cond
+                         ((equal (car detailed-condition) 'not)
+                          (cons 'not (list
+                                      (mapcar #'(lambda(x)
+                                                  (let ((pos (position x (car param))))
+                                                    (if pos
+                                                        (elt (cadr param) pos)
+                                                      x)))
+                                              (cadr detailed-condition)))))
+                         (t
+                          (mapcar #'(lambda(x)
+                                      (let ((pos (position x (car param))))
+                                        (if pos
+                                            (elt (cadr param) pos)
+                                          x)))
+                                  detailed-condition))))
+                  (setq all-relationship-lst (append all-relationship-lst (list (list ac (elt (send self :timeline-actions) (- cnt ccnt)) detailed-condition))))
+                  (return)
+                  ))))))
+        (setq cnt (+ cnt 1))
+        )
+      t
+      ))
 
   (:check-condition (st act)
     (let ((action (find-if #'(lambda (x)

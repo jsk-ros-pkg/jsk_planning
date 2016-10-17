@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find pddl_planner)/demos/2016_kamada_durative/example.launch" />
+  <test test-name="test_2016_kamada_durative" pkg="roseus" type="roseus"
+        args="$(find pddl_planner)/test/test-durative-two-robot-tablecloth.l" time-limit="1000" />
+</launch>
