@@ -1,0 +1,11 @@
+<launch>
+  <node pkg="pddl_planner"
+        type="pddl.py"
+        name="pddl_planner"
+        output="screen">
+    <param name="pddl_planner"
+           value="lpg" />
+    <param name="pddl_search_option"
+           value="-n 1 -out result -restarts 8 -nobestfirst -search_steps 500 -i_choice 2" />
+  </node>
+</launch>

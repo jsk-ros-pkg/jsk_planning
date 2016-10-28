@@ -1,6 +1,7 @@
 #!/usr/bin/env roseus
 (require :pddl-result-graph "package://pddl_planner/src/pddl-result-graph.l")
 (require :eus-pddl-client "package://pddl_planner/src/eus-pddl-client.l")
+(require :tools "package://pddl_planner/demos/2016_kamada_durative/tools.l")
 
 (setq *problem* (instance pddl-problem :init :name 'demo-problem :domain 'demo-domain))
 (send *problem* :objects
@@ -224,110 +225,6 @@
         (tableclothset)
         ))
 
-(defun demo ()
-  (setq *result* (solve-pddl-planning *domain* *problem*))
-  (cond
-   ((equal (send (cdr (assoc :state *result*)) :generate-relationship) 'error)
-    (ros::ros-error "LPG planner error!"))
-   (t
-    (setq *graph* (make-simple-graph *result*))
-    (write-to-dot *graph*)
-    (unix:system (format nil "dot ~A -Tpdf -o ~A" "actionrelation.dot" "actionrelation.pdf"))
-    (piped-fork "gnome-open actionrelation.pdf"))
-    ))
-
-(defun make-simple-graph (result) ;; not use start and end.
-  (let ((relation-lst (send (cdr (assoc :state result)) :relationship))
-        (initial-node (instance arced-node :init :name (format nil "INITIAL")))
-        (start-actions
-         (remove-if #'null
-                      (mapcar #'(lambda (x)
-                                  (when (member 'start x) x))
-                              (assoc :plan result))))
-        (gr (instance pddl-graph :init)))
-    (ros::ros-info "[length] relation-lst:~A start-actions:~A" (length relation-lst) (length start-actions))
-    (dolist (sac start-actions)
-      (unless (find-if-not #'null
-                           (mapcar #'(lambda (x)
-                                       (cond ((equal (send x :name) (format nil "~A ~A" (car sac) (caddr sac))) x)
-                                             (t nil)))
-                                   (send gr :nodes)))
-        (send gr :add-node
-              (instance arced-node :init :name
-                        (format nil "~A ~A" (car sac) (caddr sac))))))
-    ;; add INITIAL
-    (let (first-node)
-      (send gr :add-node initial-node)
-      (setq first-node
-            (find-if-not #'null
-                         (mapcar #'(lambda (x)
-                                     (cond ((equal (send x :name) (format nil "~A ~A"
-                                                                          (car (car start-actions))
-                                                                          (caddr (car start-actions)))) x)
-                                           (t nil)))
-                                 (send gr :nodes))))
-      (send gr :add-arc-from-to initial-node first-node (format nil "")))
-    (dolist (rl relation-lst)
-      (let (from-node to-node)
-        (setq to-node
-              (find-if-not #'null
-                           (mapcar #'(lambda (x)
-                                       (cond ((equal (send x :name) (format nil "~A ~A"
-                                                                            (car (car rl))
-                                                                            (caddr (car rl)))) x)
-                                             (t nil)))
-                                   (send gr :nodes))))
-        (let ((reverse-lst (member to-node (send gr :nodes))))
-          (setq from-node
-                (find-if-not #'null
-                             (mapcar #'(lambda (x)
-                                         (cond ((substringp (format nil "~A" (caddr (cadr rl))) (send x :name)) x)
-                                                         (t nil)))
-                                     reverse-lst)))
-          )
-        (when (and from-node to-node)
-          (send gr :add-arc-from-to from-node to-node (format nil "~A" (cddr rl))))
-        ))
-    ;; link start nodes to initial-node
-    (let ((tmp-nodes (send gr :nodes)))
-      (dolist (nd (send gr :nodes))
-        (dolist (aarc (send nd :arc-list))
-          (setq tmp-nodes (remove (send aarc :to) tmp-nodes :count 1))))
-      (setq tmp-nodes (remove initial-node tmp-nodes :count 1))
-      (dolist (tn tmp-nodes)
-        (send gr :add-arc-from-to initial-node tn (format nil ""))))
-    gr
-    ))
-
-(defun write-to-dot (gr)
-  (let ((node-alist
-         (mapcar #'(lambda (n)
-                     (cons n (string (gensym))))
-                 (send gr :nodes))))
-    (labels ((graphviz-node-name
-              (n)
-              (cdr (assoc n node-alist))))
-      (with-open-file
-       (f "actionrelation.dot" :direction :output)
-       (format f "digraph ~A {~%" "actionrelation")
-       (dolist (nd (send gr :nodes))
-         (format f "   ")
-         (format f "~A [label = \"~A\"];~%"
-                 (graphviz-node-name nd)
-                 (send nd :name)))
-       (let ((drawed-arc nil))
-         (dolist (target-node (send gr :nodes))
-           (let ((neighbors (send target-node :neighbor-action-alist)))
-             (dolist (neighbor neighbors)
-               (format f "   ")
-               (format f "~A -> ~A [label = \"~A\"];~%"
-                       (graphviz-node-name target-node)
-                       (graphviz-node-name (cdr neighbor)) (car neighbor))
-               )))
-         (format f "}~%")
-         t)))))
-
-
-
-
-(demo)
+(warn "~%")
+(warn ";(demo)~%")
+;(demo)
