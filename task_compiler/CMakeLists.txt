@@ -4,12 +4,7 @@ project(task_compiler)
 find_package(catkin REQUIRED COMPONENTS
   roseus_smach)
 
-catkin_package(
-    DEPENDS #
-    CATKIN-DEPENDS # TODO
-    INCLUDE_DIRS # TODO include
-    LIBRARIES # TODO
-)
+catkin_package()
 
 if(CATKIN_ENABLE_TESTING)
   find_package(roslaunch REQUIRED)
