@@ -8,19 +8,13 @@ sudo: required
 matrix:
   fast_finish: true
   include:
-    - dist: precise
-      env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true
-    - dist: precise
-      env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=false
-    - dist: trusty
-      env: ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=true USE_TRAVIS=true
-    - dist: trusty
-      env: ROS_DISTRO=jade ROSWS=wstool BUILDER=catkin USE_DEB=true USE_TRAVIS=true
-    - dist: xenial
-      env: ROS_DISTRO=kinetic ROSWS=wstool BUILDER=catkin USE_DEB=true
+    - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true
+    - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=false
+    - env: ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=true
+    - env: ROS_DISTRO=jade ROSWS=wstool BUILDER=catkin USE_DEB=true
+    - env: ROS_DISTRO=kinetic ROSWS=wstool BUILDER=catkin USE_DEB=true
   allow_failures:
-    - dist: precise
-      env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true
+    - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true
 before_script:
   - export ROS_PARALLEL_JOBS="-j2 -l2"
 script: source .travis/travis.sh
