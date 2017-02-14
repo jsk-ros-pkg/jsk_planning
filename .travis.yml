@@ -12,7 +12,7 @@ matrix:
     - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=false
     - env: ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=true
     - env: ROS_DISTRO=jade ROSWS=wstool BUILDER=catkin USE_DEB=true
-    - env: ROS_DISTRO=kinetic ROSWS=wstool BUILDER=catkin USE_DEB=true
+    - env: ROS_DISTRO=kinetic ROSWS=wstool BUILDER=catkin USE_DEB=true EXTRA_DEB=gawk
   allow_failures:
     - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true
 before_script:
