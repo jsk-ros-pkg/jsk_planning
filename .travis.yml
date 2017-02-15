@@ -5,16 +5,21 @@ notifications:
     on_failure: always
   slack: jsk-robotics:Av7tc8wj3IWkLYvlTzHE7x2g
 sudo: required
-matrix:
-  fast_finish: true
-  include:
-    - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true
-    - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=false
-    - env: ROS_DISTRO=indigo  ROSWS=wstool BUILDER=catkin   USE_DEB=true
-    - env: ROS_DISTRO=jade ROSWS=wstool BUILDER=catkin USE_DEB=true
-    - env: ROS_DISTRO=kinetic ROSWS=wstool BUILDER=catkin USE_DEB=true EXTRA_DEB=gawk
+dist: trusty
+services:
+  - docker
+env:
+  global:
+    - ROS_PARALLEL_JOBS='-j8'
+    - USE_DOCKER=true
+    - EXTRA_DEB=gawk # until https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/85 is released
+  matrix:
+    - ROS_DISTRO=hydro   USE_DEB=true
+    - ROS_DISTRO=indigo  USE_DEB=true
+    - ROS_DISTRO=jade    USE_DEB=true
+    - ROS_DISTRO=kinetic USE_DEB=true
   allow_failures:
-    - env: ROS_DISTRO=hydro  ROSWS=wstool BUILDER=catkin    USE_DEB=true
+    - ROS_DISTRO=hydro   USE_DEB=true
 before_script:
   - export ROS_PARALLEL_JOBS="-j2 -l2"
 script: source .travis/travis.sh
