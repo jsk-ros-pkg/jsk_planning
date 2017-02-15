@@ -14,7 +14,7 @@ env:
     - USE_DOCKER=true
     - EXTRA_DEB=gawk # until https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/85 is released
   matrix:
-    - ROS_DISTRO=hydro   USE_DEB=true
+    - ROS_DISTRO=hydro   USE_DEB=false
     - ROS_DISTRO=indigo  USE_DEB=true
     - ROS_DISTRO=jade    USE_DEB=true
     - ROS_DISTRO=kinetic USE_DEB=true
