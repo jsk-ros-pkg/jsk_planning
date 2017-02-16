@@ -38,19 +38,6 @@
                                                       *failed-nodes* nil)
                                     :debug nil))
 
-#|
-    ;; swap nodes ( check_open <-> check_open_f ) for making task flow
-    (setq act-names (mapcar #'string-upcase
-			    (send-all (send *domain* :action) :name)))
-    (setq act-names
-	  (mapcan
-	   #'(lambda(s)
-	       (if (find (concatenate string s "_F") act-names :test #'string=)
-		   (list (intern s))))
-	   act-names))
-    (when act-names
-      (setq graph (add-failed-nodes result act-names :graph graph)))
-|#
     (send graph :name (send *domain* :name))
     (setq graph (make-readable-graph graph))
 
