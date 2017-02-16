@@ -1,26 +1,33 @@
 <launch>
-  <arg name="action" />
-  <arg name="description" />
-  <arg name="return_success" default=":success" />
-  <arg name="return_fail" default=":fail" />
-  <arg name="planner" default="ffha" />
-  <arg name="use_planner_option" default="false" />
-  <arg name="planner_option" />
-  <arg name="debug" default="false" />
-  <arg name="gui" default="true" />
+  <arg name="action" doc="pddl action file path" />
+  <arg name="description" doc="pddl description file path" />
+  <arg name="return_success" default=":success" doc="return value of success actions" />
+  <arg name="return_fail" default=":fail" doc="return value of failure action" />
+  <arg name="self_return_failure" default="true" doc="add path to return to self on failure" />
+  <arg name="planner" default="ffha" doc="planner type" /> <!-- ff, downward -->
+  <arg name="use_planner_option" default="false" doc="enable arg planner_option"/>
+  <arg name="planner_option" doc="options passed to planner" />
+  <arg name="debug" default="false" doc="enable debug on planning"  />
+  <arg name="iterate" default="false" doc="ask y or n for each action execution" />
+  <arg name="gui" default="true" doc="run viewer" />
 
-  <arg if="$(arg debug)"
-       name="DEBUG_FLAG" value="(setq *pddl-debug* t)" />
-  <arg unless="$(arg debug)"
-       name="DEBUG_FLAG" value="" />
   <include file="$(find pddl_planner)/launch/pddl_$(arg planner).launch">
     <arg name="planner_option" value="$(arg planner_option)" if="$(arg use_planner_option)" />
   </include>
   <node pkg="smach_viewer" name="smach_viewer" type="smach_viewer.py"
         if="$(arg gui)" />
-  <node pkg="task_compiler" name="tc_core" type="execute-pddl-core.l"
-	args='"(progn $(arg DEBUG_FLAG) (run-pddl :action \"$(arg action)\" :description \"$(arg description)\" :return-success $(arg return_success) :return-fail $(arg return_fail)))"'
-	cwd="node" output="screen">
-    <param name="display_graph" value="$(arg gui)" />
+  <node name="tc_core"
+        pkg="task_compiler" type="execute-pddl.l"
+        output="screen" required="true">
+    <rosparam subst_value="true">
+      action_file: $(arg action)
+      description_file: $(arg description)
+      return_success: $(arg return_success)
+      return_fail: $(arg return_fail)
+      self_return_failure: $(arg self_return_failure)
+      iterate: $(arg iterate)
+      debug: $(arg debug)
+      display_graph: $(arg gui)
+    </rosparam>
   </node>
 </launch>
