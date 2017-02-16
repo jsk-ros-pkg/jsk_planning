@@ -1,5 +1,3 @@
-#!/usr/bin/env roseus
-
 (load "package://pddl_planner/src/eus-pddl-client.l")
 (load "package://pddl_planner/src/pddl-result-graph.l")
 
@@ -10,13 +8,15 @@
 
 ;; solve the pddl problem and make graph from PDDL answer
 (defvar *failed-nodes*)
+(defvar *pddl-debug*)
 
 ;;
 ;; solve planning
 ;;
 (defun run-pddl (&key action description goal-condition
-                      (return-success :success) (return-fail :fail)
-                      (add-self-return-failure-path t))
+                   return-success return-fail
+                   display-graph iterate
+                   (add-self-return-failure-path t))
   (let (result problem graph act-names)
     ;; load action-functions, *domain*, *problem*
     (ros::ros-info "load action file [~a]" action)
@@ -45,7 +45,7 @@
     (unix::system "mv action_graph.pdf /tmp/")
     (ros::ros-info "output result to /tmp/action_graph.pdf")
 
-    (when (ros::get-param "~display_graph")
+    (when display-graph
       (piped-fork "gnome-open /tmp/action_graph.pdf"))
 
     (setq *sm* (convert-smach graph
@@ -61,13 +61,10 @@
       (task-compiler/before-run-hook *sm*))
 
      ;; global data is not used (nil)
-    (exec-smach-with-spin *sm* nil :hz 1.0)
+    (setq result (exec-smach-with-spin *sm* nil :hz 1.0 :iterate iterate))
 
     (when (fboundp 'task-compiler/after-run-hook)
       (ros::ros-info "call after-run hook")
       (task-compiler/after-run-hook *sm*))
-
-    (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
-      (ros::exit))
-    )
+  result))
 
