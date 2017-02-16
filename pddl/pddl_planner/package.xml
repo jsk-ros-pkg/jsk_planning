@@ -17,9 +17,6 @@
   <author>Ryohei Ueda (ueda@jsk.t.u-tokyo.ac.jp)</author>
 
   <build_depend>pddl_msgs</build_depend>
-  <build_depend>ff</build_depend>
-  <build_depend>ffha</build_depend>
-  <build_depend>downward</build_depend>
   <build_depend>rospy</build_depend>
   <build_depend>actionlib</build_depend>
 
@@ -27,6 +24,7 @@
   <run_depend>ff</run_depend>
   <run_depend>ffha</run_depend>
   <run_depend>downward</run_depend>
+  <run_depend>lpg_planner</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>actionlib</run_depend>
 
