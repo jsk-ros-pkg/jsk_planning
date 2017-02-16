@@ -67,7 +67,7 @@
                 ;; :use-userdata t
                 ))
     (dump-loadable-structure "/tmp/action_state_machine.l" *sm*)
-    (ros::ros-info "output state-machine *sm* to /tmp/action_state_machine.l"))
+    (ros::ros-info "output state-machine *sm* to /tmp/action_state_machine.l")
 
     (when (fboundp 'task-compiler/before-run-hook)
       (ros::ros-info "call before-run hook")
