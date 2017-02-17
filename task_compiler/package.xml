@@ -1,6 +1,6 @@
 <package>
   <name>task_compiler</name>
-  <version>0.1.7</version>
+  <version>0.1.8</version>
   <description>task_compiler
 
      Compiler that translate task description in PDDL (Planning Domain Description Language) to SMACH (state machine based execution and coordination system) description.</description>

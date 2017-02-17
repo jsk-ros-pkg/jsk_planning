@@ -2,8 +2,8 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.8 (2017-02-17)
+------------------
 * fix for  kinetic (`#52  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/52>`_ )
   * CMakeLists.txt : clean up catkin_package() command
   * add lpg_planner to run_depends and remove planners from build_depends

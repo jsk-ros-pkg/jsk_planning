@@ -2,8 +2,8 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.8 (2017-02-17)
+------------------
 * [task_compiler] add iterate mode (`#49 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/49>`_ )
   * [task_compiler][execute-pddl.launch] add documentations for arguments
   * [task_compiler][execute-pddl.l]
