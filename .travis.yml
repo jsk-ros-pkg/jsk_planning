@@ -13,6 +13,7 @@ env:
     - ROS_PARALLEL_JOBS='-j8'
     - USE_DOCKER=true
     - EXTRA_DEB=gawk # until https://github.com/jsk-ros-pkg/jsk_3rdparty/pull/85 is released
+    -  TEST_PKGS="pddl_planner" # https://github.com/jsk-ros-pkg/jsk_planning/issues
   matrix:
     - ROS_DISTRO=hydro   USE_DEB=false
     - ROS_DISTRO=indigo  USE_DEB=true
