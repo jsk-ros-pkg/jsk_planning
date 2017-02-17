@@ -2,6 +2,12 @@
 Changelog for package pddl_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* make graph for durative action ( `#47  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/47>`_ )
+* add durative action mode ( `#48  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/48>`_ )
+* Contributors: Kamada Hitoshi
+
 0.1.7 (2016-05-28)
 ------------------
 

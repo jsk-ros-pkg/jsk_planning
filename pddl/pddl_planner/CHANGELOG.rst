@@ -2,6 +2,19 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix for  kinetic (`#52  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/52>`_ )
+  * CMakeLists.txt : clean up catkin_package() command
+  * add lpg_planner to run_depends and remove planners from build_depends
+* [pddl_planner] add relationship graph  (`#51  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/51>`_ )
+* add durative-action graph  (`#48  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/48>`_ )
+* make graph for durative action (`#47  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/47>`_ )
+* add durative action mode (`#46  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/46>`_ )
+* [pddl_planner&task_compiler] add test for task_compiler hook
+  functions (`#45  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/45>`_ )
+* Contributors: Kamada Hitoshi, Kei Okada, Yuki Furuta
+
 0.1.7 (2016-05-28)
 ------------------
 * [pddl_planner/demos/2013_fridge_demo/solve-bring-can.l] comment in recovery motion ( `#43  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/43>`_ )

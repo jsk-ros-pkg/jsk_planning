@@ -2,6 +2,11 @@
 Changelog for package pddl_planner_viewer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* CMakeLists.txt : clean up catkin_package() command ( `#52  <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/52>`_ )
+* Contributors: Kei Okada
+
 0.1.7 (2016-05-28)
 ------------------
 

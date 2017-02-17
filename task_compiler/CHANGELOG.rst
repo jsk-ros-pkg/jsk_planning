@@ -2,6 +2,20 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [task_compiler] add iterate mode (`#49 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/49>`_ )
+  * [task_compiler][execute-pddl.launch] add documentations for arguments
+  * [task_compiler][execute-pddl.l]
+    - separate execute-pddl-core.l to main executable for exec from launch file and function implementations
+    - implement iterate mode that asks user before each action execution
+  * [task_compiler][execute-pddl-core.l] cleanup unused codes
+  * [task_compiler][execute-pddl-core.l] fix: unpaired parenthenesses
+* CMakeLists.txt : clean up catkin_package() command (`#52 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/52>`_ )
+* [pddl_planner&task_compiler] add test for task_compiler hook
+  functions (`#45 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/45>`_ )
+* Contributors: Kei Okada, Yuki Furuta
+
 0.1.7 (2016-05-28)
 ------------------
 * [task_compiler/euslisp/execute-pddl-core.l] add hook function call on execution ( `#44 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/44>`_ )
