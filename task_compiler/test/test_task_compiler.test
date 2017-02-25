@@ -8,6 +8,7 @@
     <arg name="debug" value="true" />
     <arg name="iterate" value="false" />
     <arg name="gui" value="false" />
+    <arg name="tc_core_required" value="false" />
   </include>
 
   <test test-name="test_task_compiler" pkg="roseus" type="roseus"
