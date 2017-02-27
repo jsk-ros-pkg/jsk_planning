@@ -18,7 +18,7 @@
         if="$(arg gui)" />
   <node name="tc_core"
         pkg="task_compiler" type="execute-pddl.l"
-        output="screen" required="true">
+        output="screen" >
     <rosparam subst_value="true">
       action_file: $(arg action)
       description_file: $(arg description)
