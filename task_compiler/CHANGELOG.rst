@@ -2,8 +2,8 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.9 (2017-03-01)
+------------------
 * Fix `#55 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/55>`_  execute-pddd.launch: remove require from tc_core (`#58 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/58>`_ )
 * Contributors: Kei Okada
 
