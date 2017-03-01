@@ -2,6 +2,11 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix `#55 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/55>`_  execute-pddd.launch: remove require from tc_core (`#58 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/58>`_ )
+* Contributors: Kei Okada
+
 0.1.8 (2017-02-17)
 ------------------
 * [task_compiler] add iterate mode (`#49 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/49>`_ )
