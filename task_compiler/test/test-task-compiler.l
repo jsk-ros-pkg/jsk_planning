@@ -20,6 +20,7 @@
   (dotimes (i 30)
     (when (eq (length *msg*) 7)
       (return))
+    (ros::ros-info "waiting task finish ~A / 7 (timeout: ~A / 30)" (length *msg*) i)
     (ros::spin-once)
     (ros::sleep))
   (warn "~% (length *msg*) is ~A" (length *msg*))
