@@ -11,13 +11,16 @@
   (ros::publish "look"
                 (instance std_msgs::String :init
                           :data (format nil "(look ~A)" obj)))
-  (setq *look-success?* (null *look-success?*)))
+  (setq *look-success?* (null *look-success?*))
+  (if *look-success?*
+      t :fail))
 
 (defun push-button (obj)
   (ros::publish "push_button"
                 (instance std_msgs::String :init
                           :data (format nil "(push-button ~A)" obj)))
-  (setq *push-success?* (null *push-success?*)))
+  (setq *push-success?* (null *push-success?*))
+  (if *push-success?* t :fail))
 
 (defun task-compiler/after-init-hook ()
   ;; this function is called when task_compiler is initialized

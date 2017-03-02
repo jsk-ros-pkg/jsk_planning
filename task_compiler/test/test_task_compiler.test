@@ -4,7 +4,7 @@
     <arg name="description" value="$(find pddl_planner)/demos/simple_failure_torelant/solve-simple-failure-torelant.l"/>
     <arg name="planner" value="downward" />
     <arg name="return_success" value="true" />
-    <arg name="return_fail" value="false" />
+    <arg name="return_fail" value=":fail" />
     <arg name="debug" value="true" />
     <arg name="iterate" value="false" />
     <arg name="gui" value="false" />

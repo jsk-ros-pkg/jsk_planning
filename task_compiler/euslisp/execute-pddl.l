@@ -5,9 +5,11 @@
 (ros::roseus "execute_pddl")
 (require :execute-pddl-core "package://task_compiler/euslisp/execute-pddl-core.l")
 
-(defmacro load-param (sym pname &optional required defval)
+(defmacro load-param (sym pname &optional required defval eval)
   `(progn
      (setq ,sym (ros::get-param ,pname ,defval))
+     (when (and ,eval (stringp ,sym))
+       (setq ,sym (read-from-string ,sym)))
      (when (and ,required (null ,sym))
        (ros::ros-error "param ~A must be set" ,pname)
        (exit 1))
@@ -17,8 +19,8 @@
 (load-param *action-file* "~action_file" t)
 (load-param *description-file* "~description_file" t)
 (load-param *pddl-debug* "~debug" nil nil)
-(load-param *return-success* "~return_success" nil :success)
-(load-param *return-fail* "~return_fail" nil :fail)
+(load-param *return-success* "~return_success" nil :success t)
+(load-param *return-fail* "~return_fail" nil :fail t)
 (load-param *self-return-failure* "~self_return_failre" nil t)
 (load-param *display-graph* "~display_graph" nil nil)
 (load-param *iterate* "~iterate" nil nil)
