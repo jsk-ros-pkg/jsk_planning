@@ -2,6 +2,11 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [task_compiler] fix: symbol is compared with string (`#60 <https://github.com/jsk-ros-pkg/jsk_planning/issues/60>`_)
+* Contributors: Yuki Furuta
+
 0.1.9 (2017-03-01)
 ------------------
 * Fix `#55 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/55>`_  execute-pddd.launch: remove require from tc_core (`#58 <https://github.com/jsk-ros-pkg/jsk_pr2eus/issues/58>`_ )
