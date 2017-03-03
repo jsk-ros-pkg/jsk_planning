@@ -2,8 +2,8 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.10 (2017-03-03)
+-------------------
 * [task_compiler] fix: symbol is compared with string (`#60 <https://github.com/jsk-ros-pkg/jsk_planning/issues/60>`_)
 * Contributors: Yuki Furuta
 
