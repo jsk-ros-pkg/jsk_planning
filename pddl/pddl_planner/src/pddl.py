@@ -71,6 +71,7 @@ class PDDLPlannerActionServer(object):
                        for y in [re.search("\([^\)]+\)", x)
                                  for x in step_before_after[1].split("Total cost")[0].split("\n")[1:]]
                        if y != None]
+            results = filter(lambda a: a.find("(REACH-GOAL)") < 0, results)
             rospy.loginfo("result => %s" % results)
             return results
         else:
