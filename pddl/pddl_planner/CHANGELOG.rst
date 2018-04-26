@@ -2,6 +2,11 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* pddl_planner: pddl.py: remove (REACH-GOAL) on action which emerges occasionally (`#61 <https://github.com/jsk-ros-pkg/jsk_planning/issues/61>`_)
+* Contributors: Yuki Furuta
+
 0.1.10 (2017-03-03)
 -------------------
 * [task_compiler] fix: symbol is compared with string (`#60 <https://github.com/jsk-ros-pkg/jsk_planning/issues/60>`_)
