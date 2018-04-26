@@ -2,8 +2,8 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.11 (2018-04-26)
+-------------------
 * pddl_planner: pddl.py: remove (REACH-GOAL) on action which emerges occasionally (`#61 <https://github.com/jsk-ros-pkg/jsk_planning/issues/61>`_)
 * Contributors: Yuki Furuta
 
