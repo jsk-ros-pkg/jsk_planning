@@ -1,5 +1,9 @@
 (require :eus-pddl-client "package://pddl_planner/src/eus-pddl-client.l")
 
+(defvar *domain* nil "pddl domain")
+(defvar *problem* nil "pddl problem")
+(defvar *failed-nodes* nil "pddl failed nodes")
+
 (defclass pddl-graph
   :super graph
   :slots (cntr))
@@ -107,17 +111,20 @@
           )))
     gr))
 
-(defun append-failed-result (result act &key (act-fail) (additional-conditions) ((:graph gr)) (node-name))
+(defun append-failed-result (result act
+                             &key (act-fail) (additional-conditions)
+                               ((:graph gr)) (node-name)
+                               (domain *domain*) ((:problem prob) *problem*))
   (let ((ret (if act-fail
                  (make-failed-condition result act :act-fail act-fail)
                (make-failed-condition result act)))
         res lst
-        (problem (copy-object *problem*)))
+        (problem (copy-object prob)))
 
     (dolist (r ret)
       (send problem :initial-condition (cdr (assoc :initial-condition r)))
 
-      (setq res (solve-pddl-planning *domain* problem :optimize-state nil))
+      (setq res (solve-pddl-planning domain problem :optimize-state nil))
 
       ;; do not add the condition already exists
       (when (not (send gr :search-node-from-pddl-state (cadr (assoc :step-state res))))
@@ -133,7 +140,9 @@
       )
     lst))
 
-(defun add-failed-nodes (result failed-action-list &key ((:graph gr) (instance pddl-graph :init)))
+(defun add-failed-nodes (result failed-action-list
+                         &key ((:graph gr) (instance pddl-graph :init))
+                           (domain *domain*) (problem *problem*))
   (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint :graph gr)) ;; original plan
         (results (list result)))
     (let ((count 0) (count2 -1))
@@ -142,9 +151,13 @@
           (dolist (failed-action failed-action-list)
             (dolist (r results)
               (let ((ret (if (atom failed-action)
-                             (append-failed-result r failed-action :graph graph :node-name :pprint)
-                           (append-failed-result r (car failed-action) :act-fail (cdr failed-action)
-                                                 :graph graph :node-name :pprint)
+                             (append-failed-result r failed-action
+                                                   :graph graph :node-name :pprint
+                                                   :domain domain :problem problem)
+                             (append-failed-result r (car failed-action)
+                                                   :act-fail (cdr failed-action)
+                                                   :graph graph :node-name :pprint
+                                                   :domain domain :problem problem)
                            )))
                 (if ret (setq lst (append lst ret))))))
           ;;(setq results (append lst results)) ;; ??
@@ -192,16 +205,18 @@
     ))
 
 (defun pddl-plan-to-graph (goal-condition
-                           &key (domain *domain*) (problem *problem*)
-                           (failed-nodes) (readable t) (debug))
-  (let ((now-problem (copy-object problem))
+                           &key (domain *domain*) ((:problem problem-orig) *problem*)
+                             (failed-nodes *failed-nodes*) (readable t) (debug))
+  (assert (derivedp domain pddl-domain) "domain not provided")
+  (assert (derivedp problem-orig pddl-problem) "problem not provided")
+  (let ((problem (copy-object problem-orig))
         result ret)
-    (if goal-condition (send now-problem :goal-condition goal-condition))
+    (if goal-condition (send problem :goal-condition goal-condition))
 
-    (setq result (solve-pddl-planning domain now-problem))
+    (setq result (solve-pddl-planning domain problem))
     (setq ret (make-graph-from-pddl-results (list result) :node-name :pprint))
     (if failed-nodes
-        (setq ret (add-failed-nodes result failed-nodes)))
+        (setq ret (add-failed-nodes result failed-nodes :domain domain :problem problem)))
     (if readable (make-readable-graph ret :copy nil))
     (when debug
       (setq *result* result)
