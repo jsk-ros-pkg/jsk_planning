@@ -10,7 +10,7 @@ install(DIRECTORY launch demos src samples test
         USE_SOURCE_PERMISSIONS)
 
 if(CATKIN_ENABLE_TESTING)
-  find_package(catkin REQUIRED COMPONENTS rostest)
+  find_package(rostest REQUIRED)
   add_rostest(test/test-simple-failure-torelant.test)
   add_rostest(test/test-sample-pddl.test)
   add_rostest(test/test-durative-two-robot-tablecloth.test)
