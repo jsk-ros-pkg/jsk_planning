@@ -125,19 +125,29 @@
       (send problem :initial-condition (cdr (assoc :initial-condition r)))
 
       (setq res (solve-pddl-planning domain problem :optimize-state nil))
-
-      ;; do not add the condition already exists
+      ;;
+      ;; if no recovery action is found, use only the failed state/action as the result
+      (unless (assoc :plan res)
+        (labels ((set-alist (k v alist)
+                   (let ((cur-cons (assoc k alist)))
+                     (if cur-cons
+                         (progn (setf (cdr cur-cons) v) alist)
+                         (nconc alist (list (cons k v)))))))
+          (set-alist :step-state (list (cdr (assoc :dst-condition r))) res)
+          (set-alist :plan (list (cdr (assoc :act-fail r))) res)))
+      ;;
+      ;; add the recovered plan to the main graph
+      ;; do not add the condition if it already exists (i.e.: transition to the same state)
       (when (not (send gr :search-node-from-pddl-state (cadr (assoc :step-state res))))
         (push res lst)
         (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name)))
-      #|(when res
-        (push res lst)
-        (setq gr (make-graph-from-pddl-results (list res) :graph gr :node-name node-name)))|#
+      ;;
+      ;; add transition from the last valid state to the failed state via the failed action
       (send gr :add-arc-from-to
             (send gr :search-node-from-pddl-state (cdr (assoc :src-condition r)))
             (send gr :search-node-from-pddl-state (cadr (assoc :step-state res)))
             (format nil "~A" (cdr (assoc :act-fail r))))
-      )
+      ) ;; dolist
     lst))
 
 (defun add-failed-nodes (result failed-action-list
