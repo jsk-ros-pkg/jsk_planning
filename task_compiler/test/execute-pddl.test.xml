@@ -4,6 +4,7 @@
     <arg name="description" value="null"/>
     <arg name="planner_option" value="null"/>
     <arg name="gui" value="false"/>
+    <arg name="exit_on_finish" value="false"/>
   </include>
 </launch>
 

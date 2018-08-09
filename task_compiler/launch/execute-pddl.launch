@@ -10,6 +10,7 @@
   <arg name="debug" default="false" doc="enable debug on planning"  />
   <arg name="iterate" default="false" doc="ask y or n for each action execution" />
   <arg name="gui" default="true" doc="run viewer" />
+  <arg name="exit_on_finish" default="true" doc="exit on the end of task performance if enabled"/>
 
   <include file="$(find pddl_planner)/launch/pddl_$(arg planner).launch">
     <arg name="planner_option" value="$(arg planner_option)" if="$(arg use_planner_option)" />
@@ -18,6 +19,7 @@
         if="$(arg gui)" />
   <node name="tc_core"
         pkg="task_compiler" type="execute-pddl.l"
+        required="$(arg exit_on_finish)"
         output="screen" >
     <rosparam subst_value="true">
       action_file: $(arg action)
