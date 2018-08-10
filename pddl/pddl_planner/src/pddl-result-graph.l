@@ -114,7 +114,7 @@
 (defun append-failed-result (result act
                              &key (act-fail) (additional-conditions)
                                ((:graph gr)) (node-name)
-                               (domain *domain*) ((:problem prob) *problem*))
+                               (domain *domain*) ((:problem prob) *problem*) (timeout 0))
   (let ((ret (if act-fail
                  (make-failed-condition result act :act-fail act-fail)
                (make-failed-condition result act)))
@@ -124,7 +124,7 @@
     (dolist (r ret)
       (send problem :initial-condition (cdr (assoc :initial-condition r)))
 
-      (setq res (solve-pddl-planning domain problem :optimize-state nil))
+      (setq res (solve-pddl-planning domain problem :optimize-state nil :timeout timeout))
       ;;
       ;; if no recovery action is found, use only the failed state/action as the result
       (unless (assoc :plan res)
@@ -152,7 +152,7 @@
 
 (defun add-failed-nodes (result failed-action-list
                          &key ((:graph gr) (instance pddl-graph :init))
-                           (domain *domain*) (problem *problem*))
+                           (domain *domain*) (problem *problem*) (timeout 0))
   (let ((graph (make-graph-from-pddl-results (list result) :node-name :pprint :graph gr)) ;; original plan
         (results (list result)))
     (let ((count 0) (count2 -1))
@@ -163,11 +163,11 @@
               (let ((ret (if (atom failed-action)
                              (append-failed-result r failed-action
                                                    :graph graph :node-name :pprint
-                                                   :domain domain :problem problem)
+                                                   :domain domain :problem problem :timeout timeout)
                              (append-failed-result r (car failed-action)
                                                    :act-fail (cdr failed-action)
                                                    :graph graph :node-name :pprint
-                                                   :domain domain :problem problem)
+                                                   :domain domain :problem problem :timeout timeout)
                            )))
                 (if ret (setq lst (append lst ret))))))
           ;;(setq results (append lst results)) ;; ??
@@ -216,17 +216,17 @@
 
 (defun pddl-plan-to-graph (goal-condition
                            &key (domain *domain*) ((:problem problem-orig) *problem*)
-                             (failed-nodes *failed-nodes*) (readable t) (debug))
+                             (failed-nodes *failed-nodes*) (readable t) (debug) (timeout 0))
   (assert (derivedp domain pddl-domain) "domain not provided")
   (assert (derivedp problem-orig pddl-problem) "problem not provided")
   (let ((problem (copy-object problem-orig))
         result ret)
     (if goal-condition (send problem :goal-condition goal-condition))
 
-    (setq result (solve-pddl-planning domain problem))
+    (setq result (solve-pddl-planning domain problem :timeout timeout))
     (setq ret (make-graph-from-pddl-results (list result) :node-name :pprint))
     (if failed-nodes
-        (setq ret (add-failed-nodes result failed-nodes :domain domain :problem problem)))
+        (setq ret (add-failed-nodes result failed-nodes :domain domain :problem problem :timeout timeout)))
     (if readable (make-readable-graph ret :copy nil))
     (when debug
       (setq *result* result)

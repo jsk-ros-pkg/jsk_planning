@@ -13,7 +13,7 @@
       (instance ros::simple-action-client :init
                 "pddl_planner" pddl_msgs::PDDLPlannerAction))
 
-(defun pddl-planning (domain problem &key (client *action-client*) (debug))
+(defun pddl-planning (domain problem &key (client *action-client*) (debug) (timeout 0))
   (let (plan ret)
     (warning-message 1 "waiting pddl_planner~%")
     (send client :wait-for-server)
@@ -21,11 +21,8 @@
     (let ((goal (instance pddl_msgs::PDDLPlannerActionGoal :init)))
       (send goal :goal :domain (send domain :ros-message))
       (send goal :goal :problem (send problem :ros-message))
-      (send client :send-goal goal)
-      (warning-message 1 "sent goal~%"))
-
-    (warning-message 1 "waiting goal...~%")
-    (send client :wait-for-result)
+      (warning-message 1 "send goal and waiting...~%")
+      (send client :send-goal-and-wait goal :timeout timeout))
 
     (when (send (send client :get-result) :sequence)
       (cond
@@ -51,8 +48,8 @@
     ret))
 
 (defun solve-pddl-planning (domain problem &key (client *action-client*) (debug)
-                                   (optimize-state nil))
-  (let* ((result (pddl-planning domain problem :client client :debug debug))
+                                   (optimize-state nil) (timeout 0))
+  (let* ((result (pddl-planning domain problem :client client :debug debug :timeout timeout))
          (state (instance pddl-state :init :domain domain :initial-state (send problem :initial-condition) :actions (cdr (assoc :plan result)) :objects (send problem :objects)))
          (step-state (send state :generate-states)))
 
