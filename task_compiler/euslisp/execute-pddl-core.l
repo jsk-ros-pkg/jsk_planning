@@ -36,7 +36,8 @@
     (setq graph (pddl-plan-to-graph nil :domain *domain* :problem problem
                                     :failed-nodes (if *failed-nodes*
                                                       *failed-nodes* nil)
-                                    :debug nil))
+                                    :debug nil
+                                    :timeout 10))
 
     (send graph :name (send *domain* :name))
     (setq graph (make-readable-graph graph))
