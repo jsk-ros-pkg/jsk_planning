@@ -6,6 +6,7 @@ import re
 import signal
 import subprocess as sp
 import tempfile
+import traceback
 
 try:
     from pddl_msgs.msg import *
@@ -70,6 +71,7 @@ class PDDLPlannerActionServer(object):
             self._as.set_aborted()
         except Exception as e:
             rospy.logerr("Unhandled Error: %s" % e)
+            rospy.logerr(traceback.format_exc())
             self._as.set_aborted()
 
     def parse_pddl_result(self, output):
@@ -145,7 +147,12 @@ class PDDLPlannerActionServer(object):
             output, error = proc.communicate()
             if proc.poll() != 0:
                 # process exited abnormally
-                raise RuntimeError(error)
+                msg  = "Output:\n" + output + "\n"
+                msg += "Error:\n" + error + "\n"
+                msg += "Exit code: {}\n".format(proc.poll())
+                msg += "To reproduce the error, run:\n"
+                msg += " ".join(command)
+                raise RuntimeError(msg)
             return output
         finally:
             self.kill_process(proc)
