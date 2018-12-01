@@ -69,6 +69,7 @@ class PDDLPlannerActionServer(object):
                                                   args = x.split(' ')[1:])
                                          for x in result]
             self._as.set_succeeded(self._result)
+            rospy.loginfo("action finished with success")
         except ActionPreemptedException:
             rospy.loginfo("action preempted")
             self._as.set_preempted()
@@ -250,6 +251,7 @@ class PDDLPlannerActionServer(object):
             problem_file = self.gen_tmp_problem_pddl_file(problem)
             domain_file = self.gen_tmp_durative_domain_pddl_file(domain)
             return (problem_file, domain_file)
+
     def gen_problem_objects_strings(self, objects):
         # objects = list of PDDLObject
         # PDDLObject has name and type
