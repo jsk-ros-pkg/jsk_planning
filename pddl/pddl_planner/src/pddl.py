@@ -37,13 +37,14 @@ class PDDLPlannerActionServer(object):
     _result = PDDLPlannerResult()
     def __init__(self, name):
         self._action_name = name
-        self._as = actionlib.SimpleActionServer(self._action_name,
-                                                PDDLPlannerAction,
-                                                self.execute_cb)
+        self._as = actionlib.SimpleActionServer(
+            self._action_name, PDDLPlannerAction, self.execute_cb, auto_start=False)
         # resolve rosparam
         self._planner_name = rospy.get_param('~pddl_planner', 'downward')
         search_option = rospy.get_param('~pddl_search_option', '')
         self._search_option = search_option.strip().split()
+
+        self._as.start()
 
     def execute_cb(self, goal):
         try:
