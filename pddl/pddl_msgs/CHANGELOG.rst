@@ -2,6 +2,13 @@
 Changelog for package pddl_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Merge pull request `#70 <https://github.com/jsk-ros-pkg/jsk_planning/issues/70>`_ from furushchev/detail-error
+  Add max_planning_time option
+* pddl_planner: fix deadlock on planning process
+* Contributors: Furushchev, Kei Okada
+
 0.1.11 (2018-04-26)
 -------------------
 

@@ -2,6 +2,20 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Set timeout for planning in task_compiler (`#69 <https://github.com/jsk-ros-pkg/jsk_planning/issues/69>`_)
+
+  * task_compiler: set timeout for planning
+  * task_compiler: add option exit_on_finish
+
+* Fix testing (`#65 <https://github.com/jsk-ros-pkg/jsk_planning/issues/65>`_)
+
+  * fix miss configuration in test
+  * remove unused files
+
+* Contributors: Yuki Furuta
+
 0.1.11 (2018-04-26)
 -------------------
 

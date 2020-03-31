@@ -2,6 +2,28 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add max_planning_time option (`#70 <https://github.com/jsk-ros-pkg/jsk_planning/issues/70>`_)
+
+  * pddl_planner: revert run_depend
+  * pddl.py: disable auto_start
+  * add detailed infor!
+  * pddl_planner: fix deadlock on planning process
+  * pddl.py: print detailed info on error
+
+* Set timeout for planning in task_compiler (`#69 <https://github.com/jsk-ros-pkg/jsk_planning/issues/69>`_)
+
+  * pddl_planner: add timeout for planning function
+
+* Fix: add failed state if no recovery action exists (`#66 <https://github.com/jsk-ros-pkg/jsk_planning/issues/66>`_)
+
+  * pddl_planner: fix use global variables in function
+
+* Fix miss configuration in test (`#65 <https://github.com/jsk-ros-pkg/jsk_planning/issues/65>`_)
+
+* Contributors: Yuki Furuta
+
 0.1.11 (2018-04-26)
 -------------------
 * pddl_planner: pddl.py: remove (REACH-GOAL) on action which emerges occasionally (`#61 <https://github.com/jsk-ros-pkg/jsk_planning/issues/61>`_)
