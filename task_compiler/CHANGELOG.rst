@@ -2,8 +2,8 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.12 (2020-04-01)
+-------------------
 * Set timeout for planning in task_compiler (`#69 <https://github.com/jsk-ros-pkg/jsk_planning/issues/69>`_)
 
   * task_compiler: set timeout for planning

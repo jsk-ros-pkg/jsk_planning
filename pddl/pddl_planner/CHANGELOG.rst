@@ -2,8 +2,8 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.12 (2020-04-01)
+-------------------
 * Add max_planning_time option (`#70 <https://github.com/jsk-ros-pkg/jsk_planning/issues/70>`_)
 
   * pddl_planner: revert run_depend
