@@ -1,6 +1,7 @@
 # goal
 pddl_msgs/PDDLDomain domain
 pddl_msgs/PDDLProblem problem
+duration max_planning_time
 ---
 #result
 string[] data

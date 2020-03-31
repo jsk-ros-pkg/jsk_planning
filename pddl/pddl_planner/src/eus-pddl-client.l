@@ -21,8 +21,9 @@
     (let ((goal (instance pddl_msgs::PDDLPlannerActionGoal :init)))
       (send goal :goal :domain (send domain :ros-message))
       (send goal :goal :problem (send problem :ros-message))
+      (send goal :goal :max_planning_time (ros::time timeout))
       (warning-message 1 "send goal and waiting...~%")
-      (send client :send-goal-and-wait goal :timeout timeout))
+      (send client :send-goal-and-wait goal :timeout (+ 3.0 timeout)))
 
     (when (send (send client :get-result) :sequence)
       (cond
