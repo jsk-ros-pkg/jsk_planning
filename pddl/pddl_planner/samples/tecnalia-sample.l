@@ -12,10 +12,10 @@
 (send *problem* :objects
       '((nat    . object)
         (screw  . object)
-	(desk   . object)
-	(hole   . object)
-	(l-arm  . object)
-	(r-arm  . object)
+        (desk   . object)
+        (hole   . object)
+        (l-arm  . object)
+        (r-arm  . object)
        ))
 
 ;;初期条件
@@ -36,7 +36,7 @@
 (send *domain* :requirements '(:typing)) ;; ??
 (send *domain* :types '(object))
 (send *domain* :predicates '((on ?obj ?arm ?from - object)
-			     (in ?obj ?arm ?to - object)
+                             (in ?obj ?arm ?to - object)
                              (clear ?obj - object)
                              (hold ?obj0 ?arm - object)
                              (screwed ?obj0 ?obj1 - object)))
@@ -48,25 +48,25 @@
                                        )
                        :effect '((not (on ?obj ?arm ?from))
                                  (clear ?from)
-				 (hold ?obj ?arm)
-				 )))
+                                 (hold ?obj ?arm)
+                                 )))
 (setq *insert* (instance pddl-action :init ;;
                        :name "insert"
                        :parameters '((?obj ?arm ?to object))
                        :precondition '((hold ?obj ?arm)
                                        )
                        :effect '((not (hold ?obj ?arm))
-				 (in ?obj ?arm ?to)
-				 )))
+                                 (in ?obj ?arm ?to)
+                                 )))
 (setq *screw* (instance pddl-action :init ;;
                        :name "screw"
                        :parameters '((?obj1 ?obj2 object))
                        :precondition '(
-				       (in ?obj1 l-arm hole)
-				       (in ?obj2 r-arm hole)
-				       )
+                                       (in ?obj1 l-arm hole)
+                                       (in ?obj2 r-arm hole)
+                                       )
                        :effect '((screwed ?obj1 ?obj2)
-				 )))
+                                 )))
 ;;add action to domain
 (send *domain* :add :action *pick*)
 (send *domain* :add :action *insert*)
