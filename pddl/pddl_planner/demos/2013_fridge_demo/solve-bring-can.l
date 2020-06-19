@@ -54,29 +54,15 @@
                  :effect '((ONHAND ?OBJ)))
 
        (instance pddl-action :init
-                 :name "grasp_f"
-                 :parameters '((?OBJ object))
-                 :precondition '((NOT (ONHAND ?OBJ))
-                                 (NOT (CLOSED))
-                                 (AT PREGRASP))
-                 :effect '())
-
-       (instance pddl-action :init
                  :name "move-to"
                  :parameters '((?FROM ?TO spot))
                  :precondition '((AT ?FROM)
                                  (NOT (= ?FROM SOMEWHERE))
+                                 (NOT (= ?TO SOMEWHERE))
                                  (NOT (= ?FROM ?TO)))
                  :effect '((AT ?TO)
                            (NOT (AT ?FROM))))
-       (instance pddl-action :init
-                 :name "move-to_f"
-                 :parameters '((?FROM ?TO spot))
-                 :precondition '((AT ?FROM)
-                                 (NOT (= ?TO SOMEWHERE))
-                                 (NOT (= ?FROM ?TO)))
-                 :effect '((AT SOMEWHERE)
-                           (NOT (AT ?FROM))))
+
        (instance pddl-action :init
                  :name "move-recoverly"
                  :parameters '()
@@ -84,13 +70,6 @@
                                  (CLOSED))
                  :effect '((AT FRONTFRIDGE)
                            (NOT (AT SOMEWHERE))))
-
-       (instance pddl-action :init
-                 :name "move_rec_f"
-                 :parameters '()
-                 :precondition '((AT SOMEWHERE)
-                                 (CLOSED))
-                 :effect '())
 
        (instance pddl-action :init
                  :name "open-door"
@@ -101,14 +80,6 @@
                  :effect '((NOT (CLOSED))))
 
        (instance pddl-action :init
-                 :name "open_f"
-                 :parameters '()
-                 :precondition '((AT FRONTFRIDGE)
-                                 (NOT (ONHAND CAN))
-                                 (CLOSED))
-                 :effect '())
-
-       (instance pddl-action :init
                  :name "close-door"
                  :parameters '()
                  :precondition '((NOT (CLOSED))
@@ -116,25 +87,11 @@
                  :effect '((CLOSED)))
 
        (instance pddl-action :init
-                 :name "close_f"
-                 :parameters '()
-                 :precondition '((NOT (CLOSED))
-                                 (AT PRECLOSE))
-                 :effect '())
-
-       (instance pddl-action :init
                  :name "try-close"
                  :parameters '()
                  :precondition '((NOT (CLOSED))
                                  (AT SOMEWHERE))
                  :effect '((CLOSED)))
-
-       (instance pddl-action :init
-                 :name "close_try_f"
-                 :parameters '()
-                 :precondition '((NOT (CLOSED))
-                                 (AT SOMEWHERE))
-                 :effect '())
 
        ))
 ;;add action to domain
@@ -144,7 +101,57 @@
 ;;
 ;; solve planning
 ;;
-(setq *failed-nodes* (list 'move-to))
+(setq *failed-nodes*
+      (list
+       (list 'move-to
+             (instance pddl-action :init
+                       :name "move-to_f"
+                       :parameters '((?FROM ?TO spot))
+                       :precondition '((AT ?FROM)
+                                       (NOT (= ?FROM SOMEWHERE))
+                                       (NOT (= ?TO SOMEWHERE))
+                                       (NOT (= ?FROM ?TO)))
+                       :effect '((AT SOMEWHERE)
+                                 (NOT (AT ?FROM)))))
+       (list 'grasp-object
+             (instance pddl-action :init
+                       :name "grasp_f"
+                       :parameters '((?OBJ object))
+                       :precondition '((NOT (ONHAND ?OBJ))
+                                 (NOT (CLOSED))
+                                       (AT PREGRASP))
+                       :effect '()))
+       (list 'move-recoverly
+             (instance pddl-action :init
+                       :name "move_rec_f"
+                       :parameters '()
+                       :precondition '((AT SOMEWHERE)
+                                       (CLOSED))
+                       :effect '()))
+       (list 'open-door
+             (instance pddl-action :init
+                       :name "open_f"
+                       :parameters '()
+                       :precondition '((AT FRONTFRIDGE)
+                                       (NOT (ONHAND CAN))
+                                       (CLOSED))
+                       :effect '()))
+
+       (list 'close-door
+             (instance pddl-action :init
+                       :name "close_f"
+                       :parameters '()
+                       :precondition '((NOT (CLOSED))
+                                       (AT PRECLOSE))
+                       :effect '()))
+       (list 'try-close
+             (instance pddl-action :init
+                       :name "close_try_f"
+                       :parameters '()
+                       :precondition '((NOT (CLOSED))
+                                       (AT SOMEWHERE))
+                       :effect '()))
+      ))
 (setq *graph*
       (pddl-plan-to-graph nil :domain *domain* :problem *problem* :failed-nodes *failed-nodes* :debug t))
 (pprint *result*)
