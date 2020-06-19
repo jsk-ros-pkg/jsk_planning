@@ -1,0 +1,12 @@
+<launch>
+  <arg name="viewer" default="true" />
+  <include file="$(find pddl_planner)/launch/pddl_downward.launch" />
+  <node name="demo_search_object" pkg="roseus" type="roseus"
+        args="$(find pddl_planner)/demos/search_object/solve-search-object.l"
+        output="screen">
+    <param name="display_graph" value="$(arg viewer)" />
+  </node>
+
+  <node pkg="smach_viewer" name="smach_viewer"
+        type="smach_viewer.py" if="$(arg viewer)" />
+</launch>
