@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
+  <node pkg="pddl_planner" name="solve_simple_metric"
+        type="simple_metric_plan.l" >
+  </node>
+</launch>
