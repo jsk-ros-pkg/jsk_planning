@@ -173,20 +173,27 @@ $ roslaunch pddl_planner demo_cooperation_task.launch demo:=kitchen_car
         ))
 
 (cond
- ;; 終了条件1:
- ;; 最後、書類が事務室にあり、かつ、fetchが73B2に戻ってくる
+ ;; 事務室デモ
+ ;; 初期条件の追加：最初、書類が73B2にある。
+ ;; 終了条件：最後、書類が事務室にあり、かつ、fetchが73B2に戻ってくる
  ((equal (ros::get-param "~demo") "office")
-  (send *problem* :goal-condition
+  (setq *initial-condition* (cons '(item-in-place document room-73b2) *initial-condition*))
+  (setq *goal-condition*
         '((robot-in-place fetch room-73b2)
           (item-in-place document office))))
- ;; 終了条件2
- ;; 最後、弁当箱が73B2にある。
+ ;; キッチンカーデモ
+ ;; 初期条件の追加：最初、お弁当がキッチンカーがある。
+ ;; 終了条件：最後、弁当箱が73B2にある。
  ((equal (ros::get-param "~demo") "kitchen_car")
-  (send *problem* :goal-condition
+  (setq *initial-condition* (cons '(item-in-place lunch-box kitchen-car) *initial-condition*))
+  (setq *goal-condition*
         '((item-in-place lunch-box room-73b2))))
  (t
   (ros::ros-error "Invalid rosparam for ~demo")
   (exit)))
+
+(send *problem* :initial-condition *initial-condition*)
+(send *problem* :goal-condition *goal-condition*)
 
 ;; solve planning
 (send *problem* :metric '(minimize (total-cost)))
