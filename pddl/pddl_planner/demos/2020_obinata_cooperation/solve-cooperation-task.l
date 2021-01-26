@@ -47,23 +47,6 @@ $ roslaunch pddl_planner demo_cooperation_task.launch demo:=kitchen_car
 ;; making action
 (setq *actions*
       (list
-       (setq *fetch-move* (instance pddl-action :init
-                              :name "fetch-move"
-                              :parameters '((?from ?to place))
-                              :precondition '((robot-in-place fetch ?from)
-                                              (can-move ?from ?to))
-                              :effect '((robot-in-place fetch ?to)
-                                        (not (robot-in-place fetch ?from))
-                                        (increase (total-cost) (move-cost fetch ?from ?to)))))
-       (setq *spot-move* (instance pddl-action :init
-                              :name "spot-move"
-                              :parameters '((?from ?to place))
-                              :precondition '((robot-in-place spot ?from)
-                                              (robot-in-place fetch eng2-entrance)
-                                              (can-move ?from ?to))
-                              :effect '((robot-in-place spot ?to)
-                                        (not (robot-in-place spot ?from))
-                                        (increase (total-cost) (move-cost spot ?from ?to)))))
        (setq *fetch-move-with-obj* (instance pddl-action :init
                                        :name "fetch-move-with-obj"
                                        :parameters '((?item item) (?from ?to place))
@@ -89,7 +72,6 @@ $ roslaunch pddl_planner demo_cooperation_task.launch demo:=kitchen_car
                                                  (not (item-in-place ?item ?from))
                                                  (increase (total-cost) (move-cost spot ?from ?to))
                                                  )))
-
        ))
 
 ;;add actions to domain
@@ -103,6 +85,7 @@ $ roslaunch pddl_planner demo_cooperation_task.launch demo:=kitchen_car
 (send *problem* :objects
       '(
         ;; item
+        (none          . item)
         (document      . item)
         (lunch-box     . item)
         ;; robot
@@ -117,10 +100,14 @@ $ roslaunch pddl_planner demo_cooperation_task.launch demo:=kitchen_car
         (kitchen-car   . place)))
 
 ;; 初期条件
-(send *problem* :initial-condition
+(setq *initial-condition*
       '(;; 物品・ロボットの初期位置
-        (item-in-place lunch-box kitchen-car)
-        (item-in-place document room-73b2)
+        (item-in-place none room-73b2)
+        (item-in-place none elevator)
+        (item-in-place none stairs)
+        (item-in-place none office)
+        (item-in-place none eng2-entrance)
+        (item-in-place none kitchen-car)
         (robot-in-place fetch room-73b2)
         (robot-in-place spot eng2-entrance)
         ;; 移動可能な場所
