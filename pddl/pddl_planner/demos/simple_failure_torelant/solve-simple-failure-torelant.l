@@ -72,7 +72,7 @@
   (setq *graph*
         (pddl-plan-to-graph nil :domain *domain* :problem *problem* :failed-nodes *failed-nodes* :debug t))
   (send *graph* :write-to-pdf "/tmp/graph.pdf" nil "simple_failure_torelant")
-  (piped-fork "evince /tmp/graph.pdf")
+  (piped-fork "xdg-open /tmp/graph.pdf")
   (require :pddl2smach "package://roseus_smach/src/pddl2smach.l")
   (require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")
 

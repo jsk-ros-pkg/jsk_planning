@@ -81,7 +81,7 @@
 (send gr :write-to-pdf "hanoi.pdf")
 
 (when (ros::get-param "~display_graph" "true")
-  (piped-fork "evince hanoi.pdf"))
+  (piped-fork "xdg-open hanoi.pdf"))
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
   (ros::exit))

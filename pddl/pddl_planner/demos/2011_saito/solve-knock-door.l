@@ -186,7 +186,7 @@
 
 ;(send *graph* :write-to-pdf "knock_demo.pdf")
 ;(when (ros::get-param "~display_graph")
-;  (piped-fork "evince knock_demo.pdf"))
+;  (piped-fork "xdg-open knock_demo.pdf"))
 
 ;; action definition
 ;; domain -> package
