@@ -1,0 +1,26 @@
+<launch>
+  <include file="$(find pddl_planner)/demos/2008_okada_ias/demo_pour_tea.launch">
+    <arg name="display_graph" default="false" />
+  </include>
+
+  <test name="pddl_result_test_1"
+        test-name="pddl_result_test_1"
+        pkg="pddl_planner" type="pddlresulttest">
+    <rosparam>
+      topics:
+        - name: /pddl_planner/result
+          timeout: 10
+          sequence_action: ['(HOLD CUP LARM BAR)', '(MOVE-TO BAR SINK)', '(OPEN-TAP)', '(WASH-CUP)', '(PLACE CUP LARM SINK)']
+    </rosparam>
+  </test>
+  <test name="pddl_result_test_2"
+        test-name="pddl_result_test_2"
+        pkg="pddl_planner" type="pddlresulttest">
+    <rosparam>
+      topics:
+        - name: /pddl_planner/result
+          timeout: 10
+          sequence_action: ['(HOLD CUP LARM BAR)', '(MOVE-TO BAR SINK)', '(OPEN-TAP)', '(WASH-CUP)', '(PLACE CUP LARM SINK)']
+    </rosparam>
+  </test>
+</launch>
