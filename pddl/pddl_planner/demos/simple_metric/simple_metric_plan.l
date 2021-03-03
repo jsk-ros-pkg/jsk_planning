@@ -70,3 +70,4 @@
 (load "package://pddl_planner/src/pddl-result-graph.l")
 (setq *graph* (make-graph-from-pddl-results (list *result*) :node-name :pprint))
 (send (make-readable-graph *graph*) :write-to-pdf "test.pdf")
+(piped-fork "evince test.pdf")
