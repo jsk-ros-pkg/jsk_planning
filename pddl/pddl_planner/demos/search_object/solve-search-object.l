@@ -134,11 +134,11 @@
 
 (make-readable-graph *graph* :copy nil)
 
-;;(send *graph* :write-to-pdf "debug.pdf")
+(send *graph* :write-to-pdf "debug.pdf")
 
 (when (and (ros::has-param "~display_graph")
            (ros::get-param "~display_graph"))
-  ;;(piped-fork "xdg-open debug.pdf")
+  (piped-fork "xdg-open debug.pdf")
   (load "package://roseus_smach/src/pddl2smach.l")
   (load "package://roseus_smach/src/state-machine-ros.l")
 
