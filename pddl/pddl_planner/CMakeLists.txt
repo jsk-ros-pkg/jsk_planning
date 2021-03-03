@@ -21,6 +21,7 @@ if(CATKIN_ENABLE_TESTING)
   add_rostest(test/2013_fridge_demo.test)
   ## add_rostest(test/2016_kamada_durative.test) ## this requries lpg_planner, which is needs source install
   add_rostest(test/demos_hanoi.test)
+  add_rostest(test/search_object.test)
   add_rostest(test/simple_failure_torelant.test)
   add_rostest(test/simple_metric.test)
 endif()
