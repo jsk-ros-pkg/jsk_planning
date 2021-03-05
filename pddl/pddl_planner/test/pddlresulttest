@@ -69,38 +69,63 @@ from pddl_msgs.msg import PDDLStep
 PKG = 'pddl_planner'
 NAME = 'pddlresulttest'
 
-
 class PddlResultChecker(object):
     def __init__(self, topic_name, timeout, result):
         self.topic_name = topic_name
-        self.deadline = rospy.Time.now() + rospy.Duration(timeout)
-        self.result = result
-        self.msg = None
         rospy.loginfo("subscribing {}".format(topic_name))
-        rospy.loginfo(" - use_durative_action: {}".format(result.use_durative_action))
-        rospy.loginfo(" - sequence: {}".format(result.sequence))
+        self.targets = []
+        self.deadline = None
+        self.add_callback(timeout, result)
         self.sub = rospy.Subscriber(topic_name, PDDLPlannerActionResult, self._callback)
 
     def _callback(self, msg):
-        message_matched = True
 
         rospy.loginfo("received msg")
-        if not self.result.use_durative_action == None:
-            rospy.loginfo(" - use_durative_action: {}".format(msg.result.use_durative_action))
-            if not msg.result.use_durative_action == self.result.use_durative_action:
-                rospy.loginfo("  expecting: {}".format(self.result.use_durative_action))
-                message_matched = False
-        if not self.result.sequence == None:
-            rospy.loginfo(" - sequence: {}".format(msg.result.sequence))
-            if not msg.result.sequence == self.result.sequence:
-                rospy.loginfo("       expecting    : {}".format(self.result.sequence))
-                message_matched = False
+        rospy.loginfo(" - use_durative_action: {}".format(msg.result.use_durative_action))
+        rospy.loginfo(" - sequence: {}".format(map(lambda x: x.action + " ".join(x.args), msg.result.sequence)))
+        rospy.loginfo("             {} {}".format(map(lambda x: x.start_time, msg.result.sequence),
+                                                  map(lambda x: x.action_duration, msg.result.sequence)))
+        for target in self.targets:
+            message_matched = True
+            result = target['result']
+            
+            if target['msg_matched']:
+                rospy.loginfo(" msg already passed {}".format(map(lambda x: x.action + " ".join(x.args), result.sequence)))
+                continue
 
-        if message_matched:
-            self.msg = msg
+
+            if not result.use_durative_action == None:
+                if not msg.result.use_durative_action == result.use_durative_action:
+                    rospy.loginfo("  expecting: {}".format(result.use_durative_action))
+                    message_matched = False
+            if not result.sequence == None:
+                if not msg.result.sequence == result.sequence:
+                    rospy.loginfo("       expecting    : {}".format(map(lambda x: x.action + " ".join(x.args), result.sequence)))
+                    rospy.loginfo("                      {} {}".format(map(lambda x: x.start_time, result.sequence),
+                                                                   map(lambda x: x.action_duration, result.sequence)))
+                    message_matched = False
+
+            if message_matched:
+                target['msg_matched'] = msg
+                rospy.loginfo("message matched to {}".format(map(lambda x: x.action + " ".join(x.args), result.sequence)))
+                rospy.loginfo("                   {} {}".format(map(lambda x: x.start_time, result.sequence),
+                                                            map(lambda x: x.action_duration, result.sequence)))
+
+    def add_callback(self, timeout, result):
+        rospy.loginfo("register to check  {}".format(map(lambda x: x.action + " ".join(x.args), result.sequence)))
+        rospy.loginfo("                   {} {}".format(map(lambda x: x.start_time, result.sequence),
+                                                            map(lambda x: x.action_duration, result.sequence)))
+        rospy.loginfo("            within {} sec".format(timeout))
+
+        deadline_ = rospy.Time.now() + rospy.Duration(timeout)
+        self.targets.append({'deadline': deadline_ , 'result': result, 'msg_matched': None})
+        if self.deadline:
+            self.deadline = max(self.deadline, deadline_)
+        else:
+            self.deadline = deadline_
 
     def assert_published(self):
-        if self.msg:
+        if all(target['msg_matched'] for target in self.targets):
             return True
         if rospy.Time.now() > self.deadline:
             return False
@@ -151,12 +176,19 @@ class PddlResultTest(unittest.TestCase):
                                   topic['sequence_start_time'],
                                   topic['sequence_duration'])
 
-            checkers.append(PddlResultChecker(topic_name, timeout, result))
+            # check if already subscribe topic
+            checker = next((x for x in checkers if x.topic_name == topic_name), None)
+            if checker == None:
+                checkers.append(PddlResultChecker(topic_name, timeout, result))
+            else:
+                checker.add_callback(timeout, result)
+
         deadline = max(checker.deadline for checker in checkers)
         # assert
         finished_topics = []
         while not rospy.is_shutdown():
-            if len(self.topics) == len(finished_topics):
+            if len(set([topic['name'] for topic in self.topics])) == len(finished_topics):
+                assert True, 'Check all topics [%s] successfully' % (fnished_topics)
                 break
             for checker in checkers:
                 if checker.topic_name in finished_topics:
