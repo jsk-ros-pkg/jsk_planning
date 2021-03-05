@@ -11,33 +11,12 @@
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(SEARCH)', '(MOVE START TABLE)', '(CHECKCLEAR)']
-    </rosparam>
-  </test>
-  <test name="pddl_result_test_2"
-        test-name="pddl_result_test_2"
-        pkg="pddl_planner" type="pddlresulttest">
-    <rosparam>
-      topics:
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(SEARCH)', '(MOVE TRASHBOX TABLE)', '(CHECKCLEAR)']
-    </rosparam>
-  </test>
-  <test name="pddl_result_test_3"
-        test-name="pddl_result_test_3"
-        pkg="pddl_planner" type="pddlresulttest">
-    <rosparam>
-      topics:
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(SEARCH)', '(MOVE TABLE TRASHBOX)', '(DISPOSE)', '(CONFIRM TABLE)', '(MOVE TRASHBOX TABLE)', '(CHECKCLEAR)']
-    </rosparam>
-  </test>
-  <test name="pddl_result_test_4"
-        test-name="pddl_result_test_4"
-        pkg="pddl_planner" type="pddlresulttest">
-    <rosparam>
-      topics:
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(PICK TRASH TABLE)', '(CONFIRM TRASHBOX)', '(MOVE TABLE TRASHBOX)', '(DISPOSE)', '(CONFIRM TABLE)', '(MOVE TRASHBOX TABLE)', '(CHECKCLEAR)']

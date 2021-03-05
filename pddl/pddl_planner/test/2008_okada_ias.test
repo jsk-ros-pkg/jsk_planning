@@ -11,16 +11,9 @@
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(HOLD CUP LARM BAR)', '(MOVE-TO BAR SINK)', '(OPEN-TAP)', '(WASH-CUP)', '(PLACE CUP LARM SINK)']
-    </rosparam>
-  </test>
-  <test name="pddl_result_test_2"
-        test-name="pddl_result_test_2"
-        pkg="pddl_planner" type="pddlresulttest">
-    <rosparam>
-      topics:
         - name: /pddl_planner/result
           timeout: 10
-          sequence_action: ['(HOLD CUP LARM BAR)', '(MOVE-TO BAR SINK)', '(OPEN-TAP)', '(WASH-CUP)', '(PLACE CUP LARM SINK)']
+          sequence_action: ['(HOLD CUP LARM BAR)', '(HOLD BOTTLE RARM BAR)', '(POUR-TEA)', '(PLACE CUP LARM BAR)', '(PLACE BOTTLE RARM BAR)']
     </rosparam>
   </test>
 </launch>

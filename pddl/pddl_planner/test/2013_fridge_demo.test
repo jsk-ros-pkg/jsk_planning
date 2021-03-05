@@ -11,43 +11,15 @@
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(MOVE-RECOVERLY)', '(MOVE-TO FRONTFRIDGE START)']
-    </rosparam>
-  </test>
-  <test name="pddl_result_test_2"
-        test-name="pddl_result_test_2"
-        pkg="pddl_planner" type="pddlresulttest">
-    <rosparam>
-      topics:
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(TRY-CLOSE)', '(MOVE-RECOVERLY)', '(MOVE-TO FRONTFRIDGE START)']
-    </rosparam>
-  </test>
-  <test name="pddl_result_test_3"
-        test-name="pddl_result_test_3"
-        pkg="pddl_planner" type="pddlresulttest">
-    <rosparam>
-      topics:
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(TRY-CLOSE)', '(MOVE-RECOVERLY)', '(OPEN-DOOR)', '(MOVE-TO FRONTFRIDGE PREGRASP)', '(GRASP-OBJECT CAN)', '(MOVE-TO PREGRASP START)', '(MOVE-TO START PRECLOSE)', '(CLOSE-DOOR)', '(MOVE-TO PRECLOSE START)']
-    </rosparam>
-  </test>
-  <test name="pddl_result_test_4"
-        test-name="pddl_result_test_4"
-        pkg="pddl_planner" type="pddlresulttest">
-    <rosparam>
-      topics:
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(MOVE-RECOVERLY)', '(OPEN-DOOR)', '(MOVE-TO FRONTFRIDGE PREGRASP)', '(GRASP-OBJECT CAN)', '(MOVE-TO PREGRASP START)', '(MOVE-TO START PRECLOSE)', '(CLOSE-DOOR)', '(MOVE-TO PRECLOSE START)']
-    </rosparam>
-  </test>
-  <test name="pddl_result_test_5"
-        test-name="pddl_result_test_5"
-        pkg="pddl_planner" type="pddlresulttest">
-    <rosparam>
-      topics:
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(MOVE-TO START FRONTFRIDGE)', '(OPEN-DOOR)', '(MOVE-TO FRONTFRIDGE PREGRASP)', '(GRASP-OBJECT CAN)', '(MOVE-TO PREGRASP START)', '(MOVE-TO START SOMEWHERE)', '(TRY-CLOSE)', '(MOVE-RECOVERLY)', '(MOVE-TO FRONTFRIDGE START)']

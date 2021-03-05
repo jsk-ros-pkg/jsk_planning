@@ -11,13 +11,6 @@
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(look elevator-button)', '(push-button elevator-button)']
-    </rosparam>
-  </test>
-  <test name="pddl_result_test_2"
-        test-name="pddl_result_test_2"
-        pkg="pddl_planner" type="pddlresulttest">
-    <rosparam>
-      topics:
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(move-to elevator)', '(look elevator-button)', '(push-button elevator-button)']
