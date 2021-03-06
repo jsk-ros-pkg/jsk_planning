@@ -1,9 +1,11 @@
 <launch>
   <arg name="viewer" default="true" />
   <arg name="display_graph" default="true" />
+  <arg name="launch_prefix" default="" />
   <include file="$(find pddl_planner)/launch/pddl_downward.launch" />
   <node name="demo_search_object" pkg="roseus" type="roseus"
         args="$(find pddl_planner)/demos/search_object/solve-search-object.l"
+        launch-prefix="$(arg launch_prefix)"
         output="screen">
     <param name="display_graph" value="$(arg display_graph)" />
   </node>

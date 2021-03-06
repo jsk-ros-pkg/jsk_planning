@@ -1,6 +1,7 @@
 <launch>
   <include file="$(find pddl_planner)/demos/search_object/demo_search_object.launch">
     <arg name="display_graph" default="false" />
+    <arg name="launch_prefix" default="$(find pddl_planner)/test/repeat.sh 5 " />
   </include>
 
   <test name="pddl_result_test"
