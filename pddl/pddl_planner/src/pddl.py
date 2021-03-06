@@ -168,7 +168,7 @@ class PDDLPlannerActionServer(object):
             output += data[0]
             error  += data[1]
 
-            if proc.poll() not in [0, 124]:
+            if proc.returncode not in [0, 124]:
                 # 0: normal exit
                 # 124: exited with timeout command
                 # others: process exited abnormally
