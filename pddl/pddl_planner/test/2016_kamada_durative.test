@@ -5,7 +5,7 @@
   </include>
 
   <test name="publish_test"
-        test-name="pddl_result_publish_test"
+        test-name="2016_kamada_durative"
         pkg="rostest" type="publishtest">
     <rosparam>
       topics:

@@ -4,7 +4,7 @@
   </include>
 
   <test name="pddl_result_test"
-        test-name="pddl_result_test"
+        test-name="demos_hanoi"
         pkg="pddl_planner" type="pddlresulttest">
     <rosparam>
       topics:

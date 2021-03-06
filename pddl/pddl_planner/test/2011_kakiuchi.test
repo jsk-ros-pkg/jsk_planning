@@ -3,8 +3,8 @@
     <arg name="display_graph" default="false" />
   </include>
 
-  <test name="pddl_result_test_1"
-        test-name="pddl_result_test_1"
+  <test name="pddl_result_test"
+        test-name="2011_kakiuchi"
         pkg="pddl_planner" type="pddlresulttest">
     <rosparam>
       topics:
