@@ -1,0 +1,28 @@
+<launch>
+  <include file="$(find pddl_planner)/demos/2013_fridge_demo/demo_bring_can.launch">
+    <arg name="display_graph" default="false" />
+  </include>
+
+  <test name="pddl_result_test"
+        test-name="2013_fridge_demo"
+        pkg="pddl_planner" type="pddlresulttest">
+    <rosparam>
+      topics:
+        - name: /pddl_planner/result
+          timeout: 10
+          sequence_action: ['(MOVE-RECOVERLY)', '(MOVE-TO FRONTFRIDGE START)']
+        - name: /pddl_planner/result
+          timeout: 10
+          sequence_action: ['(TRY-CLOSE)', '(MOVE-RECOVERLY)', '(MOVE-TO FRONTFRIDGE START)']
+        - name: /pddl_planner/result
+          timeout: 10
+          sequence_action: ['(TRY-CLOSE)', '(MOVE-RECOVERLY)', '(OPEN-DOOR)', '(MOVE-TO FRONTFRIDGE PREGRASP)', '(GRASP-OBJECT CAN)', '(MOVE-TO PREGRASP START)', '(MOVE-TO START PRECLOSE)', '(CLOSE-DOOR)', '(MOVE-TO PRECLOSE START)']
+        - name: /pddl_planner/result
+          timeout: 10
+          sequence_action: ['(MOVE-RECOVERLY)', '(OPEN-DOOR)', '(MOVE-TO FRONTFRIDGE PREGRASP)', '(GRASP-OBJECT CAN)', '(MOVE-TO PREGRASP START)', '(MOVE-TO START PRECLOSE)', '(CLOSE-DOOR)', '(MOVE-TO PRECLOSE START)']
+        - name: /pddl_planner/result
+          timeout: 10
+          sequence_action: ['(MOVE-TO START FRONTFRIDGE)', '(OPEN-DOOR)', '(MOVE-TO FRONTFRIDGE PREGRASP)', '(GRASP-OBJECT CAN)', '(MOVE-TO PREGRASP START)', '(MOVE-TO START SOMEWHERE)', '(TRY-CLOSE)', '(MOVE-RECOVERLY)', '(MOVE-TO FRONTFRIDGE START)']
+    </rosparam>
+  </test>
+</launch>

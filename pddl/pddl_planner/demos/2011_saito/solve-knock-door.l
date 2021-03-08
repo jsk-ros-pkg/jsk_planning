@@ -184,9 +184,9 @@
 
 (send *graph* :name (send *domain* :name))
 
-;(send *graph* :write-to-pdf "knock_demo.pdf")
-;(when (ros::get-param "~display_graph")
-;  (piped-fork "xdg-open knock_demo.pdf"))
+(send *graph* :write-to-pdf "knock_demo.pdf")
+(when (ros::get-param "~display_graph")
+  (piped-fork "xdg-open knock_demo.pdf"))
 
 ;; action definition
 ;; domain -> package

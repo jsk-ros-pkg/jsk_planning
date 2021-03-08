@@ -1,0 +1,16 @@
+<launch>
+  <include file="$(find pddl_planner)/demos/simple_metric/simple_metric.launch">
+    <arg name="display_graph" default="false" />
+  </include>
+
+  <test name="pddl_result_test"
+        test-name="simple_metric"
+        pkg="pddl_planner" type="pddlresulttest">
+    <rosparam>
+      topics:
+        - name: /pddl_planner/result
+          timeout: 10
+          sequence_action: ['(ACT1 OBJ1)', '(ACT2 OBJ1)']
+    </rosparam>
+  </test>
+</launch>

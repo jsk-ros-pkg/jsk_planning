@@ -71,8 +71,11 @@
   (require :pddl-result-graph "package://pddl_planner/src/pddl-result-graph.l")
   (setq *graph*
         (pddl-plan-to-graph nil :domain *domain* :problem *problem* :failed-nodes *failed-nodes* :debug t))
-  (send *graph* :write-to-pdf "/tmp/graph.pdf" nil "simple_failure_torelant")
-  (piped-fork "xdg-open /tmp/graph.pdf")
+  (when (and (ros::has-param "~display_graph")
+             (ros::get-param "~display_graph"))
+    (send *graph* :write-to-pdf "/tmp/graph.pdf" nil "simple_failure_torelant")
+    (piped-fork "xdg-open /tmp/graph.pdf")
+    )
   (require :pddl2smach "package://roseus_smach/src/pddl2smach.l")
   (require :state-machine-ros "package://roseus_smach/src/state-machine-ros.l")
 
