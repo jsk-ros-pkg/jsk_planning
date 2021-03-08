@@ -17,4 +17,16 @@
           sequence_action: ['(move-to elevator)', '(look elevator-button)', '(push-button elevator-button)']
     </rosparam>
   </test>
+
+  <test name="structure_test"
+        test-name="simple_failure_smach"
+        pkg="pddl_planner" type="structuretest">
+    <rosparam>
+      topics:
+        - name: /server_name/smach/container_structure
+          timeout: 10
+          children: ['(move-to elevator)', '(look elevator-button)', '(push-button elevator-button)', '(move-to elevator)']
+          container_outcomes: ['goal0']
+    </rosparam>
+  </test>
 </launch>
