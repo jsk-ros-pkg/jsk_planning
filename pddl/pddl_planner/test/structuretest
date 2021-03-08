@@ -96,6 +96,12 @@ class StructureChecker(object):
     def _callback(self, msg):
         message_matched = True
 
+        # skip tailing spaces
+        msg.children = map(lambda x: x.strip(), msg.children)
+        msg.internal_outcomes = map(lambda x: x.strip(), msg.internal_outcomes)
+        msg.outcomes_from = map(lambda x: x.strip(), msg.outcomes_from)
+        msg.outcomes_to = map(lambda x: x.strip(), msg.outcomes_to)
+        msg.container_outcomes = map(lambda x: x.strip(), msg.container_outcomes)
         rospy.loginfo("received msg")
         if not self.struct.children == None:
             rospy.loginfo(" - children: {}".format(msg.children))
