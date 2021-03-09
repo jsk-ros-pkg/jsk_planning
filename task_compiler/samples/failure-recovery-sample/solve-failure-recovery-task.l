@@ -111,7 +111,8 @@
   (setq *graph* (make-graph-from-pddl-results (list *result*) :node-name :pprint))
 
   ;; swap nodes ( check_open <-> check_open_f ) for making task flow
-  (setq *graph* (add-failed-nodes *result* (list 'pick 'put) :graph *graph*))
+  (when (< 0 level)
+    (setq *graph* (add-failed-nodes *result* (list 'pick 'put) :graph *graph*)))
 
   (send *graph* :name (send *domain* :name))
 
