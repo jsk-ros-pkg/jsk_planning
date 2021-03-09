@@ -678,8 +678,11 @@
                 (ret (mapcar #'(lambda(obj)
                                  (if (equal (caddr v) (cdr obj))
                                      (multiple-value-bind (va ar) param
-                                       (send self :check-state st (caddr ss) (list (append va (list (car v))) (append ar (list (car obj))))))
-                                   nil)
+                                       (send self :check-state
+                                             st
+                                             (if (= (length v) 3) (caddr ss) (list (car ss) (if (eq '- (cadr v)) (cdddr v) (cdr v)) (caddr ss)))
+                                             (list (append va (list (car v))) (append ar (list (car obj))))))
+                                     nil)
                                  )
                              objects)))
            (null (every #'null ret))))
@@ -688,8 +691,11 @@
                 (ret (mapcar #'(lambda(obj)
                                  (if (equal (caddr v) (cdr obj))
                                      (multiple-value-bind (va ar) param
-                                       (send self :check-state st (caddr ss) (list (append va (list (car v))) (append ar (list (car obj))))))
-                                   t)
+                                       (send self :check-state
+                                             st
+                                             (if (= (length v) 3) (caddr ss) (list (car ss) (if (eq '- (cadr v)) (cdddr v) (cdr v)) (caddr ss)))
+                                             (list (append va (list (car v))) (append ar (list (car obj))))))
+                                     t)
                                  )
                              objects)))
            (null (some #'null ret))))
@@ -782,9 +788,12 @@
         ('forall
          (let ((v (cadr ee)))
            (dolist (obj objects)
-             (when (equal (caddr v) (cdr obj))
+             (when (equal (cadr (memq '- v)) (cdr obj))
                (multiple-value-bind (va ar) param
-                 (setq tmp-st (send self :change-state tmp-st (caddr ee) (list (append va (list (car v))) (append ar (list (car obj)))))))))
+                 (setq tmp-st (send self :change-state
+                                    tmp-st
+                                    (if (= (length v) 3) (caddr ee) (list (car ee) (if (eq '- (cadr v)) (cdddr v) (cdr v)) (caddr ee)))
+                                    (list (append va (list (car v))) (append ar (list (car obj)))))))))
            tmp-st))
         ('when
          (case (caadr ee)
