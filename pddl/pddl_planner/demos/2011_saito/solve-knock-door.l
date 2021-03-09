@@ -200,7 +200,7 @@
   (format t ";; open action [~a]~%" obj) t)
 (defun PR2_ACTION::check_open (obj)
   (format t ";; check if open [~a]~%" obj)
-  (< 0.8 (rand))) ;; 20% success
+  (< 0.8 (random 1.0))) ;; 20% success
 (defun PR2_ACTION::wipe (obj)
   (format t ";; wiping [~a]       ~%" obj) t)
 (defun PR2_ACTION::pick (obj)
@@ -216,6 +216,7 @@
 (load "package://roseus_smach/src/pddl2smach.l")
 
 ;; global data is not used (nil)
+;; currently pddl-smach supports only success/failure branch, but this sample has multi-goal branch. So this sample does not work well with smach.
 (exec-smach-with-spin (convert-smach *graph*) nil :hz 1.0)
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
