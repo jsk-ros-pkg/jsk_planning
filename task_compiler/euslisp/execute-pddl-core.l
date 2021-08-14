@@ -47,7 +47,7 @@
     (ros::ros-info "output result to /tmp/action_graph.pdf")
 
     (when display-graph
-      (piped-fork "gnome-open /tmp/action_graph.pdf"))
+      (piped-fork "xdg-open /tmp/action_graph.pdf"))
 
     (setq *sm* (convert-smach graph
                 :return-success return-success :return-fail return-fail

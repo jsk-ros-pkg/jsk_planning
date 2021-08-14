@@ -118,7 +118,7 @@
   (setq *graph* (make-readable-graph *graph*))
   (send *graph* :write-to-pdf "action_graph.pdf")
   (when (ros::get-param "~display_graph")
-    (piped-fork "gnome-open action_graph.pdf"))
+    (piped-fork "xdg-open action_graph.pdf"))
 
   ;; action definition
   ;; domain -> package
