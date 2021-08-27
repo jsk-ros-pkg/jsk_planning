@@ -47,7 +47,7 @@
                                    (string-equal (car x) name)))
                 (send from :neighbor-action-alist))
        (warn ";; same arc found ~A~%" name)
-     (send from :add-neighbor to name)))
+     (send self :add-neighbor-from-to from to name)))
   (:write-to-dot ;; redefine for adding arc name
    (fname &optional result-path (title "output"))
     (let ((node-alist  ; ((node . symbol) (node . symbol) ...)
