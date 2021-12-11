@@ -4,12 +4,18 @@ notifications:
     on_success: always
     on_failure: always
   slack: jsk-robotics:Av7tc8wj3IWkLYvlTzHE7x2g
+addons:
+  apt:
+    packages:
+      - 2to3
 services:
   - docker
 env:
   global:
     - USE_DOCKER=true
   matrix:
+    - CHECK_PYTHON3_COMPILE=true
+    - CHECK_PYTHON2_COMPILE=true
     - ROS_DISTRO=hydro   USE_DEB=false
     - ROS_DISTRO=indigo  USE_DEB=true
     - ROS_DISTRO=jade    USE_DEB=true
@@ -21,4 +27,7 @@ matrix:
     - env: ROS_DISTRO=hydro   USE_DEB=false
     - env: ROS_DISTRO=indigo  USE_DEB=true
     - env: ROS_DISTRO=jade    USE_DEB=true
-script: source .travis/travis.sh
+script:
+  - if [ "${CHECK_PYTHON2_COMPILE}" == "true" ]; then python2 -m compileall .; exit $?; fi
+  - if [ "${CHECK_PYTHON3_COMPILE}" == "true" ]; then bash -c "ret=0; trap 'ret=1' ERR; python3 -m compileall .; 2to3 -w -f except -f execfile -f has_key -f import -f raw_input -f zip .; git diff --exit-code . :^.travis > /dev/null; echo Exitting with \$ret; exit \$ret"; exit $?; fi
+  - source .travis/travis.sh
