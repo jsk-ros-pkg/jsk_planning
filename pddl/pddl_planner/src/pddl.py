@@ -264,7 +264,7 @@ class PDDLPlannerActionServer(object):
         for o in objects:
             object_name = o.name
             # find same object_type in grouped_objects
-            if grouped_objects.has_key(o.type):
+            if o.type in grouped_objects:
                 grouped_objects[o.type].append(o.name)
             else:
                 grouped_objects[o.type] = [o.name]
