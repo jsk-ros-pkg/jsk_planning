@@ -125,7 +125,7 @@
 ;;
 
 ;; normal plan
-(setq *graph* (pddl-plan-to-graph nil :domain *domain* :problem *problem* :failed-nodes (list 'detect :debug nil)))
+(setq *graph* (pddl-plan-to-graph nil :domain *domain* :problem *problem* :failed-nodes (list 'detect) :debug nil))
 ;; there is no target object in environment
 (pprint (setq *result-fail-end* (solve-pddl-planning *domain* *problem-fail-end* :debug nil)))
 
