@@ -1,9 +1,8 @@
-# download LPG planner from http://zeus.ing.unibs.it/lpg/
-# 
-# it work both on lpg-1.2 or lpg-2.0
+# download LPG planner (http://lpg.unibs.it/lpg/lpgtd-1_4-linux.tar.gz) from https://lpg.unibs.it/lpg/register-lpg-td.php
+#
 
-./LPG-1.2-linux/lpg-1.2 -o block-domain.pddl -f block-problem.pddl  -n 1
-./LPG-1.2-linux/lpg-1.2 -o coe-domain.pddl -f coe-problem.pddl -n 1
+./LPG-td-1.4/lpg-td -o block-domain.pddl -f block-problem.pddl  -n 1
+./LPG-td-1.4/lpg-td -o coe-domain.pddl -f coe-problem.pddl -n 1
 
 
-   
+
