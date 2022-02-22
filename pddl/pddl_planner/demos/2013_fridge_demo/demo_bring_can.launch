@@ -1,8 +1,9 @@
 <launch>
+  <arg name="display_graph" default="true" />
   <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
   <node pkg="pddl_planner" name="demo_bring_can"
         type="solve-bring-can.l" >
-    <param name="display_graph" value="true" />
+    <param name="display_graph" value="$(arg display_graph)" />
   </node>
   <node pkg="smach_viewer" name="smach_viewer"
         type="smach_viewer.py" />

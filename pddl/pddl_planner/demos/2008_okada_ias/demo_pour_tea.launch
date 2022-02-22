@@ -1,7 +1,8 @@
 <launch>
+  <arg name="display_graph" default="true" />
   <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
   <node pkg="pddl_planner" name="demo_pour_tea"
         type="solve-pour-tea.l" >
-    <param name="display_graph" value="true" />
+    <param name="display_graph" value="$(arg display_graph)" />
   </node>
 </launch>

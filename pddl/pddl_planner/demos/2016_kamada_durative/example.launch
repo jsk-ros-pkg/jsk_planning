@@ -1,4 +1,6 @@
 <launch>
+  <arg name="display_graph" default="true" />
+  <arg name="roseus_command" default="'(progn (demo)(exit))'" />
   <node pkg="pddl_planner"
         type="pddl.py"
         name="pddl_planner"
@@ -7,5 +9,10 @@
            value="lpg" />
     <param name="pddl_search_option"
            value="-n 1 -out result -restarts 8 -nobestfirst -search_steps 500 -i_choice 2" />
+  </node>
+  <node pkg="roseus" name="durative_action_demo"
+        type="roseus" output="screen"
+        args="$(find pddl_planner)/demos/2016_kamada_durative/example.l $(arg roseus_command)" >
+    <param name="display_graph" value="$(arg display_graph)" />
   </node>
 </launch>

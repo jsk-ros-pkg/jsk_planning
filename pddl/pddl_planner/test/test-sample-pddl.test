@@ -23,4 +23,9 @@
   <test test-name="sample_pddl_downward_client" pkg="pddl_planner" type="sample-client.py" >
     <remap from="pddl_planner" to="downward_planner/pddl_planner" />
   </test>
+  <!--
+  Test program to solve as graph search (https://github.com/jsk-ros-pkg/jsk_planning/pull/92)
+  -->
+  <test test-name="solve_graph_search" pkg="pddl_planner"
+        type="solve-graph-search.l" ns="ffha_planner" />
 </launch>

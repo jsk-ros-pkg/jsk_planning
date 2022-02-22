@@ -174,7 +174,7 @@
 (send *graph* :write-to-pdf "kakiuchi_robomec.pdf")
 
 (when (ros::get-param "~display_graph")
-  (piped-fork "gnome-open kakiuchi_robomec.pdf"))
+  (piped-fork "xdg-open kakiuchi_robomec.pdf"))
 
 (when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
   (ros::exit))

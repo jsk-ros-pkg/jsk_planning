@@ -1,9 +1,12 @@
 #!/usr/bin/env roseus
-;; mostly same to demo-eus.l in pddl package under jsk subversion trunk
+;; simplified version of pddl_planner/demos/hanoi/solve-hanoi.l
 
 (load "package://pddl_planner/src/pddl-result-graph.l")
 (load "package://pddl_planner/src/eus-pddl-client.l")
 
+(setq *action-client*
+      (instance ros::simple-action-client :init
+                "pddl_planner" pddl_msgs::PDDLPlannerAction))
 ;;
 ;; problem
 ;;
@@ -21,31 +24,38 @@
       )                            ; disk0,1,2 pole0,1,2すべてobject型
 
 ;;初期条件
+;; disk0 disk1 disk2
+;; pole0 pole1 pole2
 (send *problem* :initial-condition
-      '((on disk0 disk1)
-        (on disk1 disk2)
-        (on disk2 pole0)
+      '((on disk0 pole0)
+        (on disk1 pole1)
+        (on disk2 pole2)
         (can-be-on disk0 disk1)
         (can-be-on disk1 disk2)
-        (clear pole1)
-        (clear pole2)))
+        (clear disk0)
+        (clear disk1)
+        (clear disk2)))
 
 ;;初期条件の追加
-(send *problem* :add :initial-condition
-      '(clear disk0))
 (dolist (dd '(disk0 disk1 disk2))
   (dolist (pp '(pole0 pole1 pole2))
     (send *problem* :add :initial-condition
           (list 'can-be-on dd pp))))
 
 ;;終了条件
+;;
+;;             disk0
+;;             disk1
+;;             disk2
+;; pole0 pole1 pole2
 (send *problem* :goal-condition
       '((on disk0 disk1)
         (on disk1 disk2)
         (on disk2 pole2)
         (clear pole0)
         (clear pole1)
-        (clear disk0)))
+        (clear disk0)
+        ))
 
 ;;
 ;; domain
@@ -71,17 +81,30 @@
 ;;add action to domain
 (send *domain* :add :action *move*)
 
+
 ;;
 ;; solve planning
 ;;
 (pprint (setq *result* (solve-pddl-planning *domain* *problem*)))
+(setq *gr* (make-graph-from-pddl-results (list *result*) :node-name :pprint))
 
-(setq gr (make-graph-from-pddl-results (list *result*) :node-name :pprint))
+(require :unittest "lib/llib/unittest.l")
+(init-unit-test)
 
-(send gr :write-to-pdf "hanoi.pdf")
+(deftest test-graph-solve ()
+  (let (solver path result-path solved-path)
+    ;; solve graph search
+    (send *gr* :start-state (elt (send *gr* :nodes) 2))
+    (send *gr* :goal-state  (elt (send *gr* :nodes) 0))
+    (setq solver (instance breadth-first-graph-search-solver :init))
+    (setq path (send solver :solve *gr* :verbose nil))
 
-(when (ros::get-param "~display_graph" "true")
-  (piped-fork "xdg-open hanoi.pdf"))
+    (setq result-path (cdr (assoc :plan *result*)))
+    (setq solved-path (mapcar #'read-from-string (cdr (send-all (send-all path :action) :name))))
+    (format *error-output* "result-path ~A~%" result-path)
+    (format *error-output* "solved-path ~A~%" solved-path)
+    (assert (equal solved-path result-path))
+    ))
 
-(when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
-  (ros::exit))
+(run-all-tests)
+(exit)

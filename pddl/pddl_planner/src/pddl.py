@@ -168,7 +168,7 @@ class PDDLPlannerActionServer(object):
             output += data[0]
             error  += data[1]
 
-            if proc.poll() not in [0, 124]:
+            if proc.returncode not in [0, 124]:
                 # 0: normal exit
                 # 124: exited with timeout command
                 # others: process exited abnormally
@@ -264,7 +264,7 @@ class PDDLPlannerActionServer(object):
         for o in objects:
             object_name = o.name
             # find same object_type in grouped_objects
-            if grouped_objects.has_key(o.type):
+            if o.type in grouped_objects:
                 grouped_objects[o.type].append(o.name)
             else:
                 grouped_objects[o.type] = [o.name]
