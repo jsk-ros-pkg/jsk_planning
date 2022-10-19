@@ -1,8 +1,10 @@
 <launch>
   <arg name="display_graph" default="true" />
+  <arg name="launch_prefix" default="" />
   <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
   <node pkg="smach_viewer" name="smach_viewer" type="smach_viewer.py"/>
   <node pkg="pddl_planner" name="demo_knock_door"
+        launch-prefix="$(arg launch_prefix)"
         type="solve-knock-door.l" output="screen">
     <param name="display_graph" value="$(arg display_graph)" />
   </node>
