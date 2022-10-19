@@ -5,11 +5,12 @@
 
   <test name="pddl_result_test"
         test-name="simple_metric"
-        pkg="pddl_planner" type="pddlresulttest">
+        pkg="pddl_planner" type="pddlresulttest"
+        time-limit="120" >
     <rosparam>
       topics:
         - name: /pddl_planner/result
-          timeout: 10
+          timeout: 120
           sequence_action: ['(ACT1 OBJ1)', '(ACT2 OBJ1)']
     </rosparam>
   </test>
