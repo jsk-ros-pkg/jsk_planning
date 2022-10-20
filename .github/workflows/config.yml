@@ -17,6 +17,7 @@ jobs:
         include:
           - ROS_DISTRO: indigo
             CONTAINER: jskrobotics/ros-ubuntu:14.04
+            NOT_TEST_INSTALL: true
           - ROS_DISTRO: kinetic
             CONTAINER: jskrobotics/ros-ubuntu:16.04
           - ROS_DISTRO: melodic
