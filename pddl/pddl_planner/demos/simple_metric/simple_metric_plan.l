@@ -1,5 +1,7 @@
 #!/usr/bin/env roseus
 
+(setq *exit-on-end* (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7)))
+
 (ros::roseus "simple_metric_plan")
 
 (load "package://pddl_planner/src/eus-pddl-client.l")
@@ -73,3 +75,5 @@
 (setq *graph* (make-graph-from-pddl-results (list *result*) :node-name :pprint))
 (send (make-readable-graph *graph*) :write-to-pdf "simple_metric_plan.pdf")
 (piped-fork "evince simple_metric_plan.pdf")
+
+(if *exit-on-end* (ros::exit))

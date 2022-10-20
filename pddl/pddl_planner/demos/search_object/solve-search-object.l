@@ -1,4 +1,7 @@
 #!/usr/bin/env roseus
+
+(setq *exit-on-end* (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7)))
+
 (require :eus-pddl-client  "package://pddl_planner/src/eus-pddl-client.l")
 (require :pddl-result-graph "package://pddl_planner/src/pddl-result-graph.l")
 
@@ -148,5 +151,4 @@
   (send sm-inspect :reset-state)
   )
 
-(when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
-  (ros::exit))
+(if *exit-on-end* (ros::exit))
