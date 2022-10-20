@@ -82,17 +82,16 @@ class PddlResultChecker(object):
 
         rospy.loginfo("received msg")
         rospy.loginfo(" - use_durative_action: {}".format(msg.result.use_durative_action))
-        rospy.loginfo(" - sequence: {}".format(map(lambda x: x.action + " ".join(x.args), msg.result.sequence)))
-        rospy.loginfo("             {} {}".format(map(lambda x: x.start_time, msg.result.sequence),
-                                                  map(lambda x: x.action_duration, msg.result.sequence)))
+        rospy.loginfo(" - sequence: {}".format([x.action + " ".join(x.args) for x in msg.result.sequence]))
+        rospy.loginfo("             {} {}".format([x.start_time for x in msg.result.sequence],
+                                                  [x.action_duration for x in msg.result.sequence]))
         for target in self.targets:
             message_matched = True
             result = target['result']
             
             if target['msg_matched']:
-                rospy.loginfo(" msg already passed {}".format(map(lambda x: x.action + " ".join(x.args), result.sequence)))
+                rospy.loginfo(" msg already passed {}".format([x.action + " ".join(x.args) for x in result.sequence]))
                 continue
-
 
             if not result.use_durative_action == None:
                 if not msg.result.use_durative_action == result.use_durative_action:
@@ -100,21 +99,21 @@ class PddlResultChecker(object):
                     message_matched = False
             if not result.sequence == None:
                 if not msg.result.sequence == result.sequence:
-                    rospy.loginfo("       expecting    : {}".format(map(lambda x: x.action + " ".join(x.args), result.sequence)))
-                    rospy.loginfo("                      {} {}".format(map(lambda x: x.start_time, result.sequence),
-                                                                   map(lambda x: x.action_duration, result.sequence)))
+                    rospy.loginfo("       expecting    : {}".format([x.action + " ".join(x.args) for x in result.sequence]))
+                    rospy.loginfo("                      {} {}".format([x.start_time for x in result.sequence],
+                                                                   [x.action_duration for x in result.sequence]))
                     message_matched = False
 
             if message_matched:
                 target['msg_matched'] = msg
-                rospy.loginfo("message matched to {}".format(map(lambda x: x.action + " ".join(x.args), result.sequence)))
-                rospy.loginfo("                   {} {}".format(map(lambda x: x.start_time, result.sequence),
-                                                            map(lambda x: x.action_duration, result.sequence)))
+                rospy.loginfo("message matched to {}".format([x.action + " ".join(x.args) for x in result.sequence]))
+                rospy.loginfo("                   {} {}".format([x.start_time for x in result.sequence],
+                                                            [x.action_duration for x in result.sequence]))
 
     def add_callback(self, timeout, result):
-        rospy.loginfo("register to check  {}".format(map(lambda x: x.action + " ".join(x.args), result.sequence)))
-        rospy.loginfo("                   {} {}".format(map(lambda x: x.start_time, result.sequence),
-                                                            map(lambda x: x.action_duration, result.sequence)))
+        rospy.loginfo("register to check  {}".format([x.action + " ".join(x.args) for x in result.sequence]))
+        rospy.loginfo("                   {} {}".format([x.start_time for x in result.sequence],
+                                                            [x.action_duration for x in result.sequence]))
         rospy.loginfo("            within {} sec".format(timeout))
 
         deadline_ = rospy.Time.now() + rospy.Duration(timeout)
@@ -168,13 +167,24 @@ class PddlResultTest(unittest.TestCase):
             timeout = topic['timeout']
             result = PDDLPlannerResult()
             result.use_durative_action = topic['use_durative_action']
-            result.sequence = map(lambda a, s, d: PDDLStep(action = a.split()[0],
-                                                           args = a.split()[1:],
-                                                           start_time = s or '',
-                                                           action_duration = d or ''),
-                                  topic['sequence_action'],
-                                  topic['sequence_start_time'],
-                                  topic['sequence_duration'])
+            #  https://stackoverflow.com/questions/60532658/python-2-vs-python-3-difference-in-map-behavior-with-three-arguments
+            try:
+                from itertools import zip_longest
+                result.sequence = list(map(lambda x: PDDLStep(action = x[0].split()[0],
+                                                              args = x[0].split()[1:],
+                                                              start_time = x[1] or '',
+                                                              action_duration = x[2] or ''),
+                                           zip_longest(topic['sequence_action'],
+                                                       topic['sequence_start_time'],
+                                                       topic['sequence_duration'])))
+            except:
+                result.sequence = map(lambda a, s, d: PDDLStep(action = a.split()[0],
+                                                               args = a.split()[1:],
+                                                               start_time = s or '',
+                                                               action_duration = d or ''),
+                                      topic['sequence_action'],
+                                      topic['sequence_start_time'],
+                                      topic['sequence_duration'])
 
             # check if already subscribe topic
             checker = next((x for x in checkers if x.topic_name == topic_name), None)
