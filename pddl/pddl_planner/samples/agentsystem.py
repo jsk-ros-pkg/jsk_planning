@@ -75,7 +75,7 @@ if __name__ == '__main__':
                             "(clear c)",
                             "(handempty)"]
     goal.problem.goal = "(and (on a b) (on b c))"
-    print goal
+    print(goal)
     client.send_goal(goal)
     client.wait_for_result()
-    print client.get_result() 
+    print(client.get_result())

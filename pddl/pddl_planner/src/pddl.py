@@ -28,7 +28,11 @@ def read_out(out, nonblock=True):
         fl = fcntl.fcntl(fd, fcntl.F_GETFL)
         fcntl.fcntl(fd, fcntl.F_SETFL, fl | os.O_NONBLOCK)
     try:
-        return out.read()
+        ret = out.read()
+        if ret == None:
+            return str()
+        else:
+            return ret
     except:
         return str()
 
@@ -159,16 +163,28 @@ class PDDLPlannerActionServer(object):
                 if proc.poll() is not None:
                     break
                 # non-blocking read to avoid dead-lock
-                output += read_out(proc.stdout)
-                error  += read_out(proc.stderr)
+                data_out = read_out(proc.stdout)
+                data_err = read_out(proc.stderr)
+                if type(data_out) == bytes:
+                    data_out = data_out.decode('utf-8')
+                    if type(data_err) == bytes:
+                        data_err = data_err.decode('utf-8')
+                output += data_out
+                error  += data_err
                 r.sleep()
 
             # flush output
             data = proc.communicate()
-            output += data[0]
-            error  += data[1]
+            data_out = data[0]
+            data_err = data[1]
+            if type(data_out) == bytes:
+                data_out = data_out.decode('utf-8')
+            if type(data_err) == bytes:
+                data_err = data_err.decode('utf-8')
+            output += data_out
+            error  += data_err
 
-            if proc.poll() not in [0, 124]:
+            if proc.returncode not in [0, 124]:
                 # 0: normal exit
                 # 124: exited with timeout command
                 # others: process exited abnormally
@@ -264,7 +280,7 @@ class PDDLPlannerActionServer(object):
         for o in objects:
             object_name = o.name
             # find same object_type in grouped_objects
-            if grouped_objects.has_key(o.type):
+            if o.type in grouped_objects:
                 grouped_objects[o.type].append(o.name)
             else:
                 grouped_objects[o.type] = [o.name]

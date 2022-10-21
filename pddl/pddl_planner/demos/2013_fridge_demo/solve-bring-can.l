@@ -1,5 +1,7 @@
 #!/usr/bin/env roseus
 
+(setq *exit-on-end* (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7)))
+
 (require :eus-pddl-client "package://pddl_planner/src/eus-pddl-client.l")
 (require :pddl-result-graph "package://pddl_planner/src/pddl-result-graph.l")
 
@@ -151,7 +153,8 @@
 
 (when (and (ros::has-param "~display_graph")
            (ros::get-param "~display_graph"))
-  ;;(piped-fork "gnome-open debug.pdf")
+
+  (piped-fork "xdg-open debug.pdf")
   (load "package://roseus_smach/src/pddl2smach.l")
   (load "package://roseus_smach/src/state-machine-ros.l")
 
@@ -161,5 +164,4 @@
   (send *sm-inspect* :reset-state)
  )
 
-(when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
-  (ros::exit))
+(if *exit-on-end* (ros::exit))
