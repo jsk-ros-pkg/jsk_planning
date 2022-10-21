@@ -5,21 +5,22 @@
   </include>
 
   <test name="pddl_result_test"
-        test-name="search_object_pddl"
-        pkg="pddl_planner" type="pddlresulttest">
+        test-name="search_object"
+        pkg="pddl_planner" type="pddlresulttest"
+        time-limit="120" >
     <rosparam>
       topics:
         - name: /pddl_planner/result
-          timeout: 60
+          timeout: 120
           sequence_action: ['(move-to boxa)', '(open-box boxa)', '(detect boxa)', '(grasp boxa)', '(close-box boxa)', '(move-to end)']
         - name: /pddl_planner/result
-          timeout: 60
+          timeout: 120
           sequence_action: ['(close-box boxa)', '(move-to boxb)', '(open-box boxb)', '(detect boxb)', '(grasp boxb)', '(close-box boxb)', '(move-to end)']
         - name: /pddl_planner/result
-          timeout: 60
+          timeout: 120
           sequence_action: ['(close-box boxb)', '(move-to boxc)', '(open-box boxc)', '(detect boxc)', '(grasp boxc)', '(close-box boxc)', '(move-to end)']
         - name: /pddl_planner/result
-          timeout: 60
+          timeout: 120
           sequence_action: ['(move-to boxa)', '(open-box boxa)', '(detect_f boxa)', '(close-box boxa)', '(move-to boxb)', '(open-box boxb)', '(detect_f boxb)', '(close-box boxb)', '(move-to boxc)', '(open-box boxc)', '(detect_f boxc)', '(close-box boxc)', '(move-to end)']
     </rosparam>
   </test>

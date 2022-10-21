@@ -1,5 +1,7 @@
 #!/usr/bin/env roseus
 
+(setq *exit-on-end* (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7)))
+
 (load "package://pddl_planner/src/pddl-result-graph.l")
 (load "package://pddl_planner/src/eus-pddl-client.l")
 
@@ -219,5 +221,4 @@
 ;; currently pddl-smach supports only success/failure branch, but this sample has multi-goal branch. So this sample does not work well with smach.
 (exec-smach-with-spin (convert-smach *graph*) nil :hz 1.0)
 
-(when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
-  (ros::exit))
+(if *exit-on-end* (ros::exit))

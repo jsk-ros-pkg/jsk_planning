@@ -1,6 +1,7 @@
 <launch>
   <include file="$(find pddl_planner)/demos/2011_saito/demo-knock-door.launch">
     <arg name="display_graph" default="false" />
+    <arg name="launch_prefix" default="$(find pddl_planner)/test/repeat.sh 5 " />
   </include>
 
   <test name="pddl_result_test"
@@ -9,16 +10,16 @@
     <rosparam>
       topics:
         - name: /pddl_planner/result
-          timeout: 10
+          timeout: 30
           sequence_action: ['(WIPE SAITO-TABLE)', '(MOVE RM73A3-CENTER SHOPFRONT)', '(BUY SANDWITCH)', '(MOVE SHOPFRONT RM73A3-CENTER)', '(PUT SANDWITCH SAITO-TABLE)']
         - name: /pddl_planner/result
-          timeout: 10
+          timeout: 30
           sequence_action: ['(MOVE RM73B2-DOORFRONT SHOPFRONT)', '(BUY SANDWITCH)', '(MOVE SHOPFRONT RM73A3-CENTER)', '(WIPE SAITO-TABLE)', '(PUT SANDWITCH SAITO-TABLE)']
         - name: /pddl_planner/result
-          timeout: 10
+          timeout: 30
           sequence_action: ['(MOVE RM73A3-CENTER RM73B2-DOORFRONT)', '(OPEN RM73B2-DOOR)', '(CHECK_OPEN RM73B2-DOOR)', '(MOVE RM73B2-DOORFRONT RM73A3-CENTER)', '(MOVE RM73A3-CENTER RM73B2-TABLEFRONT)', '(PICK PLASTIC-BOTTLE)', '(WIPE RM73B2-TABLE)', '(MOVE RM73B2-TABLEFRONT RM73A3-CENTER)']
         - name: /pddl_planner/result
-          timeout: 10
+          timeout: 30
           sequence_action: ['(MOVE RM73A3-CENTER RM73B2-DOORFRONT)', '(OPEN RM73B2-DOOR)', '(CHECK_OPEN RM73B2-DOOR)', '(MOVE RM73B2-DOORFRONT RM73A3-CENTER)', '(MOVE RM73A3-CENTER RM73B2-TABLEFRONT)', '(PICK PLASTIC-BOTTLE)', '(MOVE RM73B2-TABLEFRONT RM73A3-CENTER)', '(MOVE RM73A3-CENTER TRASHBOXFRONT)', '(PUT PLASTIC-BOTTLE TRASHBOX)', '(MOVE TRASHBOXFRONT RM73A3-CENTER)']
     </rosparam>
   </test>

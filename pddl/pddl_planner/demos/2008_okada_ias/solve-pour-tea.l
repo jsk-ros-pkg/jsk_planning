@@ -1,5 +1,7 @@
 #!/usr/bin/env roseus
 
+(setq *exit-on-end* (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7)))
+
 (load "package://pddl_planner/src/pddl-result-graph.l")
 (load "package://pddl_planner/src/eus-pddl-client.l")
 
@@ -124,5 +126,4 @@
 (when (ros::get-param "~display_graph" "true")
   (piped-fork "xdg-open okada_ias.pdf"))
 
-(when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
-  (ros::exit))
+(if *exit-on-end* (ros::exit))
