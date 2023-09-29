@@ -111,14 +111,15 @@
   (setq *graph* (make-graph-from-pddl-results (list *result*) :node-name :pprint))
 
   ;; swap nodes ( check_open <-> check_open_f ) for making task flow
-  (setq *graph* (add-failed-nodes *result* (list 'pick 'put) :graph *graph*))
+  (when (< 0 level)
+    (setq *graph* (add-failed-nodes *result* (list 'pick 'put) :graph *graph*)))
 
   (send *graph* :name (send *domain* :name))
 
   (setq *graph* (make-readable-graph *graph*))
   (send *graph* :write-to-pdf "action_graph.pdf")
   (when (ros::get-param "~display_graph")
-    (piped-fork "gnome-open action_graph.pdf"))
+    (piped-fork "xdg-open action_graph.pdf"))
 
   ;; action definition
   ;; domain -> package

@@ -1,5 +1,7 @@
 #!/usr/bin/env roseus
 
+(setq *exit-on-end* (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7)))
+
 (load "package://pddl_planner/src/pddl-result-graph.l")
 (load "package://pddl_planner/src/eus-pddl-client.l")
 
@@ -184,9 +186,9 @@
 
 (send *graph* :name (send *domain* :name))
 
-;(send *graph* :write-to-pdf "knock_demo.pdf")
-;(when (ros::get-param "~display_graph")
-;  (piped-fork "gnome-open knock_demo.pdf"))
+(send *graph* :write-to-pdf "knock_demo.pdf")
+(when (ros::get-param "~display_graph")
+  (piped-fork "xdg-open knock_demo.pdf"))
 
 ;; action definition
 ;; domain -> package
@@ -218,5 +220,4 @@
 ;; global data is not used (nil)
 (exec-smach-with-spin (convert-smach *graph*) nil :hz 1.0)
 
-(when (string= "__log:=" (subseq (car (last lisp::*eustop-argument*)) 0 7))
-  (ros::exit))
+(if *exit-on-end* (ros::exit))
