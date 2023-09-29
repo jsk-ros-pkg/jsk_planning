@@ -3,12 +3,11 @@
   <arg name="display_graph" default="true" />
   <arg name="launch_prefix" default="" />
   <include file="$(find pddl_planner)/launch/pddl_downward.launch" />
-  <node name="demo_push_button" pkg="roseus" type="roseus"
-        args="$(find pddl_planner)/demos/simple_failure_torelant/solve-simple-failure-torelant.l"
+  <node name="demo_search_object" pkg="roseus" type="roseus"
+        args="$(find pddl_planner)/demos/search_object/solve-search-object.l"
         launch-prefix="$(arg launch_prefix)"
         output="screen">
     <param name="display_graph" value="$(arg display_graph)" />
-    <param name="publish_to_smach" value="$(arg viewer)" />
   </node>
 
   <node pkg="smach_viewer" name="smach_viewer"

@@ -1,0 +1,27 @@
+<launch>
+  <include file="$(find pddl_planner)/demos/search_object/demo_search_object.launch">
+    <arg name="display_graph" default="false" />
+    <arg name="launch_prefix" default="$(find pddl_planner)/test/repeat.sh 5 " />
+  </include>
+
+  <test name="pddl_result_test"
+        test-name="search_object"
+        pkg="pddl_planner" type="pddlresulttest"
+        time-limit="120" >
+    <rosparam>
+      topics:
+        - name: /pddl_planner/result
+          timeout: 120
+          sequence_action: ['(move-to boxa)', '(open-box boxa)', '(detect boxa)', '(grasp boxa)', '(close-box boxa)', '(move-to end)']
+        - name: /pddl_planner/result
+          timeout: 120
+          sequence_action: ['(close-box boxa)', '(move-to boxb)', '(open-box boxb)', '(detect boxb)', '(grasp boxb)', '(close-box boxb)', '(move-to end)']
+        - name: /pddl_planner/result
+          timeout: 120
+          sequence_action: ['(close-box boxb)', '(move-to boxc)', '(open-box boxc)', '(detect boxc)', '(grasp boxc)', '(close-box boxc)', '(move-to end)']
+        - name: /pddl_planner/result
+          timeout: 120
+          sequence_action: ['(move-to boxa)', '(open-box boxa)', '(detect_f boxa)', '(close-box boxa)', '(move-to boxb)', '(open-box boxb)', '(detect_f boxb)', '(close-box boxb)', '(move-to boxc)', '(open-box boxc)', '(detect_f boxc)', '(close-box boxc)', '(move-to end)']
+    </rosparam>
+  </test>
+</launch>
