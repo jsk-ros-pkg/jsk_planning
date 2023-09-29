@@ -1,0 +1,17 @@
+<launch>
+  <include file="$(find pddl_planner)/demos/hanoi/demo_hanoi.launch">
+    <arg name="display_graph" default="false" />
+    <arg name="launch_prefix" default="$(find pddl_planner)/test/repeat.sh 5 " />
+  </include>
+
+  <test name="pddl_result_test"
+        test-name="demos_hanoi"
+        pkg="pddl_planner" type="pddlresulttest">
+    <rosparam>
+      topics:
+        - name: /pddl_planner/result
+          timeout: 60
+          sequence_action: ['(MOVE DISK0 DISK1 POLE2)', '(MOVE DISK1 DISK2 POLE1)', '(MOVE DISK0 POLE2 DISK1)', '(MOVE DISK2 POLE0 POLE2)', '(MOVE DISK0 DISK1 POLE0)', '(MOVE DISK1 POLE1 DISK2)', '(MOVE DISK0 POLE0 DISK1)']
+    </rosparam>
+  </test>
+</launch>

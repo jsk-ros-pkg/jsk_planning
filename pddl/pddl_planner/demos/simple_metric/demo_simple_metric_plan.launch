@@ -1,0 +1,6 @@
+<launch>
+  <include file="$(find pddl_planner)/launch/pddl_downward.launch" />
+  <node name="demo_simple_metric_plan" pkg="roseus" type="roseus"
+        args="$(find pddl_planner)/demos/simple_metric/simple_metric_plan.l"
+        output="screen" />
+</launch>

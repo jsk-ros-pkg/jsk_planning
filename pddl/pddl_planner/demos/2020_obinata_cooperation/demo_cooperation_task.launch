@@ -1,0 +1,10 @@
+<launch>
+  <arg name="demo" default="kitchen_car" doc="kitchen_car or office" />
+
+  <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
+  <node pkg="pddl_planner" name="solve_cooperation_task"
+        type="solve-cooperation-task.l" >
+    <param name="display_graph" value="true" />
+    <param name="demo" value="$(arg demo)" />
+  </node>
+</launch>

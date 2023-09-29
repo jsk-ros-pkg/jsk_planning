@@ -1,0 +1,16 @@
+<launch>
+  <include file="$(find pddl_planner)/demos/2011_saito/demo-simple-task.launch">
+    <arg name="display_graph" default="false" />
+  </include>
+
+  <test name="pddl_result_test"
+        test-name="2011_saito_simple"
+        pkg="pddl_planner" type="pddlresulttest">
+    <rosparam>
+      topics:
+        - name: /pddl_planner/result
+          timeout: 10
+          sequence_action: ['(KNOCK DOOR)', '(MOVE ROOM-FRONT ROOM-INSIDE)', '(WIPE DESK)']
+    </rosparam>
+  </test>
+</launch>

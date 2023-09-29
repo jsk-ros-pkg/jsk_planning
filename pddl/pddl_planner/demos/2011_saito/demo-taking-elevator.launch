@@ -1,7 +1,8 @@
 <launch>
+  <arg name="display_graph" default="true" />
   <include file="$(find pddl_planner)/launch/pddl_ffha.launch" />
   <node pkg="pddl_planner" name="demo_take_elevatpr"
         type="solve-taking-elevator.l" >
-    <param name="display_graph" value="true" />
+    <param name="display_graph" value="$(arg display_graph)" />
   </node>
 </launch>
