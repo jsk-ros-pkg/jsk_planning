@@ -151,7 +151,7 @@ class PDDLPlannerActionServer(object):
         if max_planning_time > 0.0:
             command = ["timeout", str(max_planning_time)] + command
         rospy.loginfo("Command: %s" % " ".join(command))
-        proc = sp.Popen(command, stdout=sp.PIPE, stderr=sp.PIPE)
+        proc = sp.Popen(" ".join(command), stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
         try:
             output, error = str(), str()
             r = rospy.Rate(10.0)
