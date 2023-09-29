@@ -12,5 +12,6 @@
   </include>
 
   <test test-name="test_task_compiler" pkg="roseus" type="roseus"
-        args="$(find task_compiler)/test/test-task-compiler.l" />
+        args="$(find task_compiler)/test/test-task-compiler.l"
+        time-limit="180" />
 </launch>

@@ -23,4 +23,24 @@
   <test test-name="sample_pddl_downward_client" pkg="pddl_planner" type="sample-client.py" >
     <remap from="pddl_planner" to="downward_planner/pddl_planner" />
   </test>
+  <!--
+  Test program to solve as graph search (https://github.com/jsk-ros-pkg/jsk_planning/pull/92)
+  -->
+  <test test-name="solve_graph_search" pkg="pddl_planner"
+        type="solve-graph-search.l" ns="ffha_planner" />
+  <!--
+  Test to reproduce jsk-ros-pkg/jsk_demos#1286
+  -->
+  <include file="$(find pddl_planner)/launch/pddl_downward.launch" ns="downward_planner_long_option" >
+    <arg name="planner_option" value="--heuristic &quot;hlm=lmcount(lm_rhw(reasonable_orders=true,lm_cost_type=2,cost_type=2),pref=true)&quot;
+                                      --heuristic &quot;hff=ff()&quot;
+                                      --search &quot;iterated([lazy_greedy([hff,hlm],preferred=[hff,hlm]),
+                                      lazy_wastar([hff,hlm],preferred=[hff,hlm],w=5),
+                                      lazy_wastar([hff,hlm],preferred=[hff,hlm],w=3),
+                                      lazy_wastar([hff,hlm],preferred=[hff,hlm],w=2)],
+                                      repeat_last=false)&quot;" />
+  </include>
+  <test test-name="sample_pddl_downward_client_long_option" pkg="pddl_planner" type="sample-client.py" >
+    <remap from="pddl_planner" to="downward_planner_long_option/pddl_planner" />
+  </test>
 </launch>
