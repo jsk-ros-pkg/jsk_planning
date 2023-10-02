@@ -1,5 +1,7 @@
 #!/usr/bin/env roseus
 
+(warn "~%!!!!! THIS DEMO IS INCOMPLETE !!!!!~%")
+
 (load "package://pddl_planner/src/pddl-result-graph.l")
 (load "package://pddl_planner/src/eus-pddl-client.l")
 
