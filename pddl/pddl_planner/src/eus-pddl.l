@@ -594,13 +594,17 @@
       ))
 
   (:check-condition (st act)
-    (let ((action (find-if #'(lambda (x)
-                               (equal
-                                (or
-                                 (and (send self :use-durative-action)
-                                      (caaddr act))
-                                 (car act))
-                                (intern (string-upcase (send x :name))))) (send domain :action)))
+    (let ((action (if (and (not (atom (car act)))
+                           (not (send self :use-durative-action))
+                           (derivedp (caar act) pddl-action))
+                      (caar act)
+                      (find-if #'(lambda (x)
+                                   (equal
+                                    (or
+                                     (and (send self :use-durative-action)
+                                          (caaddr act))
+                                     (car act))
+                                    (intern (string-upcase (send x :name))))) (send domain :action))))
           param pcond)
       (unless action
         (return-from :check-condition nil))
@@ -713,13 +717,17 @@
       ))
   (:apply-action (st act)
     (if (send self :check-condition st act)
-        (let ((action (find-if #'(lambda (x)
-                                   (equal
-                                    (or
-                                     (and (send self :use-durative-action)
-                                          (caaddr act))
-                                     (car act))
-                                    (intern (string-upcase (send x :name))))) (send domain :action)))
+        (let ((action (if (and (not (atom (car act)))
+                               (not (send self :use-durative-action))
+                               (derivedp (caar act) pddl-action))
+                          (caar act)
+                          (find-if #'(lambda (x)
+                                       (equal
+                                        (or
+                                         (and (send self :use-durative-action)
+                                              (caaddr act))
+                                         (car act))
+                                        (intern (string-upcase (send x :name))))) (send domain :action))))
               param effect (tmp-st st))
           (unless action
             (return-from :apply-action nil))
