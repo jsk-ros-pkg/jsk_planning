@@ -5,7 +5,7 @@
   </include>
 
   <test name="pddl_result_test"
-        test-name="2011_saito_knock_door"
+        test-name="2011_saito_knock_door_pddl"
         pkg="pddl_planner" type="pddlresulttest">
     <rosparam>
       topics:
@@ -21,6 +21,18 @@
         - name: /pddl_planner/result
           timeout: 30
           sequence_action: ['(MOVE RM73A3-CENTER RM73B2-DOORFRONT)', '(OPEN RM73B2-DOOR)', '(CHECK_OPEN RM73B2-DOOR)', '(MOVE RM73B2-DOORFRONT RM73A3-CENTER)', '(MOVE RM73A3-CENTER RM73B2-TABLEFRONT)', '(PICK PLASTIC-BOTTLE)', '(MOVE RM73B2-TABLEFRONT RM73A3-CENTER)', '(MOVE RM73A3-CENTER TRASHBOXFRONT)', '(PUT PLASTIC-BOTTLE TRASHBOX)', '(MOVE TRASHBOXFRONT RM73A3-CENTER)']
+    </rosparam>
+  </test>
+
+  <test name="structure_test"
+        test-name="2011_saito_knock_door_smach"
+        pkg="pddl_planner" type="structuretest">
+    <rosparam>
+      topics:
+        - name: /server_name/smach/container_structure
+          timeout: 10
+          children: ['(move rm73a3-center rm73b2-doorfront)', '(open rm73b2-door)', '(check_open rm73b2-door)', '(move rm73b2-doorfront rm73a3-center)', '(move rm73a3-center rm73b2-tablefront)', '(pick plastic-bottle)', '(wipe rm73b2-table)', '(move rm73b2-tablefront rm73a3-center)', '(move rm73a3-center trashboxfront)', '(put plastic-bottle trashbox)', '(move trashboxfront rm73a3-center)', '(move rm73a3-center shopfront)', '(buy sandwitch)', '(move shopfront rm73a3-center)', '(put sandwitch saito-table)']
+          container_outcomes: ['goal2', 'goal1', 'goal0']
     </rosparam>
   </test>
 </launch>

@@ -27,4 +27,16 @@
           sequence_action: ['(MOVE-TO START FRONTFRIDGE)', '(OPEN-DOOR)', '(MOVE-TO FRONTFRIDGE PREGRASP)', '(GRASP-OBJECT CAN)', '(MOVE-TO PREGRASP START)', '(MOVE-TO START SOMEWHERE)', '(TRY-CLOSE)', '(MOVE-RECOVERLY)', '(MOVE-TO FRONTFRIDGE START)']
     </rosparam>
   </test>
+
+  <test name="structure_test"
+        test-name="2013_fridge_demo_smach"
+        pkg="pddl_planner" type="structuretest">
+    <rosparam>
+      topics:
+        - name: /server_name/smach/container_structure
+          timeout: 10
+          children: ['(move-to start frontfridge)', '(open-door)', '(move-to frontfridge pregrasp)', '(grasp-object can)', '(move-to pregrasp start)', '(move-to start somewhere)', '(try-close)', '(move-recoverly)', '(move-to frontfridge start)', '(move-recoverly)', '(close-door)', '(move-to preclose start)', '(try-close)']
+          container_outcomes: ['goal0']
+    </rosparam>
+  </test>
 </launch>
