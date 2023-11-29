@@ -2,6 +2,9 @@
 Changelog for package pddl_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.1.12 (2020-04-01)
 -------------------
 * Merge pull request `#70 <https://github.com/jsk-ros-pkg/jsk_planning/issues/70>`_ from furushchev/detail-error

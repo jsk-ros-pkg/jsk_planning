@@ -2,6 +2,14 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [task_compiler/samples/failure-recovery-sample]suppress warnings (`#82 <https://github.com/jsk-ros-pkg/jsk_planning/issues/82>`_)
+* add time-limit to test_task_compiler (`#95 <https://github.com/jsk-ros-pkg/jsk_planning/issues/95>`_)
+* use xdg-open instead of gnome-open (`#91 <https://github.com/jsk-ros-pkg/jsk_planning/issues/91>`_)
+
+* Contributors: Kei Okada, Naoki Hiraoka, Shingo Kitagawa, Yoshiki Obinata
+
 0.1.12 (2020-04-01)
 -------------------
 * Set timeout for planning in task_compiler (`#69 <https://github.com/jsk-ros-pkg/jsk_planning/issues/69>`_)

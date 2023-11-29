@@ -2,6 +2,71 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* [pddl_panner/src/eus-pddl.l] support multiple simbols for 'forall and 'exists (`#79 <https://github.com/jsk-ros-pkg/jsk_planning/issues/79>`_)
+* add test to reproduce https://github.com/jsk-ros-pkg/jsk_demos/issues/1286 (`#88 <https://github.com/jsk-ros-pkg/jsk_planning/issues/88>`_)
+* add github/workflows (`#101 <https://github.com/jsk-ros-pkg/jsk_planning/issues/101>`_)
+
+  * pddlresulttest: fix for python3, use map and https://stackoverflow.com/questions/60532658/python-2-vs-python-3-difference-in-map-behavior-with-three-arguments
+  * pddl.py : fix for python3, bytes vs str
+  * add launch_prefix and repet 5 times
+  * exit when sovle.l was started from rostest
+  * increase time-limit
+  * run assertTrue at end of test
+
+* update LPG download link (`#97 <https://github.com/jsk-ros-pkg/jsk_planning/issues/97>`_)
+* Add obinata demo (`#99 <https://github.com/jsk-ros-pkg/jsk_planning/issues/99>`_)
+
+  * Use only move-with-obj action by introducing none item
+  * Use different initial condition for office demo and kitchen car demo
+  * Add obinata's multiple robot cooperation demo
+  * add launch to run simple_metric_plan
+
+* add CHECK_PYTHON2_COMPILE, CHECK_PYTHON3_COMPILE (`#96 <https://github.com/jsk-ros-pkg/jsk_planning/issues/96>`_)
+
+  * 2to3 -w -f has_key *
+  * 2to3 -w -f print *
+
+* cannot run graph-solver for pddl-graph (`#94 <https://github.com/jsk-ros-pkg/jsk_planning/issues/94>`_)
+
+  * add test to check `#92 <https://github.com/jsk-ros-pkg/jsk_planning/issues/92>`_
+  * :add-neighbor is obsolated methods, use :add-arc-from-to https://github.com/euslisp/jskeus/blob/689b015f0c727616e2745652423f2918d1e52252/irteus/irtgraph.l#L379
+
+* add test to check pddl planning results (`#89 <https://github.com/jsk-ros-pkg/jsk_planning/issues/89>`_)
+
+  * search_object/simple_failure_torelant : run euslisp planning script with repeat.sh
+  * use unique test-name
+  * use proc.returncode instead of proc.poll()
+  * test multiple sequence_action at once
+  * pddlresulttest: support multiple sequence at once
+  * add add_rostest(test/search_object.test)
+  * demos/search_object: use display_graph to gnome-open pdf
+  * [pddl_planner/demos/search_object] fix bug, and add launch file
+  * add_rostest for test directory
+  * add pddl result test for demo
+  * add simple_metric/simple_metric.launch
+  * 2016_kamada_durative: demo.launch,example.launch starts euslisp file too, for complete example
+  * gnome-open .pdf only when ~display_graph is set
+  * use display_graph argument for launch file to skip gnome-open pdf
+    demos/2008_okada_ias/demo_pour_tea.launch
+    demos/2011_kakiuchi/demo_cleanup_table.launch
+    demos/2011_saito/demo-knock-door.launch
+    demos/2011_saito/demo-simple-task.launch
+    demos/2011_saito/demo-taking-elevator.launch
+    demos/simple_failure_torelant/demo_simple_failure_torelant.launch
+    demos/2013_fridge_demo/demo_bring_can.launch
+    demos/hanoi/demo_hanoi.launch
+  * add pddlresulttest
+  * use shell to run pddl solver
+  * add test to reproduce https://github.com/jsk-ros-pkg/jsk_demos/issues/1286
+
+* [pddl_planner/demos/simple_metrix] add launch file (`#77 <https://github.com/jsk-ros-pkg/jsk_planning/issues/77>`_)
+* use xdg-open instad of evince. Both installed by ubuntu-desktop package (`#76 <https://github.com/jsk-ros-pkg/jsk_planning/issues/76>`_)
+* [pddl_planner] format README.md (`#74 <https://github.com/jsk-ros-pkg/jsk_planning/issues/74>`_)
+
+* Contributors: Kei Okada, Koki Shinjo, Naoki Hiraoka, Naoya Yamaguchi, Yoshiki Obinata
+
 0.1.12 (2020-04-01)
 -------------------
 * Add max_planning_time option (`#70 <https://github.com/jsk-ros-pkg/jsk_planning/issues/70>`_)
