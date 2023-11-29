@@ -2,8 +2,8 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.13 (2023-11-29)
+-------------------
 * [pddl_panner/src/eus-pddl.l] support multiple simbols for 'forall and 'exists (`#79 <https://github.com/jsk-ros-pkg/jsk_planning/issues/79>`_)
 * add test to reproduce https://github.com/jsk-ros-pkg/jsk_demos/issues/1286 (`#88 <https://github.com/jsk-ros-pkg/jsk_planning/issues/88>`_)
 * add github/workflows (`#101 <https://github.com/jsk-ros-pkg/jsk_planning/issues/101>`_)

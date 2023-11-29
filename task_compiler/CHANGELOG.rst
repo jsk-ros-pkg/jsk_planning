@@ -2,8 +2,8 @@
 Changelog for package task_compiler
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.13 (2023-11-29)
+-------------------
 * [task_compiler/samples/failure-recovery-sample]suppress warnings (`#82 <https://github.com/jsk-ros-pkg/jsk_planning/issues/82>`_)
 * add time-limit to test_task_compiler (`#95 <https://github.com/jsk-ros-pkg/jsk_planning/issues/95>`_)
 * use xdg-open instead of gnome-open (`#91 <https://github.com/jsk-ros-pkg/jsk_planning/issues/91>`_)
