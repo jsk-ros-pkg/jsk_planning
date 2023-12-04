@@ -7,6 +7,7 @@ import re
 import signal
 import subprocess as sp
 import sys
+import shlex
 import tempfile
 import traceback
 
@@ -46,7 +47,11 @@ class PDDLPlannerActionServer(object):
         # resolve rosparam
         self._planner_name = rospy.get_param('~pddl_planner', 'downward')
         search_option = rospy.get_param('~pddl_search_option', '')
-        self._search_option = search_option.strip().split()
+        # https://stackoverflow.com/questions/79968/split-a-string-by-spaces-preserving-quoted-substrings-in-python
+        # https://github.com/jsk-ros-pkg/jsk_planning/pull/88 changes 'sp.Popen(command' to 'sp.Popen(" ".join(command)', this assumes `planner_option` uses `--search &quat;iterated([lazy_greedy([hff,hlm], preferred=[hff,hlm]), ...)&quat;`
+        # but some launch file uses `--search iterated([lazy_greedy([hff,hlm],preferred=[hff,hlm]), ...)`, without &quat; and spaces, and jsk_planning 0.1.13 did not work this such eample(https://github.com/jsk-ros-pkg/jsk_demos/blob/ab0360b5580e77ca70006ce505497894fe4ac0d2/jsk_2013_04_pr2_610/test/test-demo-plan.test#L10), https://github.com/jsk-ros-pkg/jsk_demos/issues/1286
+        # this fix uses shlex.split() to keep quated substrings and uses Popen(command, stead of Popen(" ".join(command), to input quated argument as one word.
+        self._search_option = shlex.split(search_option.strip())
 
         self._as.start()
 
@@ -150,8 +155,8 @@ class PDDLPlannerActionServer(object):
     def exec_process(self, command, max_planning_time):
         if max_planning_time > 0.0:
             command = ["timeout", str(max_planning_time)] + command
-        rospy.loginfo("Command: %s" % " ".join(command))
-        proc = sp.Popen(" ".join(command), stdout=sp.PIPE, stderr=sp.PIPE, shell=True)
+        rospy.loginfo("Command: %s" % command)
+        proc = sp.Popen(command, stdout=sp.PIPE, stderr=sp.PIPE)
         try:
             output, error = str(), str()
             r = rospy.Rate(10.0)
