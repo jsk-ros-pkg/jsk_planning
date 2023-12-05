@@ -2,6 +2,17 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix regressons of https://github.com/jsk-ros-pkg/jsk_planning/pull/88, when `planner_option` without &quat;, (`#104 <https://github.com/jsk-ros-pkg/jsk_planning/issues/104>`_)
+
+* test to cehck `#103 <https://github.com/jsk-ros-pkg/jsk_planning/issues/103>`_ (planner_option without &quat;)
+* https://github.com/jsk-ros-pkg/jsk_planning/pull/88 changes 'sp.Popen(command' to 'sp.Popen(" ".join(command)', this assumes `planner_option` uses `--search &quat;iterated([lazy_greedy([hff,hlm], preferred=[hff,hlm]), ...)&quat;`
+  but some launch file uses `--search iterated([lazy_greedy([hff,hlm],preferred=[hff,hlm]), ...)`, without &quat; and spaces, and jsk_planning 0.1.13 did not work this such eample(https://github.com/jsk-ros-pkg/jsk_demos/blob/ab0360b5580e77ca70006ce505497894fe4ac0d2/jsk_2013_04_pr2_610/test/test-demo-plan.test#L10), https://github.com/jsk-ros-pkg/jsk_demos/issues/1286
+  this fix uses shlex.split() to keep quated substrings and uses Popen(command, stead of Popen(" ".join(command), to input quated argument as one word.
+
+* Contributors: Kei Okada
+
 0.1.13 (2023-11-29)
 -------------------
 * [pddl_panner/src/eus-pddl.l] support multiple simbols for 'forall and 'exists (`#79 <https://github.com/jsk-ros-pkg/jsk_planning/issues/79>`_)
