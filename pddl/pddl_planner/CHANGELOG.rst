@@ -2,8 +2,8 @@
 Changelog for package pddl_planner
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.14 (2023-12-05)
+-------------------
 * Fix regressons of https://github.com/jsk-ros-pkg/jsk_planning/pull/88, when `planner_option` without &quat;, (`#104 <https://github.com/jsk-ros-pkg/jsk_planning/issues/104>`_)
 
 * test to cehck `#103 <https://github.com/jsk-ros-pkg/jsk_planning/issues/103>`_ (planner_option without &quat;)
