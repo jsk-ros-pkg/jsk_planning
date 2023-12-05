@@ -43,4 +43,13 @@
   <test test-name="sample_pddl_downward_client_long_option" pkg="pddl_planner" type="sample-client.py" >
     <remap from="pddl_planner" to="downward_planner_long_option/pddl_planner" />
   </test>
+  <!--
+  Test for both &quat; and non-spaces https://github.com/jsk-ros-pkg/jsk_planning/pull/103
+  -->
+  <include file="$(find pddl_planner)/launch/pddl_downward.launch" ns="downward_planner_long_option_non_spaces" >
+    <arg name="planner_option" value="--heuristic hlm=lmcount(lm_rhw(reasonable_orders=true,lm_cost_type=2,cost_type=2),pref=true) --heuristic hff=ff() --search iterated([lazy_greedy([hff,hlm],preferred=[hff,hlm]),lazy_wastar([hff,hlm],preferred=[hff,hlm],w=5),lazy_wastar([hff,hlm],preferred=[hff,hlm],w=3),lazy_wastar([hff,hlm],preferred=[hff,hlm],w=2)],repeat_last=false)" />
+  </include>
+  <test test-name="sample_pddl_downward_client_long_option_non_spaces" pkg="pddl_planner" type="sample-client.py" >
+    <remap from="pddl_planner" to="downward_planner_long_option_non_spaces/pddl_planner" />
+  </test>
 </launch>
