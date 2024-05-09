@@ -4,13 +4,25 @@
   </include>
 
   <test name="pddl_result_test"
-        test-name="2011_saito_simple"
+        test-name="2011_saito_simple_pddl"
         pkg="pddl_planner" type="pddlresulttest">
     <rosparam>
       topics:
         - name: /pddl_planner/result
           timeout: 10
           sequence_action: ['(KNOCK DOOR)', '(MOVE ROOM-FRONT ROOM-INSIDE)', '(WIPE DESK)']
+    </rosparam>
+  </test>
+
+  <test name="structure_test"
+        test-name="2011_saito_simple_smach"
+        pkg="pddl_planner" type="structuretest">
+    <rosparam>
+      topics:
+        - name: /server_name/smach/container_structure
+          timeout: 10
+          children: ['(knock door)', '(move room-front room-inside)', '(wipe desk)']
+          container_outcomes: ['goal0']
     </rosparam>
   </test>
 </launch>
