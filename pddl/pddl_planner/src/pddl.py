@@ -337,6 +337,10 @@ class PDDLPlannerActionServer(object):
             path.write(":precondition %s\n" % action.precondition)
             path.write(":effect %s\n" % action.effect)
             path.write(")\n")               # (:action
+        for derived in domain.deriveds:
+            path.write("(:derived %s\n" % derived.predicate)
+            path.write("%s\n" % derived.formula)
+            path.write(")\n")               # (:derived
         path.write(")\n")               # (define
         return path_name
     

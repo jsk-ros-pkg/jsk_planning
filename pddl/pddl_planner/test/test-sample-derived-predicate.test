@@ -1,0 +1,14 @@
+<launch>
+  <!--
+  Test program for pddl_planner/demos/sample-pddl/README
+  -->
+  <test test-name="sample_derived_predicate_pddl_downward" pkg="pddl_planner" type="test-sample-pddl.sh"
+        args="rosrun downward plan $(find pddl_planner)/demos/sample_derived_predicate/sample-domain.pddl $(find pddl_planner)/demos/sample_derived_predicate/sample-problem.pddl ipc seq-sat-lama-2011" />
+  <!--
+  Test program using ros action node
+  -->
+  <include file="$(find pddl_planner)/launch/pddl_downward.launch"  ns="downward_planner" />
+  <test test-name="sample_pddl_downward_client" pkg="pddl_planner" type="sample-derived-predicate-client.py" >
+    <remap from="pddl_planner" to="downward_planner/pddl_planner" />
+  </test>
+</launch>
