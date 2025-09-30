@@ -24,7 +24,7 @@ jobs:
             CONTAINER: jskrobotics/ros-ubuntu:18.04
           - ROS_DISTRO: noetic
             CONTAINER: jskrobotics/ros-ubuntu:20.04
-y
+
     container:
       image: ${{ matrix.CONTAINER }}
       volumes:
