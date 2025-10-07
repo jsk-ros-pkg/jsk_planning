@@ -9,7 +9,7 @@ add_action_files(
 )
 add_message_files(
   DIRECTORY msg
-  FILES PDDLAction.msg PDDLDomain.msg PDDLProblem.msg PDDLActionArray.msg PDDLObject.msg PDDLStep.msg
+  FILES PDDLAction.msg PDDLDomain.msg PDDLProblem.msg PDDLActionArray.msg PDDLObject.msg PDDLStep.msg PDDLDerived.msg
 )
 
 generate_messages(
