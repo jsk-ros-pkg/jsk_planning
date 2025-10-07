@@ -1,0 +1,6 @@
+<launch>
+  <node pkg="pddl_planner" type="lpg-td" name="lpg_td" output="screen"
+        args="-o $(find pddl_planner)/demos/2021_tsukamoto_multirobot/multirobot-domain.pddl
+              -f $(find pddl_planner)/demos/2021_tsukamoto_multirobot/multirobot-problem.pddl
+              -n 1" />
+</launch>
